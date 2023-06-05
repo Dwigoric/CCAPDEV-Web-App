@@ -19,4 +19,4 @@ jobs:
         username: 'Dwigoric'
         reponame: 'CCAPDEV-Web-App'
         token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
-        
+        useyarn: true
