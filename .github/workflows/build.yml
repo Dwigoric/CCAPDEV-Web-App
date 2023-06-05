@@ -1,16 +1,22 @@
-name: Build and Deploy Vue Application to Github Pages
-on: 
-    push:
-        branches: ['main', 'frontend']
+name: Build Vue
+on: [push]
 jobs:
-  build_deploy_vue:
+  build_vue:
     runs-on: ubuntu-latest
-    name: Build and Deploy Vue
+    name: Build Vue
     steps:
     - uses: actions/checkout@v2
-    - id: Build-Deploy-Vue
-      uses: thefrustrateddev/vue-deploy-github-pages@v1.0.0
+    - name: Setup Yarn
+      # You may pin to the exact commit or the version.
+      # uses: mskelton/setup-yarn@2fd0f48147cbee4fd8a71723a3b86851d86ba46b
+      uses: mskelton/setup-yarn@v1.4.0
+      with:
+        # Used to specify a package manager for caching in the default directory. Supported values: npm, yarn, pnpm
+        cache: yarn
+    - id: Build-Vue
+      uses: xRealNeon/VuePagesAction@1.0.1
       with:
         username: 'Dwigoric'
         reponame: 'CCAPDEV-Web-App'
-        token: ${{ secrets.GITHUB_TOKEN }} # no need to change this line this is used to create the branch in your application repository
+        token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
+        
