@@ -1,5 +1,6 @@
 <script setup>
 import NavigationBar from '../components/NavigationBar.vue'
+document.title = 'Compact Donuts | Feed'
 </script>
 
 <template>

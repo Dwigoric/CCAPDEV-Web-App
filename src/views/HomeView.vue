@@ -1,5 +1,6 @@
 <script setup>
 import HomePage from '../components/HomePage.vue'
+document.title = 'Compact Donuts | Home'
 </script>
 
 <template>
