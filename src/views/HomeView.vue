@@ -1,9 +1,9 @@
 <script setup>
-import LoginBox from '../components/LoginBox.vue'
+import HomePage from '../components/HomePage.vue'
 </script>
 
 <template>
-    <header>
-        <LoginBox />
-    </header>
+    <HomePage />
 </template>
+
+<style scoped></style>

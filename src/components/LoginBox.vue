@@ -43,6 +43,7 @@
     padding: 50px;
     border-radius: 35px;
     flex-basis: 30vw;
+    margin: 30px;
 }
 
 #loginHeader {
