@@ -5,15 +5,15 @@ import LoginBox from './LoginBox.vue'
 <template>
     <header>
         <div class="wrapper">
-            <img alt="Donut trees" class="logo" src="@/assets/donut_love.svg" width="250" />
+            <img alt="Donut trees" class="logo" src="@/assets/donut_love.svg" />
             <div class="greetings">
                 <h1 class="blue">Where sweet dreams come true</h1>
                 <h3>A hole new world of donut discussions and delicious discoveries</h3>
             </div>
+            <nav>
+                <RouterLink to="/feed">What's cooking?</RouterLink>
+            </nav>
         </div>
-        <nav>
-            <RouterLink to="/feed">What's cooking?</RouterLink>
-        </nav>
     </header>
     <main>
         <LoginBox />
@@ -85,7 +85,7 @@ nav a:first-of-type {
 
     .logo {
         margin: 0 2rem 0 0;
-        width: 500px;
+        width: 520px;
     }
 
     header {
@@ -107,7 +107,7 @@ nav a:first-of-type {
     }
 
     nav {
-        text-align: right;
+        text-align: left;
         margin-left: -1rem;
         font-size: 1rem;
         padding: 1rem 0;
