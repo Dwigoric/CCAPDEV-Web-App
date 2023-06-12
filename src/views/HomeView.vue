@@ -1,6 +1,16 @@
 <script setup>
+import router from '../router'
 import HomePage from '../components/HomePage.vue'
+
 document.title = 'Compact Donuts | Home'
+
+import { useLoggedInStore } from '../stores/loggedIn'
+
+const loggedInStore = useLoggedInStore()
+
+if (loggedInStore.username) {
+    router.push({ name: 'feed' })
+}
 </script>
 
 <template>

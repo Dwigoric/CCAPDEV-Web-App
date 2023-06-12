@@ -2,21 +2,30 @@
 import { ref } from 'vue'
 import router from '../router'
 
+import { useLoggedInStore } from '../stores/loggedIn'
+
+const username = ref('')
+const password = ref('')
 const isClicked = ref()
 
 const login = () => {
     // TODO: Implement login functionality
     // Redirect to the feed page using the router
-    router.push('/feed')
+    router.push({ path: '/feed' })
 
     // Set isClicked to true to disable the button
     isClicked.value = true
+
+    const loggedInStore = useLoggedInStore()
+
+    // Set the user in the loggedInStore
+    loggedInStore.username = username.value
 }
 
 export default {
     setup() {
-        const username = ref('')
-        const password = ref('')
+        username.value = ''
+        password.value = ''
         isClicked.value = false
 
         return {
@@ -30,7 +39,7 @@ export default {
 </script>
 
 <template>
-    <div id="loginForm">
+    <form id="loginForm" method="post">
         <input
             class="inputField"
             type="text"
@@ -47,17 +56,16 @@ export default {
             placeholder="Password"
             v-model.lazy="password"
         />
-        <button
-            type="submit"
+        <input
+            type="button"
             :class="{
                 loginButton: true,
                 noButton: isClicked || !username.length || !password.length
             }"
             @click="login"
-        >
-            Login
-        </button>
-    </div>
+            value="Login"
+        />
+    </form>
 </template>
 
 <style scoped>
