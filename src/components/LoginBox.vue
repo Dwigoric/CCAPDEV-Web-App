@@ -32,18 +32,17 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 #loginBox {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 0.8rem;
     color: var(--vt-c-white-soft);
     background: var(--vt-c-black-mute);
     padding: 50px;
     border-radius: 35px;
     flex-basis: 30vw;
-    margin: 30px;
 }
 
 #loginHeader {
@@ -106,5 +105,12 @@ input[type='password'] {
     border: 1px solid var(--vt-c-black-soft);
     border-radius: 30px;
     background-color: var(--vt-c-white-soft);
+}
+
+@media (min-width: 1024px) {
+    #loginBox {
+        flex-basis: 30vw;
+        font-size: 1.2rem;
+    }
 }
 </style>
