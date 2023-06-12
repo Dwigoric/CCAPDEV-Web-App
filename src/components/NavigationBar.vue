@@ -3,10 +3,10 @@
 <template>
     <header>
         <nav>
-            <router-link to="/">Home</router-link>
-            <router-link to="/feed">Feed</router-link>
-            <router-link to="/profile">Profile</router-link>
-            <router-link to="/login">Login</router-link>
+            <RouterLink to="/">Home</RouterLink>
+            <RouterLink to="/feed">Feed</RouterLink>
+            <RouterLink to="/profile">Profile</RouterLink>
+            <RouterLink to="/login">Login</RouterLink>
         </nav>
     </header>
 </template>
