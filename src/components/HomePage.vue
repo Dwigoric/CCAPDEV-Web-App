@@ -21,6 +21,11 @@ import LoginBox from './LoginBox.vue'
 </template>
 
 <style scoped>
+header,
+main {
+    padding: 2rem;
+}
+
 header {
     display: flex;
     flex-flow: column wrap;
@@ -52,7 +57,6 @@ nav {
     width: 100%;
     font-size: 1.2rem;
     text-align: center;
-    margin: 2rem 0 2rem;
 }
 
 nav a.router-link-exact-active {
@@ -84,6 +88,11 @@ nav a:first-of-type {
         width: 500px;
     }
 
+    header {
+        align-items: flex-end;
+        padding: 50px;
+    }
+
     main {
         display: flex;
         flex-flow: row nowrap;
@@ -98,10 +107,9 @@ nav a:first-of-type {
     }
 
     nav {
-        text-align: left;
+        text-align: right;
         margin-left: -1rem;
         font-size: 1rem;
-
         padding: 1rem 0;
         margin-top: 1rem;
     }
