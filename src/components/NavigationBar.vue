@@ -11,7 +11,8 @@ const loggedInStore = useLoggedInStore()
         <RouterLink to="/profile">Profile</RouterLink>
         <RouterLink to="/login">Login</RouterLink>
         <div id="user">
-            <span> Logged in as {{ loggedInStore.username }} </span>
+            <span v-if="loggedInStore.username"> Logged in as {{ loggedInStore.username }} </span>
+            <span v-else> Not logged in </span>
         </div>
     </header>
 </template>
