@@ -10,9 +10,6 @@ import LoginBox from './LoginBox.vue'
                 <h1 class="blue">Where sweet dreams come true</h1>
                 <h3>A hole new world of donut discussions and delicious discoveries</h3>
             </div>
-            <nav>
-                <RouterLink to="/feed">What's cooking?</RouterLink>
-            </nav>
         </div>
     </header>
     <main>
