@@ -1,15 +1,27 @@
+<script setup>
+import NavigationBar from '../components/NavigationBar.vue'
+</script>
+
 <template>
-    <div class="feed">
-        <h1>This is the feed page.</h1>
+    <NavigationBar />
+    <div id="feed">
+        <main>
+            <h1>This is the feed page.</h1>
+        </main>
     </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-    .feed {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-    }
+<style scoped>
+body {
+    width: 100%;
+    display: flex;
+}
+
+#feed {
+    display: flex;
+    flex-basis: 100vw;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
 }
 </style>
