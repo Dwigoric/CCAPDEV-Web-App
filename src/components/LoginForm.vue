@@ -1,4 +1,33 @@
-<script setup></script>
+<script>
+import { ref } from 'vue'
+import router from '../router'
+
+const isClicked = ref()
+
+const login = () => {
+    // TODO: Implement login functionality
+    // Redirect to the feed page using the router
+    router.push('/feed')
+
+    // Set isClicked to true to disable the button
+    isClicked.value = true
+}
+
+export default {
+    setup() {
+        const username = ref('')
+        const password = ref('')
+        isClicked.value = false
+
+        return {
+            username,
+            password,
+            isClicked,
+            login
+        }
+    }
+}
+</script>
 
 <template>
     <div id="loginForm">
@@ -8,6 +37,7 @@
             id="username"
             name="username"
             placeholder="Username"
+            v-model.lazy="username"
         />
         <input
             class="inputField"
@@ -15,10 +45,18 @@
             id="password"
             name="password"
             placeholder="Password"
+            v-model.lazy="password"
         />
-        <div id="loginButton">
-            <button type="submit">Login</button>
-        </div>
+        <button
+            type="submit"
+            :class="{
+                loginButton: true,
+                noButton: isClicked || !username.length || !password.length
+            }"
+            @click="login"
+        >
+            Login
+        </button>
     </div>
 </template>
 
@@ -38,7 +76,7 @@
     float: left;
 }
 
-button {
+.loginButton {
     font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
         Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     font-size: 1.2rem;
@@ -50,11 +88,16 @@ button {
     padding: 15px 25px;
     margin: 8px 0;
     cursor: pointer;
-    width: 100%;
 }
 
-button:hover {
+.loginButton:hover {
     background-color: var(--color-bright-pink);
+}
+
+.noButton {
+    background-color: var(--vt-c-black-soft);
+    color: var(--vt-c-white-soft);
+    pointer-events: none;
 }
 
 input[type='text'],
