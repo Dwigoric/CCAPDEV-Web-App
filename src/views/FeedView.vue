@@ -1,16 +1,7 @@
 <script setup>
-import router from '../router'
 import NavigationBar from '../components/NavigationBar.vue'
 
 document.title = 'Compact Donuts | Feed'
-
-import { useLoggedInStore } from '../stores/loggedIn'
-
-const loggedInStore = useLoggedInStore()
-
-if (!loggedInStore.username) {
-    router.push({ name: 'home' })
-}
 </script>
 
 <template>

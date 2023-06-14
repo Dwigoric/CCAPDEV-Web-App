@@ -6,18 +6,37 @@ const loggedInStore = useLoggedInStore()
 
 <template>
     <header>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/feed">Feed</RouterLink>
-        <RouterLink to="/profile">Profile</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
-        <div id="user">
-            <span v-if="loggedInStore.username"> Logged in as {{ loggedInStore.username }} </span>
+        <div class="navbar-item">
+            <RouterLink to="/">Home</RouterLink>
+        </div>
+        <div class="navbar-item">
+            <RouterLink to="/feed">Feed</RouterLink>
+        </div>
+        <div class="navbar-item">
+            <RouterLink to="/profile">Profile</RouterLink>
+        </div>
+        <div class="navbar-item">
+            <RouterLink v-if="!loggedInStore.username" to="/">Login</RouterLink>
+            <RouterLink v-else to="." @click="logout">Logout</RouterLink>
+        </div>
+        <div class="navbar-item">
+            <span v-if="loggedInStore.username">
+                Hello, <span id="username">{{ loggedInStore.username }}</span
+                >!
+            </span>
             <span v-else> Not logged in </span>
         </div>
     </header>
 </template>
 
 <style scoped>
+.navbar-item {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    text-align: center;
+}
+
 a {
     color: var(--color-dark-pink);
     text-decoration: none;
@@ -29,13 +48,35 @@ a {
 header {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-around;
+    flex-basis: 100vw;
+    justify-content: center;
     height: 3rem;
     align-items: center;
     position: sticky;
     top: 0;
     background-color: var(--vt-c-black-soft);
     z-index: 1;
-    width: 100%;
+}
+
+#username {
+    color: var(--color-dark-pink);
+}
+
+header a.router-link-exact-active {
+    color: var(--color-text);
+}
+
+header a.router-link-exact-active:hover {
+    background-color: transparent;
+}
+
+.navbar-item {
+    display: inline-block;
+    padding: 0 1rem;
+    border-left: 1px solid var(--color-border);
+}
+
+header a:first-of-type {
+    border: 0;
 }
 </style>
