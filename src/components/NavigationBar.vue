@@ -74,9 +74,11 @@ header a.router-link-exact-active:hover {
 }
 
 .navbar-item {
-    display: inline-block;
+    display: flex;
+    justify-content: center;
     padding: 0 1rem;
     border-left: 1px solid var(--color-border);
+    align-self: stretch;
 }
 
 .navbar-item:first-of-type {
