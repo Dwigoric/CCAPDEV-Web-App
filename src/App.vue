@@ -7,6 +7,9 @@
 <style>
 main {
     line-height: 1.5;
-    max-height: 100vh;
+}
+
+#app {
+    min-height: 100vh;
 }
 </style>

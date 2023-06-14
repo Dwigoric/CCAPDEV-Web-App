@@ -6,24 +6,53 @@ document.title = 'Compact Donuts | Feed'
 
 <template>
     <NavigationBar />
-    <div id="feed">
-        <main>
-            <h1>This is the feed page.</h1>
-        </main>
-    </div>
+    <main>
+        <div id="feed">
+            <div class="feed-element" id="left-sidebar">This is the left sidebar.</div>
+            <div class="feed-element" id="posts">
+                <span>This is where the posts go.</span>
+                <span>There are no posts yet.</span>
+            </div>
+            <div class="feed-element" id="right-sidebar">This is the right sidebar.</div>
+        </div>
+    </main>
 </template>
 
 <style scoped>
-body {
-    width: 100%;
+main {
     display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    flex-grow: 1;
 }
 
 #feed {
     display: flex;
-    flex-basis: 100vw;
+}
+
+.feed-element {
+    display: flex;
+    flex-grow: 1;
+}
+
+#left-sidebar {
     flex-flow: row nowrap;
+    justify-content: right;
+    flex-grow: 2;
+    background-color: var(--color-dark-blue);
+}
+
+#posts {
+    flex-flow: column nowrap;
     align-items: center;
-    justify-content: center;
+    flex-grow: 6;
+    background-color: var(--color-pale-blue);
+}
+
+#right-sidebar {
+    flex-flow: row nowrap;
+    justify-content: left;
+    flex-grow: 3;
+    background-color: var(--color-bright-blue);
 }
 </style>
