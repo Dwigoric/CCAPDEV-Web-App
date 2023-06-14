@@ -9,12 +9,12 @@ jobs:
     - name: Setup Yarn
       # You may pin to the exact commit or the version.
       # uses: mskelton/setup-yarn@2fd0f48147cbee4fd8a71723a3b86851d86ba46b
-      uses: mskelton/setup-yarn@v1.4.0
+      uses: mskelton/setup-yarn@latest
       with:
         # Used to specify a package manager for caching in the default directory. Supported values: npm, yarn, pnpm
         cache: yarn
     - id: Build-Vue
-      uses: xRealNeon/VuePagesAction@1.0.1
+      uses: xRealNeon/VuePagesAction@latest
       with:
         username: 'Dwigoric'
         reponame: 'CCAPDEV-Web-App'
