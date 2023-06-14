@@ -2,6 +2,12 @@
 import { useLoggedInStore } from '../stores/loggedIn'
 
 const loggedInStore = useLoggedInStore()
+
+const logout = () => {
+    // Unset username and password in the loggedInStore
+    loggedInStore.username = ''
+    loggedInStore.password = ''
+}
 </script>
 
 <template>
