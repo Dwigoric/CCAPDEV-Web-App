@@ -13,9 +13,6 @@ const logout = () => {
 <template>
     <header>
         <div class="navbar-item">
-            <RouterLink to="/">Home</RouterLink>
-        </div>
-        <div class="navbar-item">
             <RouterLink to="/feed">Feed</RouterLink>
         </div>
         <div class="navbar-item">
@@ -23,7 +20,7 @@ const logout = () => {
         </div>
         <div class="navbar-item">
             <RouterLink v-if="!loggedInStore.username" to="/">Login</RouterLink>
-            <RouterLink v-else to="." @click="logout">Logout</RouterLink>
+            <RouterLink v-else to="/" @click="logout">Logout</RouterLink>
         </div>
         <div class="navbar-item">
             <span v-if="loggedInStore.username">
