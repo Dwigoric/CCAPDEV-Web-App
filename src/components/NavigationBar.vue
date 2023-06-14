@@ -79,7 +79,7 @@ header a.router-link-exact-active:hover {
     border-left: 1px solid var(--color-border);
 }
 
-header a:first-of-type {
+.navbar-item:first-of-type {
     border: 0;
 }
 </style>
