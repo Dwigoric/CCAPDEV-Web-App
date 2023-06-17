@@ -25,7 +25,6 @@ import LoginForm from './LoginForm.vue'
     color: var(--vt-c-white-soft);
     background: var(--vt-c-black-mute);
     padding: 50px;
-    border-radius: 35px;
     flex-basis: 30vw;
 }
 
@@ -48,6 +47,7 @@ import LoginForm from './LoginForm.vue'
     #loginBox {
         flex-basis: 30vw;
         font-size: 1.2rem;
+        border-radius: 35px;
     }
 }
 </style>

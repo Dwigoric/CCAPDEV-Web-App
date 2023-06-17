@@ -21,8 +21,7 @@ import LoginBox from './LoginBox.vue'
 </template>
 
 <style scoped>
-header,
-main {
+header {
     padding: 2rem;
 }
 
