@@ -6,13 +6,11 @@ import { useLoggedInStore } from '../stores/loggedIn'
 
 const username = ref('')
 const password = ref('')
+const confirmPassword = ref('')
 const isClicked = ref()
 
 const login = () => {
     // TODO: Implement login functionality
-    // Redirect to the feed page using the router
-    router.push({ path: '/feed' })
-
     // Set isClicked to true to disable the button
     isClicked.value = true
 
@@ -20,19 +18,29 @@ const login = () => {
 
     // Set the user in the loggedInStore
     loggedInStore.username = username.value
+
+    // Redirect to the feed page using the router
+    router.push({ path: '/feed' })
+}
+
+const registerUser = () => {
+    // TODO: Implement register functionality
 }
 
 export default {
     setup() {
         username.value = ''
         password.value = ''
+        confirmPassword.value = ''
         isClicked.value = false
 
         return {
             username,
             password,
+            confirmPassword,
             isClicked,
-            login
+            login,
+            registerUser
         }
     },
 
@@ -44,6 +52,11 @@ export default {
         buttonTextOnClick: {
             type: String,
             required: true
+        },
+        showConfirmPassword: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     }
 }
@@ -68,12 +81,29 @@ export default {
             v-model.lazy="password"
         />
         <input
+            v-if="showConfirmPassword"
+            class="inputField"
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            v-model.lazy="confirmPassword"
+        />
+        <input
             type="button"
             :class="{
                 loginButton: true,
-                noButton: isClicked || !username.length || !password.length
+                noButton:
+                    isClicked ||
+                    !username.length ||
+                    !password.length ||
+                    (showConfirmPassword && !confirmPassword.length)
             }"
-            @click="login"
+            @click="
+                () => {
+                    showConfirmPassword ? registerUser() : login()
+                }
+            "
             :value="isClicked ? buttonTextOnClick : buttonText"
         />
     </form>
@@ -96,8 +126,7 @@ export default {
 }
 
 .loginButton {
-    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-        Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: var(--source-sans);
     font-size: 1.2rem;
     font-weight: 500;
     color: var(--vt-c-black-soft);
@@ -121,8 +150,7 @@ export default {
 
 input[type='text'],
 input[type='password'] {
-    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-        Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: var(--source-sans);
     width: 100%;
     padding: 20px 25px;
     margin: 8px 0;

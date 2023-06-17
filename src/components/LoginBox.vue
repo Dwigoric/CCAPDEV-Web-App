@@ -9,6 +9,16 @@ defineProps({
     buttonTextOnClick: {
         type: String,
         required: true
+    },
+    noRegisterPrompt: {
+        type: Boolean,
+        required: false,
+        default: false
+    },
+    showConfirmPassword: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 })
 </script>
@@ -19,8 +29,12 @@ defineProps({
             Welcome to
             <span id="title">Compact Donuts</span>
         </div>
-        <LoginForm :button-text="buttonText" :button-text-on-click="buttonTextOnClick" />
-        <div id="signUpPrompt">
+        <LoginForm
+            :button-text="buttonText"
+            :button-text-on-click="buttonTextOnClick"
+            :show-confirm-password="showConfirmPassword"
+        />
+        <div id="signUpPrompt" v-if="!noRegisterPrompt">
             Don't have an account?
             <RouterLink to="/register">Sign up</RouterLink>
         </div>
@@ -28,6 +42,13 @@ defineProps({
 </template>
 
 <style scoped>
+#title {
+    background: linear-gradient(to right, var(--color-dark-pink), var(--color-bright-blue));
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text; /* For Chromium browsers */
+}
+
 #loginBox {
     display: flex;
     flex-flow: column nowrap;
@@ -36,7 +57,7 @@ defineProps({
     color: var(--vt-c-white-soft);
     background: var(--vt-c-black-mute);
     padding: 50px;
-    flex-basis: 30vw;
+    flex-basis: 100%;
 }
 
 #loginHeader {
