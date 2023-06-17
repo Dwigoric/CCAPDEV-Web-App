@@ -15,7 +15,7 @@ const logout = () => {
         <div class="navbar-item">
             <RouterLink to="/feed">Feed</RouterLink>
         </div>
-        <div class="navbar-item">
+        <div class="navbar-item" v-show="loggedInStore.username">
             <RouterLink to="/profile">Profile</RouterLink>
         </div>
         <div class="navbar-item">
