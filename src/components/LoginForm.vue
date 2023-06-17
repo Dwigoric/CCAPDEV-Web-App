@@ -34,6 +34,17 @@ export default {
             isClicked,
             login
         }
+    },
+
+    props: {
+        buttonText: {
+            type: String,
+            required: true
+        },
+        buttonTextOnClick: {
+            type: String,
+            required: true
+        }
     }
 }
 </script>
@@ -63,7 +74,7 @@ export default {
                 noButton: isClicked || !username.length || !password.length
             }"
             @click="login"
-            value="Login"
+            :value="isClicked ? buttonTextOnClick : buttonText"
         />
     </form>
 </template>

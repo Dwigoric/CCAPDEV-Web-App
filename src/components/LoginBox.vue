@@ -1,5 +1,16 @@
 <script setup>
 import LoginForm from './LoginForm.vue'
+
+defineProps({
+    buttonText: {
+        type: String,
+        required: true
+    },
+    buttonTextOnClick: {
+        type: String,
+        required: true
+    }
+})
 </script>
 
 <template>
@@ -8,7 +19,7 @@ import LoginForm from './LoginForm.vue'
             Welcome to
             <span id="title">Compact Donuts</span>
         </div>
-        <LoginForm />
+        <LoginForm :button-text="buttonText" :button-text-on-click="buttonTextOnClick" />
         <div id="signUpPrompt">
             Don't have an account?
             <RouterLink to="/register">Sign up</RouterLink>
