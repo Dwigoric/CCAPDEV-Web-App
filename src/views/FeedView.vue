@@ -6,28 +6,23 @@ document.title = 'Compact Donuts | Feed'
 
 <template>
     <NavigationBar />
-    <main>
-        <div id="feed">
-            <div class="feed-element" id="left-sidebar">This is the left sidebar.</div>
-            <div class="feed-element" id="posts">
-                <span>This is where the posts go.</span>
-                <span>There are no posts yet.</span>
-            </div>
-            <div class="feed-element" id="right-sidebar">This is the right sidebar.</div>
+    <div id="feed">
+        <div class="feed-element" id="left-sidebar">This is the left sidebar.</div>
+        <div class="feed-element" id="posts">
+            <span>This is where the posts go.</span>
+            <span>There are no posts yet.</span>
         </div>
-    </main>
+        <div class="feed-element" id="right-sidebar">This is the right sidebar.</div>
+    </div>
 </template>
 
 <style scoped>
-main {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: stretch;
-    flex-grow: 1;
-}
-
 #feed {
     display: flex;
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    align-self: baseline;
+    min-height: calc(100vh - var(--navbar-height));
 }
 
 .feed-element {
@@ -35,11 +30,19 @@ main {
     flex-grow: 1;
 }
 
+#left-sidebar,
+#right-sidebar {
+    background-color: var(--color-dark-blue);
+    position: sticky;
+    height: calc(100vh - var(--navbar-height));
+    align-self: flex-start;
+    top: var(--navbar-height);
+}
+
 #left-sidebar {
     flex-flow: row nowrap;
     justify-content: right;
     flex-grow: 2;
-    background-color: var(--color-dark-blue);
 }
 
 #posts {
@@ -53,6 +56,11 @@ main {
     flex-flow: row nowrap;
     justify-content: left;
     flex-grow: 3;
-    background-color: var(--color-bright-blue);
+}
+
+@media (min-width: 1024px) {
+    .feed-element {
+        padding: 40px;
+    }
 }
 </style>

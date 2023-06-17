@@ -23,6 +23,7 @@ if (loggedInStore.username) {
 @media (min-width: 1024px) {
     #homepage {
         min-height: 100vh;
+        flex-basis: 100vw;
         display: grid;
         grid-template-columns: 1fr 1fr;
     }

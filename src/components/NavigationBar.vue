@@ -53,7 +53,7 @@ header {
     flex-flow: row nowrap;
     flex-basis: 100vw;
     justify-content: center;
-    height: 3rem;
+    height: var(--navbar-height);
     align-items: center;
     position: sticky;
     top: 0;
