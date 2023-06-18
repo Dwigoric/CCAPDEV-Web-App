@@ -23,12 +23,10 @@ import LoginBox from './LoginBox.vue'
 <style scoped>
 header {
     padding: 2rem;
-}
-
-header {
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
+    height: 100vh;
 }
 
 h1 {
@@ -77,6 +75,7 @@ nav a {
     header {
         align-items: flex-end;
         padding: 50px;
+        height: auto;
     }
 
     main {

@@ -1,6 +1,7 @@
 <script setup>
 import router from '../router'
 import HomePage from '../components/HomePage.vue'
+import ThemeSwitch from '../components/ThemeSwitch.vue'
 
 document.title = 'Compact Donuts | Home'
 
@@ -14,6 +15,7 @@ if (loggedInStore.username) {
 </script>
 
 <template>
+    <ThemeSwitch />
     <div id="homepage">
         <HomePage />
     </div>

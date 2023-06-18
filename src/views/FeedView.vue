@@ -1,5 +1,6 @@
 <script setup>
 import NavigationBar from '../components/NavigationBar.vue'
+import ThemeSwitch from '../components/ThemeSwitch.vue'
 
 document.title = 'Compact Donuts | Feed'
 </script>
@@ -12,7 +13,10 @@ document.title = 'Compact Donuts | Feed'
             <span>This is where the posts go.</span>
             <span>There are no posts yet.</span>
         </div>
-        <div class="feed-element" id="right-sidebar">This is the right sidebar.</div>
+        <div class="feed-element" id="right-sidebar">
+            This is the right sidebar.
+            <ThemeSwitch />
+        </div>
     </div>
 </template>
 

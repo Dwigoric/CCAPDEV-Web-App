@@ -1,6 +1,7 @@
 <script setup>
 import NavigationBar from '../components/NavigationBar.vue'
 import LoginBox from '../components/LoginBox.vue'
+import ThemeSwitch from '../components/ThemeSwitch.vue'
 import { useLoggedInStore } from '../stores/loggedIn'
 import router from '../router'
 
@@ -13,6 +14,7 @@ if (loggedInStore.username) {
 </script>
 
 <template>
+    <ThemeSwitch />
     <NavigationBar />
     <main>
         <LoginBox

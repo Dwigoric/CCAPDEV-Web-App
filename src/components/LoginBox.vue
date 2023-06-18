@@ -56,7 +56,7 @@ defineProps({
     font-size: 0.8rem;
     color: var(--vt-c-white-soft);
     background: var(--vt-c-black-mute);
-    padding: 50px;
+    padding: 50px 50px 150px;
     flex-basis: 100%;
 }
 
@@ -80,6 +80,7 @@ defineProps({
         flex-basis: 30vw;
         font-size: 1.2rem;
         border-radius: 35px;
+        padding: 50px;
     }
 }
 </style>
