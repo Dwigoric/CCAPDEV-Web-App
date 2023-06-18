@@ -8,34 +8,46 @@ const logout = () => {
     loggedInStore.username = ''
     loggedInStore.image = ''
 }
+
+const dayMessage = () => {
+    const date = new Date()
+    const hour = date.getHours()
+    if (hour < 12) {
+        return 'Good morning'
+    } else if (hour < 18) {
+        return 'Good afternoon'
+    } else {
+        return 'Good evening'
+    }
+}
 </script>
 
 <template>
     <header>
         <div class="navbar-item">
-            <RouterLink to="/feed">Feed</RouterLink>
+            <RouterLink to="/feed" id="feed-link">Compact Donuts</RouterLink>
         </div>
-        <div class="navbar-item" v-show="loggedInStore.username">
-            <RouterLink to="/profile">Profile</RouterLink>
-        </div>
+        <div class="navbar-item" id="search-bar">There is a search bar here.</div>
         <div class="navbar-item">
             <RouterLink v-if="!loggedInStore.username" to="/">Login</RouterLink>
             <RouterLink v-else to="/" @click="logout">Logout</RouterLink>
         </div>
-        <div class="navbar-item">
-            <span v-if="loggedInStore.username">
-                Hello, <span id="username">{{ loggedInStore.username }}</span
+        <div class="navbar-item" id="user-panel">
+            <div v-if="loggedInStore.username">
+                {{ dayMessage() }}, <span id="username">{{ loggedInStore.username }}</span
                 >!
-            </span>
+            </div>
             <span v-else> Not logged in </span>
             <div>
-                <img
-                    class="user-image"
-                    id="loggedin-user-image"
-                    v-show="loggedInStore.image"
-                    :src="loggedInStore.image"
-                    alt="User"
-                />
+                <RouterLink to="/profile" id="profile-picture-link">
+                    <img
+                        class="user-image"
+                        id="loggedin-user-image"
+                        v-show="loggedInStore.image"
+                        :src="loggedInStore.image"
+                        alt="User"
+                    />
+                </RouterLink>
             </div>
         </div>
     </header>
@@ -83,14 +95,32 @@ header {
     border-bottom: var(--color-bright-blue) solid 2px;
 }
 
+#feed-link {
+    background: linear-gradient(to left, var(--color-dark-pink), var(--color-bright-blue));
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text; /* For Chromium browsers */
+}
+
+#search-bar {
+    flex-grow: 10;
+    display: flex;
+    justify-content: center;
+}
+
 #username {
     color: var(--color-dark-pink);
+}
+
+#profile-picture-link:hover {
+    background-color: transparent;
 }
 
 header a.router-link-exact-active {
     color: var(--color-text);
 }
 
+#feed-link,
 header a.router-link-exact-active:hover {
     background-color: transparent;
 }
@@ -105,5 +135,9 @@ header a.router-link-exact-active:hover {
 
 .navbar-item:first-of-type {
     border: 0;
+}
+
+#user-panel {
+    flex-grow: 0;
 }
 </style>
