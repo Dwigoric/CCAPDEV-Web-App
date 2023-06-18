@@ -179,7 +179,7 @@ export default {
             placeholder="Confirm Password"
             v-model.lazy="confirmPassword"
         />
-        <span v-show="invalidCredentials" id="invalidCredentials">
+        <span v-if="invalidCredentials" id="invalidCredentials">
             {{ invalidCredentialsMessage }}
         </span>
         <input

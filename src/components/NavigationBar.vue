@@ -38,12 +38,11 @@ const dayMessage = () => {
                 >!
             </div>
             <span v-else> Not logged in </span>
-            <div>
+            <div v-if="loggedInStore.image">
                 <RouterLink to="/profile" id="profile-picture-link">
                     <img
                         class="user-image"
                         id="loggedin-user-image"
-                        v-show="loggedInStore.image"
                         :src="loggedInStore.image"
                         alt="User"
                     />
