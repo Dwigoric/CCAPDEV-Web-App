@@ -17,7 +17,7 @@ document.title = 'Compact Donuts | Feed'
                     <span class="originalPoster"> @Cabbage_Man </span>
                 </div>
                 <div class="postContent" id="adachiPost"></div>
-            </div> 
+            </div>
         </div>
         <div class="feed-element" id="right-sidebar">
             This is the right sidebar.
@@ -56,7 +56,8 @@ document.title = 'Compact Donuts | Feed'
 }
 
 #posts {
-    flex-flow: column nowrap;
+    flex-flow: column-reverse nowrap;
+    justify-content: flex-end;
     align-items: center;
     flex-grow: 6;
     background-color: var(--color-background-mute);
@@ -69,17 +70,17 @@ document.title = 'Compact Donuts | Feed'
 }
 /* Flex Box for the class*/
 .flexboxColumn {
-     display: flex;
-     flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .flexboxRow {
-     display: flex;
-     flex-direction: row;
-     margin-bottom: 1em;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1em;
 }
 
-/* CCS FOR THE POST */
+/* CSS FOR THE POST */
 .postContent {
     background-color: brown;
     background-size: 100%;
@@ -87,11 +88,11 @@ document.title = 'Compact Donuts | Feed'
 }
 /* ID for the anime man post image */
 #adachiPost {
-    background-image: url("../assets/adachi_true.jpg");
+    background-image: url('../assets/adachi_true.jpg');
     height: 383px;
     width: 414px;
 }
-/* Profile CCS */ 
+/* Profile CSS */
 .profilePic {
     margin-left: 1em;
     margin-right: 1em;
@@ -102,7 +103,7 @@ document.title = 'Compact Donuts | Feed'
 }
 
 #adachiPfp {
-    background-image: url("../assets/adachi_pfp.png");
+    background-image: url('../assets/adachi_pfp.png');
 }
 
 .originalPoster {
@@ -111,7 +112,6 @@ document.title = 'Compact Donuts | Feed'
 }
 /*Post Layout*/
 #PostLayout {
-
     border: 2px solid;
     border-radius: 25px;
     padding: 1em 1em 1em 1em;
