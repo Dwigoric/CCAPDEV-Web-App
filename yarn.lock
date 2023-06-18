@@ -715,6 +715,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/web-bluetooth@npm:^0.0.17":
+  version: 0.0.17
+  resolution: "@types/web-bluetooth@npm:0.0.17"
+  checksum: 8c72ba8cd1d7abd3fcab608e1d8eb828420df23f67d783f1282d4a747f995e91a0c861f92fa195e9423edb22bb34854452028f8a68148a593b35915635a4f4db
+  languageName: node
+  linkType: hard
+
 "@vitejs/plugin-vue-jsx@npm:^3.0.1":
   version: 3.0.1
   resolution: "@vitejs/plugin-vue-jsx@npm:3.0.1"
@@ -966,6 +973,34 @@ __metadata:
     "@vue/server-renderer":
       optional: true
   checksum: 870f9bfb0d5e5a00d0391d3a4fda13a3f556d2986ca2b4ed7702cabfd64d0d643293c33dce12e4fddfb7ddd215d4a5a4bf417d0105791d483c652b008d7e9efb
+  languageName: node
+  linkType: hard
+
+"@vueuse/core@npm:^10.2.0":
+  version: 10.2.0
+  resolution: "@vueuse/core@npm:10.2.0"
+  dependencies:
+    "@types/web-bluetooth": ^0.0.17
+    "@vueuse/metadata": 10.2.0
+    "@vueuse/shared": 10.2.0
+    vue-demi: ">=0.14.5"
+  checksum: 022b07ca097ca32eb8995ff17a8855d1ac641194aa89956a2f3bf62b7861caa72df39750e885e9b67e4a55ee9cb98ca54554450ee62b56445c6d587dc065c88f
+  languageName: node
+  linkType: hard
+
+"@vueuse/metadata@npm:10.2.0":
+  version: 10.2.0
+  resolution: "@vueuse/metadata@npm:10.2.0"
+  checksum: 01d98a3f6918442a919c6c875a0e467429e84db997eb4c74b8da5c524072969684e5443b938cace6a51f632ed328834ac1685fa4d8fc67d506f5373ef4829275
+  languageName: node
+  linkType: hard
+
+"@vueuse/shared@npm:10.2.0":
+  version: 10.2.0
+  resolution: "@vueuse/shared@npm:10.2.0"
+  dependencies:
+    vue-demi: ">=0.14.5"
+  checksum: b96884b82f315622639cbb186f6989d08527e2aa43236e91d6d454afb9a599b23e32af326351c8c9db9c7d7cc4a0797d44e4644d31de9615bba4f8371838e0e1
   languageName: node
   linkType: hard
 
@@ -1237,6 +1272,7 @@ __metadata:
     "@vitejs/plugin-vue-jsx": ^3.0.1
     "@vue/eslint-config-prettier": ^7.1.0
     "@vue/test-utils": ^2.3.2
+    "@vueuse/core": ^10.2.0
     eslint: ^8.39.0
     eslint-plugin-vue: ^9.11.0
     jsdom: ^22.0.0
