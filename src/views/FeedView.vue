@@ -32,7 +32,7 @@ document.title = 'Compact Donuts | Feed'
 
 #left-sidebar,
 #right-sidebar {
-    background-color: var(--color-dark-blue);
+    background-color: var(--color-background);
     position: sticky;
     height: calc(100vh - var(--navbar-height));
     align-self: flex-start;
@@ -49,7 +49,7 @@ document.title = 'Compact Donuts | Feed'
     flex-flow: column nowrap;
     align-items: center;
     flex-grow: 6;
-    background-color: var(--color-pale-blue);
+    background-color: var(--color-background-mute);
 }
 
 #right-sidebar {

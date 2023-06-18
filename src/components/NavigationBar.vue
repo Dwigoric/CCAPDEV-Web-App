@@ -78,7 +78,7 @@ header {
     align-items: center;
     position: sticky;
     top: 0;
-    background-color: var(--vt-c-black-soft);
+    background-color: var(--color-background-soft);
     z-index: 1;
     border-bottom: var(--color-bright-blue) solid 2px;
 }
