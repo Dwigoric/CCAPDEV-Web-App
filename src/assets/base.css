@@ -26,11 +26,19 @@
 
 /* custom color palette */
 :root {
+    /* Palette 1 */
     --color-dark-blue: #111826;
     --color-pale-blue: #2a4359;
     --color-bright-blue: #146a8c;
     --color-bright-pink: #d99e91;
     --color-dark-pink: #d96f66;
+
+    /* Palette 2 */
+    --color-dark-red: #591C21;
+    --color-dark-green: #142426;
+    --color-pale-green: #034040;
+    --color-bright-red: #D92929;
+    --color-pale-red: #8C1F1F;
 }
 
 /* semantic color variables for this project */

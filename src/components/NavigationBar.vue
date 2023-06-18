@@ -6,7 +6,7 @@ const loggedInStore = useLoggedInStore()
 const logout = () => {
     // Unset username and password in the loggedInStore
     loggedInStore.username = ''
-    loggedInStore.password = ''
+    loggedInStore.image = ''
 }
 </script>
 
@@ -28,6 +28,15 @@ const logout = () => {
                 >!
             </span>
             <span v-else> Not logged in </span>
+            <div>
+                <img
+                    class="user-image"
+                    id="loggedin-user-image"
+                    v-show="loggedInStore.image"
+                    :src="loggedInStore.image"
+                    alt="User"
+                />
+            </div>
         </div>
     </header>
 </template>
@@ -38,6 +47,18 @@ const logout = () => {
     flex-grow: 1;
     align-items: center;
     text-align: center;
+}
+
+.user-image {
+    border-radius: 50%;
+    border: 2px solid var(--color-border);
+    margin: 0 1rem;
+}
+
+#loggedin-user-image {
+    height: var(--navbar-height);
+    border-radius: 50%;
+    border: none;
 }
 
 a {
@@ -59,6 +80,7 @@ header {
     top: 0;
     background-color: var(--vt-c-black-soft);
     z-index: 1;
+    border-bottom: var(--color-bright-blue) solid 2px;
 }
 
 #username {

@@ -3,28 +3,116 @@ import { ref } from 'vue'
 import router from '../router'
 
 import { useLoggedInStore } from '../stores/loggedIn'
+import { useTempRegisterStore } from '../stores/tempRegister'
+
+const USER_API = 'https://dummyjson.com/users/'
 
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const isClicked = ref()
+const invalidCredentials = ref(false)
+const invalidCredentialsMessage = ref('Invalid Credentials')
 
-const login = () => {
-    // TODO: Implement login functionality
+const authenticate = async (image) => {
+    const loggedInStore = useLoggedInStore()
+
+    // Store user in the loggedInStore
+    loggedInStore.username = username.value
+    loggedInStore.image = image
+
+    invalidCredentials.value = false
+
+    // Redirect to the feed page using the router
+    await router.replace('feed')
+}
+
+const login = async () => {
     // Set isClicked to true to disable the button
     isClicked.value = true
 
-    const loggedInStore = useLoggedInStore()
+    // Check if user is in temporary register store
+    const tempRegisterStore = useTempRegisterStore()
+    const tempUser = tempRegisterStore.tempUsers.find((user) => user.username === username.value)
+    if (tempUser) {
+        if (tempUser.password === password.value) {
+            await authenticate(tempUser.image)
+            return
+        } else {
+            isClicked.value = false
+            invalidCredentials.value = true
+            invalidCredentialsMessage.value = 'Invalid credentials'
+            return
+        }
+    }
 
-    // Set the user in the loggedInStore
-    loggedInStore.username = username.value
+    // Create URL Search Params
+    const params = new URLSearchParams()
+    params.set('key', 'username')
+    params.set('value', username.value)
 
-    // Redirect to the feed page using the router
-    router.push({ path: '/feed' })
+    // Fetch the user if they exist
+    const { users } = await fetch(`${USER_API}/filter?${params}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+        .then((res) => res.json())
+        .catch((err) => console.error(err))
+
+    // TODO: Change this to a more secure method once we have a backend
+    // Check if the user exists
+    if (!users.length || users[0].password !== password.value) {
+        isClicked.value = false
+        invalidCredentials.value = true
+        invalidCredentialsMessage.value = 'Invalid credentials'
+        return
+    }
+
+    await authenticate(users[0].image)
 }
 
-const registerUser = () => {
-    // TODO: Implement register functionality
+const registerUser = async () => {
+    // Set isClicked to true to disable the button
+    isClicked.value = true
+
+    // Check if the passwords match
+    if (password.value !== confirmPassword.value) {
+        isClicked.value = false
+        invalidCredentials.value = true
+        invalidCredentialsMessage.value = 'Passwords do not match'
+        return
+    }
+
+    // Check if the username is taken
+    const params = new URLSearchParams()
+    params.set('key', 'username')
+    params.set('value', username.value)
+
+    const { users } = await fetch(`${USER_API}/filter?${params}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+        .then((res) => res.json())
+        .catch((err) => console.error(err))
+
+    if (users.length) {
+        isClicked.value = false
+        invalidCredentials.value = true
+        invalidCredentialsMessage.value = 'Username is already taken'
+        return
+    }
+
+    // TODO: Change this to a more secure method once we have a backend
+    // Add user to the database
+
+    const tempRegisterStore = useTempRegisterStore()
+    tempRegisterStore.tempUsers.push({
+        username: username.value,
+        password: password.value,
+        image: `https://robohash.org/${username.value}.png`
+    })
+
+    await authenticate(`https://robohash.org/${username.value}.png`)
 }
 
 export default {
@@ -40,7 +128,9 @@ export default {
             confirmPassword,
             isClicked,
             login,
-            registerUser
+            registerUser,
+            invalidCredentials,
+            invalidCredentialsMessage
         }
     },
 
@@ -89,6 +179,9 @@ export default {
             placeholder="Confirm Password"
             v-model.lazy="confirmPassword"
         />
+        <span v-show="invalidCredentials" id="invalidCredentials">
+            {{ invalidCredentialsMessage }}
+        </span>
         <input
             type="button"
             :class="{
@@ -158,5 +251,11 @@ input[type='password'] {
     border: 1px solid var(--vt-c-black-soft);
     border-radius: 30px;
     background-color: var(--vt-c-white-soft);
+}
+
+#invalidCredentials {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--color-pale-red);
 }
 </style>

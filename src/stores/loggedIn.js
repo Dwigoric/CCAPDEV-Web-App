@@ -3,10 +3,10 @@ import { defineStore } from 'pinia'
 
 export const useLoggedInStore = defineStore('loggedIn', () => {
     const username = ref('')
-    const password = ref('')
+    const image = ref('')
 
     return {
         username,
-        password
+        image
     }
 })
