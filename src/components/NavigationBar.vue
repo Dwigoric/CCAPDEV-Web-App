@@ -31,7 +31,7 @@ const dayMessage = () => {
         <div class="navbar-item" id="search-bar">There is a search bar here.</div>
         <div class="navbar-item" v-if="loggedInStore.username" id="user-panel">
             <span>
-                <span v-if="useMediaQuery('(min-width: 1024px)').value"> {{ dayMessage() }}, </span>
+                <span v-if="useMediaQuery('(min-width: 1024px)').value">{{ dayMessage() }}, </span>
                 <span id="username">{{ loggedInStore.username }}</span>
                 <span v-if="useMediaQuery('(min-width: 1024px)').value">!</span>
             </span>
