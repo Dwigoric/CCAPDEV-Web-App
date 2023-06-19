@@ -1,9 +1,40 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
-import { useMediaQuery } from '@vueuse/core'
+import FeedPost from '../components/FeedPost.vue'
 
 document.title = 'Compact Donuts | Feed'
+
+const API_URL = 'https://dummyjson.com'
+
+let posts = ref([])
+
+const getPosts = async () => {
+    const params = new URLSearchParams()
+    params.set('limit', '0')
+    params.set('select', 'id,username,image')
+
+    const { users } = await fetch(`${API_URL}/users?${params}`)
+        .then((res) => res.json())
+        .catch(console.error)
+
+    posts.value = await fetch(`${API_URL}/posts`)
+        .then((res) => res.json())
+        .then((res) =>
+            res['posts'].map((post) => {
+                const user = users.find((user) => user.id === post['userId'])
+                return {
+                    ...post,
+                    user
+                }
+            })
+        )
+        .catch(console.error)
+}
+
+onMounted(getPosts)
 </script>
 
 <template>
@@ -17,6 +48,7 @@ document.title = 'Compact Donuts | Feed'
             This is the left sidebar.
         </div>
         <div class="feed-element" id="posts">
+            <FeedPost v-for="post in posts" :key="post.id" :body="post.body" :user="post.user" />
             <div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
                     <span class="profilePic" id="adachiPfp"></span>
@@ -64,21 +96,22 @@ document.title = 'Compact Donuts | Feed'
 #left-sidebar {
     flex-flow: row nowrap;
     justify-content: right;
-    flex-grow: 2;
+    flex: 2 0;
 }
 
 #posts {
     flex-flow: column-reverse nowrap;
-    justify-content: flex-end;
+    flex: 6;
+    justify-content: space-around;
     align-items: center;
-    flex-grow: 6;
     background-color: var(--color-background-mute);
+    gap: 2rem;
 }
 
 #right-sidebar {
     flex-flow: row nowrap;
     justify-content: left;
-    flex-grow: 3;
+    flex: 3 0;
 }
 /* Flex Box for the class*/
 .flexboxColumn {
