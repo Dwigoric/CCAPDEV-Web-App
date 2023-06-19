@@ -76,6 +76,7 @@ onMounted(getPosts)
     flex-grow: 1;
     align-self: baseline;
     min-height: calc(100vh - var(--navbar-height));
+    margin-top: var(--navbar-height);
 }
 
 .feed-element {

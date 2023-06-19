@@ -83,15 +83,16 @@ a {
 header {
     display: flex;
     flex-flow: row nowrap;
-    flex-basis: 100vw;
+    width: 100vw;
     justify-content: center;
     height: var(--navbar-height);
     align-items: center;
-    position: sticky;
+    position: fixed;
     top: 0;
     background-color: var(--color-background-soft);
     z-index: 1;
     border-bottom: var(--color-bright-blue) solid 2px;
+    padding-right: 1rem;
 }
 
 #feed-link {

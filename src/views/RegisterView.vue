@@ -34,5 +34,7 @@ main {
     justify-content: center;
     flex-grow: 1;
     align-self: baseline;
+    margin-top: var(--navbar-height);
+    min-height: calc(100vh - var(--navbar-height));
 }
 </style>
