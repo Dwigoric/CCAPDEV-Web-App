@@ -1,5 +1,6 @@
 <script setup>
 import { useLoggedInStore } from '../stores/loggedIn'
+import { useMediaQuery } from '@vueuse/core'
 
 const loggedInStore = useLoggedInStore()
 
@@ -24,20 +25,15 @@ const dayMessage = () => {
 
 <template>
     <header>
-        <div class="navbar-item">
+        <div class="navbar-item" v-if="useMediaQuery('(min-width: 1024px)').value">
             <RouterLink to="/feed" id="feed-link">Compact Donuts</RouterLink>
         </div>
         <div class="navbar-item" id="search-bar">There is a search bar here.</div>
-        <div class="navbar-item">
-            <RouterLink v-if="!loggedInStore.username" to="/">Login</RouterLink>
-            <RouterLink v-else to="/" @click="logout">Logout</RouterLink>
-        </div>
-        <div class="navbar-item" id="user-panel">
-            <div v-if="loggedInStore.username">
+        <div class="navbar-item" v-if="loggedInStore.username" id="user-panel">
+            <span>
                 {{ dayMessage() }}, <span id="username">{{ loggedInStore.username }}</span
                 >!
-            </div>
-            <span v-else> Not logged in </span>
+            </span>
             <div v-if="loggedInStore.image">
                 <RouterLink to="/profile" id="profile-picture-link">
                     <img
@@ -48,6 +44,10 @@ const dayMessage = () => {
                     />
                 </RouterLink>
             </div>
+            <RouterLink to="/" @click="logout">Logout</RouterLink>
+        </div>
+        <div class="navbar-item" v-else>
+            <RouterLink to="/">Login</RouterLink>
         </div>
     </header>
 </template>
@@ -76,7 +76,6 @@ a {
     color: var(--color-dark-pink);
     text-decoration: none;
     font-weight: bold;
-    font-size: large;
 }
 
 /* Put nav as a bar on top of the page */
