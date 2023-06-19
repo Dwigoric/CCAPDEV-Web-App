@@ -1,6 +1,5 @@
 <script setup>
 import { useIsDarkStore } from '../stores/is-dark'
-import { useMediaQuery } from '@vueuse/core'
 
 const isDarkStore = useIsDarkStore()
 
@@ -10,10 +9,6 @@ const toggleTheme = () => {
 
     document.documentElement.setAttribute('data-theme', !isDark ? 'dark' : 'light')
 }
-
-const prefersDark = useMediaQuery('(prefers-color-scheme: dark)').value
-document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
-isDarkStore.isDark = prefersDark
 </script>
 
 <template>
