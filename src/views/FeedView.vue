@@ -1,6 +1,7 @@
 <script setup>
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
+import { useMediaQuery } from '@vueuse/core'
 
 document.title = 'Compact Donuts | Feed'
 </script>
@@ -8,18 +9,28 @@ document.title = 'Compact Donuts | Feed'
 <template>
     <NavigationBar />
     <div id="feed">
-        <div class="feed-element" id="left-sidebar">This is the left sidebar.</div>
+        <div
+            class="feed-element"
+            id="left-sidebar"
+            v-if="useMediaQuery('(min-width: 1024px)').value"
+        >
+            This is the left sidebar.
+        </div>
         <div class="feed-element" id="posts">
             <div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
                     <span class="profilePic" id="adachiPfp"></span>
-                    <span class="originalPoster"> Adachi &nbsp </span>
+                    <span class="originalPoster"> Adachi &nbsp; </span>
                     <span class="originalPoster"> @Cabbage_Man </span>
                 </div>
                 <div class="postContent" id="adachiPost"></div>
             </div>
         </div>
-        <div class="feed-element" id="right-sidebar">
+        <div
+            class="feed-element"
+            id="right-sidebar"
+            v-if="useMediaQuery('(min-width: 1024px)').value"
+        >
             This is the right sidebar.
             <ThemeSwitch />
         </div>
@@ -38,6 +49,7 @@ document.title = 'Compact Donuts | Feed'
 .feed-element {
     display: flex;
     flex-grow: 1;
+    padding: 40px;
 }
 
 #left-sidebar,
@@ -115,11 +127,5 @@ document.title = 'Compact Donuts | Feed'
     border: 2px solid;
     border-radius: 25px;
     padding: 1em 1em 1em 1em;
-}
-
-@media (min-width: 1024px) {
-    .feed-element {
-        padding: 40px;
-    }
 }
 </style>
