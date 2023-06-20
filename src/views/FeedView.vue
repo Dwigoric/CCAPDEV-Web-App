@@ -9,7 +9,7 @@ document.title = 'Compact Donuts | Feed'
 
 const API_URL = 'https://dummyjson.com'
 
-let posts = ref([])
+const posts = ref([])
 
 const getPosts = async () => {
     const params = new URLSearchParams()
