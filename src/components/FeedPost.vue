@@ -4,6 +4,10 @@ defineProps({
         type: Object,
         required: true
     },
+    title: {
+        type: String,
+        required: true
+    },
     body: {
         type: String,
         required: true
@@ -21,13 +25,16 @@ defineProps({
             <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
             <span class="user-name">{{ user['username'] }}</span>
         </div>
-        <span class="body">{{ body }}</span>
-        <img
-            class="post-image"
-            v-if="image"
-            :src="image"
-            :alt="`An image in ${user['username']}'s post`"
-        />
+        <div class="content">
+            <p class="title">{{ title }}</p>
+            <p class="body">{{ body }}</p>
+            <img
+                class="post-image"
+                v-if="image"
+                :src="image"
+                :alt="`An image in ${user['username']}'s post`"
+            />
+        </div>
     </div>
 </template>
 
@@ -82,6 +89,12 @@ defineProps({
     padding: 0.2rem;
     border-radius: 5px;
     background-color: var(--color-bright-blue);
+}
+
+.title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .body {

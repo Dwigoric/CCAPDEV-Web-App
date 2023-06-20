@@ -73,7 +73,13 @@ const getPosts = async (waypointState) => {
                 <LoaderHeart />
             </Waypoint>
             <span v-else> You're all caught up! </span>
-            <FeedPost v-for="post in posts" :key="post.id" :body="post.body" :user="post.user" />
+            <FeedPost
+                v-for="post in posts"
+                :key="post.id"
+                :title="post.title"
+                :body="post.body"
+                :user="post.user"
+            />
             <div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
                     <span class="profilePic" id="adachiPfp"></span>
@@ -129,7 +135,7 @@ const getPosts = async (waypointState) => {
 #posts {
     flex-flow: column-reverse nowrap;
     flex: 6;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     background-color: var(--color-background-mute);
     gap: 2rem;
