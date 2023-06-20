@@ -1282,6 +1282,7 @@ __metadata:
     vitest: ^0.31.0
     vue: ^3.3.2
     vue-router: ^4.2.0
+    vue-waypoint: ^4.2.5
   languageName: unknown
   linkType: soft
 
@@ -3696,6 +3697,15 @@ __metadata:
   peerDependencies:
     vue: ^3.2.0
   checksum: 4181b3776a57e51060490b7bcd82f48891d5023587e5ffb54cf47c1f6b03dd2d20f5392b99c9e659821fb7b3fee84da2dc532022dae92d8545e67fe96a168d64
+  languageName: node
+  linkType: hard
+
+"vue-waypoint@npm:^4.2.5":
+  version: 4.2.5
+  resolution: "vue-waypoint@npm:4.2.5"
+  peerDependencies:
+    vue: ^3.0.0
+  checksum: 293beb25659425cc4c72e6584e0c0e1751cf772d736681db4f0e7136f1d0653df9ac9606c583dacac7df843871757b97bcf024f3f9fb16af4f5383bf32615f41
   languageName: node
   linkType: hard
 

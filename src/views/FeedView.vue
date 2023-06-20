@@ -1,40 +1,61 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import FeedPost from '../components/FeedPost.vue'
+import LoaderHeart from '../components/LoaderHeart.vue'
+import { Waypoint } from 'vue-waypoint'
 
 document.title = 'Compact Donuts | Feed'
 
 const API_URL = 'https://dummyjson.com'
 
+const loadedAllPosts = ref(false)
+let skip = 130
+const limit = 20
+
 const posts = ref([])
 
-const getPosts = async () => {
-    const params = new URLSearchParams()
-    params.set('limit', '0')
-    params.set('select', 'id,username,image')
+const getPosts = async (waypointState) => {
+    if (loadedAllPosts.value || waypointState.going !== 'IN') {
+        return
+    }
 
-    const { users } = await fetch(`${API_URL}/users?${params}`)
+    const userParams = new URLSearchParams()
+    userParams.set('limit', '0')
+    userParams.set('select', 'id,username,image')
+
+    const { users } = await fetch(`${API_URL}/users?${userParams}`)
         .then((res) => res.json())
         .catch(console.error)
 
-    posts.value = await fetch(`${API_URL}/posts`)
-        .then((res) => res.json())
-        .then((res) =>
-            res['posts'].map((post) => {
-                const user = users.find((user) => user.id === post['userId'])
-                return {
-                    ...post,
-                    user
-                }
-            })
-        )
-        .catch(console.error)
+    const postParams = new URLSearchParams()
+    postParams.set('skip', String(skip))
+    postParams.set('limit', String(limit))
+
+    skip -= limit
+
+    posts.value = [
+        ...(await fetch(`${API_URL}/posts?${postParams}`)
+            .then((res) => res.json())
+            .then((res) =>
+                res['posts'].map((post) => {
+                    const user = users.find((user) => user.id === post['userId'])
+                    return {
+                        ...post,
+                        user
+                    }
+                })
+            )
+            .catch(console.error)),
+        ...posts.value
+    ]
+
+    if (posts.value.length >= 150) {
+        loadedAllPosts.value = true
+    }
 }
-
-onMounted(getPosts)
 </script>
 
 <template>
@@ -48,6 +69,10 @@ onMounted(getPosts)
             This is the left sidebar.
         </div>
         <div class="feed-element" id="posts">
+            <Waypoint @change="getPosts" v-if="!loadedAllPosts">
+                <LoaderHeart />
+            </Waypoint>
+            <span v-else> You're all caught up! </span>
             <FeedPost v-for="post in posts" :key="post.id" :body="post.body" :user="post.user" />
             <div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
@@ -92,6 +117,7 @@ onMounted(getPosts)
     height: calc(100vh - var(--navbar-height));
     align-self: flex-start;
     top: var(--navbar-height);
+    bottom: 0;
 }
 
 #left-sidebar {
