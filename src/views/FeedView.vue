@@ -1,21 +1,35 @@
 <script setup>
+// Import packages
 import { ref } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
+import { Waypoint } from 'vue-waypoint'
+
+// Import components
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import FeedPost from '../components/FeedPost.vue'
+import NewPost from '../components/NewPost.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
-import { Waypoint } from 'vue-waypoint'
 
+// Import stores
+import { useTempPostsStore } from '../stores/tempPosts'
+import { useLoggedInStore } from '../stores/loggedIn'
+
+// Set document title
 document.title = 'Compact Donuts | Feed'
 
+// Define variables
 const API_URL = 'https://dummyjson.com'
+
+const { tempPosts } = useTempPostsStore()
+const loggedIn = useLoggedInStore()
+
+const posts = ref([])
+posts.value = tempPosts
 
 const loadedAllPosts = ref(false)
 let skip = 130
 const limit = 20
-
-const posts = ref([])
 
 const getPosts = async (waypointState) => {
     if (loadedAllPosts.value || waypointState.going !== 'IN') {
@@ -56,6 +70,19 @@ const getPosts = async (waypointState) => {
         loadedAllPosts.value = true
     }
 }
+
+const addPost = (post) => {
+    posts.value = [
+        ...posts.value,
+        {
+            ...post,
+            user: {
+                username: loggedIn.username,
+                image: loggedIn.image
+            }
+        }
+    ]
+}
 </script>
 
 <template>
@@ -89,6 +116,7 @@ const getPosts = async (waypointState) => {
                 </div>
                 <div class="postContent" id="adachiPost"></div>
             </div>
+            <NewPost v-if="loggedIn.username" :add-post="addPost" />
         </div>
         <div
             class="feed-element"
@@ -158,7 +186,6 @@ const getPosts = async (waypointState) => {
     display: flex;
     flex-direction: row;
     margin-bottom: 1em;
-    
 }
 
 /* CSS FOR THE POST */
