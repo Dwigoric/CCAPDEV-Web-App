@@ -14,6 +14,8 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 // Import stores
 import { useTempPostsStore } from '../stores/tempPosts'
 import { useLoggedInStore } from '../stores/loggedIn'
+import { useSpecificPostStore } from '../stores/post'
+const specicPostStore = useSpecificPostStore()
 
 // Set document title
 document.title = 'Compact Donuts | Feed'
@@ -107,8 +109,9 @@ const addPost = (post) => {
                 :body="post.body"
                 :user="post.user"
                 image="https://placekitten.com/500"
+                @click="specicPostStore.setCurrentPost"
             />
-            <div class="flexboxColumn" id="PostLayout">
+            <!-- <div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
                     <span class="profilePic" id="adachiPfp"></span>
                     <span class="originalPoster"> Adachi </span>

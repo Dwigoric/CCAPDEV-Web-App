@@ -1,4 +1,5 @@
 <script setup>
+
 defineProps({
     user: {
         type: Object,
@@ -20,7 +21,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="post">
+    <RouterLink to="/post" class="post">
         <div class="flexboxRow">
             <div class="flexboxColumn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
@@ -44,7 +45,7 @@ defineProps({
                 :alt="`An image in ${user['username']}'s post`"
             />
         </div>
-    </div>
+    </RouterLink>
 </template>
 
 <style scoped>
@@ -76,21 +77,18 @@ defineProps({
 }
 
 .user {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    justify-content: center;
     width: 100px;
     height: 100%;
     margin-right: 20px;
 }
 
 .user-image {
+    margin-top: 10px;
     width: 100px;
     height: 100px;
     border-radius: 50%;
     border: var(--color-border) solid 3px;
-    background-color: var(--color-dark-green);
+    background-color: var(--color-white);
 }
 
 .user-name {
@@ -101,7 +99,8 @@ defineProps({
 }
 
 .title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+
     font-weight: bold;
     margin-bottom: 10px;
 }
