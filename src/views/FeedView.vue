@@ -84,7 +84,7 @@ const getPosts = async (waypointState) => {
             <div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
                     <span class="profilePic" id="adachiPfp"></span>
-                    <span class="originalPoster"> Adachi &nbsp; </span>
+                    <span class="originalPoster"> Adachi </span>
                     <span class="originalPoster"> @Cabbage_Man </span>
                 </div>
                 <div class="postContent" id="adachiPost"></div>
@@ -151,12 +151,14 @@ const getPosts = async (waypointState) => {
 .flexboxColumn {
     display: flex;
     flex-direction: column;
+    background-color: var(--color-pale-blue);
 }
 
 .flexboxRow {
     display: flex;
     flex-direction: row;
     margin-bottom: 1em;
+    
 }
 
 /* CSS FOR THE POST */
@@ -164,6 +166,7 @@ const getPosts = async (waypointState) => {
     background-color: brown;
     background-size: 100%;
     background-repeat: no-repeat;
+    border-radius: 2%;
 }
 /* ID for the anime man post image */
 #adachiPost {
@@ -178,7 +181,9 @@ const getPosts = async (waypointState) => {
     width: 50px;
     height: 50px;
     background-size: 100%;
-    background-color: blue;
+    border: var(--color-border) solid 3px;
+    background-color: var(--color-dark-green);
+    border-radius: 50%;
 }
 
 #adachiPfp {
@@ -188,6 +193,7 @@ const getPosts = async (waypointState) => {
 .originalPoster {
     margin-top: auto;
     margin-bottom: auto;
+    margin-right: 1em;
 }
 /*Post Layout*/
 #PostLayout {
