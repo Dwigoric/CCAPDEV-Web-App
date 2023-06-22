@@ -94,12 +94,11 @@ defineProps({
 }
 
 .user-image {
-    margin-top: 10px;
     width: 100px;
     height: 100px;
     border-radius: 50%;
     border: var(--color-border) solid 3px;
-    background-color: var(--color-white);
+    background-color: var(--color-dark-green);
 }
 
 .user-name {
@@ -110,8 +109,7 @@ defineProps({
 }
 
 .title {
-    font-size: 1.5rem;
-
+    font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 10px;
 }
