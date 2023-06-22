@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import { Waypoint } from 'vue-waypoint'
 
@@ -26,8 +26,8 @@ const API_URL = 'https://dummyjson.com'
 const { tempPosts } = useTempPostsStore()
 const loggedIn = useLoggedInStore()
 
-const posts = ref([])
-posts.value = tempPosts
+const posts = reactive([])
+posts.push(...tempPosts)
 
 const loadedAllPosts = ref(false)
 let skip = 130
@@ -52,7 +52,7 @@ const getPosts = async (waypointState) => {
 
     skip -= limit
 
-    posts.value = [
+    posts.unshift(
         ...(await fetch(`${API_URL}/posts?${postParams}`)
             .then((res) => res.json())
             .then((res) =>
@@ -64,26 +64,22 @@ const getPosts = async (waypointState) => {
                     }
                 })
             )
-            .catch(console.error)),
-        ...posts.value
-    ]
+            .catch(console.error))
+    )
 
-    if (posts.value.length >= 150) {
+    if (posts.length >= 150) {
         loadedAllPosts.value = true
     }
 }
 
 const addPost = (post) => {
-    posts.value = [
-        ...posts.value,
-        {
-            ...post,
-            user: {
-                username: loggedIn.username,
-                image: loggedIn.image
-            }
+    posts.push({
+        ...post,
+        user: {
+            username: loggedIn.username,
+            image: loggedIn.image
         }
-    ]
+    })
 }
 </script>
 
@@ -120,16 +116,38 @@ const addPost = (post) => {
                 <div class="postContent" id="adachiPost"></div>
                 <div class="flexboxRow" id="updoots">
                     <a>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                            <path fill="#888888" d="M11 20V7.825l-5.6 5.6L4 12l8-8l8 8l-1.4 1.425l-5.6-5.6V20h-2Z"/></svg>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="32"
+                            height="32"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                fill="#888888"
+                                d="M11 20V7.825l-5.6 5.6L4 12l8-8l8 8l-1.4 1.425l-5.6-5.6V20h-2Z"
+                            />
+                        </svg>
                     </a>
-                    <div class="count"> 5 </div>
+                    <div class="count">5</div>
                     <a>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                            <path fill="#888888" d="m12 20l-8-8l1.4-1.425l5.6 5.6V4h2v12.175l5.6-5.6L20 12l-8 8Z"/></svg>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="32"
+                            height="32"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                fill="#888888"
+                                d="m12 20l-8-8l1.4-1.425l5.6 5.6V4h2v12.175l5.6-5.6L20 12l-8 8Z"
+                            />
+                        </svg>
                     </a>
                 </div>
-                <div > Hello, did you know that the deepest part of the ocean is called the Challenger Deep and it 10,935 deep, tallest than Mount Everest and people managed to reach there</div>
+                <div>
+                    Hello, did you know that the deepest part of the ocean is called the Challenger
+                    Deep and it 10,935 deep, tallest than Mount Everest and people managed to reach
+                    there
+                </div>
             </div>
             <NewPost v-if="loggedIn.username" :add-post="addPost" />
         </div>
