@@ -103,8 +103,9 @@ defineProps({
 
 .post-image {
     margin-top: 20px;
-    width: 100%;
-    height: 300px;
+    flex-basis: 100%;
+    height: 400px;
     background-color: var(--color-background-mute);
+    border-radius: 10px;
 }
 </style>

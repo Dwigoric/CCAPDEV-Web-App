@@ -79,6 +79,7 @@ const getPosts = async (waypointState) => {
                 :title="post.title"
                 :body="post.body"
                 :user="post.user"
+                image="https://placekitten.com/500"
             />
             <div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
