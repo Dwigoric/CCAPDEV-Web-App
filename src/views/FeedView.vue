@@ -88,6 +88,18 @@ const getPosts = async (waypointState) => {
                     <span class="originalPoster"> @Cabbage_Man </span>
                 </div>
                 <div class="postContent" id="adachiPost"></div>
+                <div class="flexboxRow" id="updoots">
+                    <a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                            <path fill="#888888" d="M11 20V7.825l-5.6 5.6L4 12l8-8l8 8l-1.4 1.425l-5.6-5.6V20h-2Z"/></svg>
+                    </a>
+                    <div class="count"> 5 </div>
+                    <a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+                            <path fill="#888888" d="m12 20l-8-8l1.4-1.425l5.6 5.6V4h2v12.175l5.6-5.6L20 12l-8 8Z"/></svg>
+                    </a>
+                </div>
+                <div > Hello, did you know that the deepest part of the ocean is called the Challenger Deep and it 10,935 deep, tallest than Mount Everest and people managed to reach there</div>
             </div>
         </div>
         <div
@@ -152,8 +164,16 @@ const getPosts = async (waypointState) => {
     display: flex;
     flex-direction: column;
     background-color: var(--color-pale-blue);
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
 }
 
+[data-theme='light'] .flexboxColumn {
+    background-color: var(--color-bright-pink);
+    box-shadow: none;
+}
 .flexboxRow {
     display: flex;
     flex-direction: row;
@@ -161,16 +181,20 @@ const getPosts = async (waypointState) => {
     
 }
 
+#updoots {
+    margin: auto;
+}
 /* CSS FOR THE POST */
 .postContent {
     background-color: brown;
     background-size: 100%;
     background-repeat: no-repeat;
     border-radius: 2%;
+    margin: auto auto 0.2rem auto;
 }
 /* ID for the anime man post image */
 #adachiPost {
-    background-image: url('../assets/adachi_true.jpg');
+    background-image: url('../assets/images/adachi_true.jpg');
     height: 383px;
     width: 414px;
 }
@@ -181,13 +205,19 @@ const getPosts = async (waypointState) => {
     width: 50px;
     height: 50px;
     background-size: 100%;
+    background-repeat: no-repeat;
     border: var(--color-border) solid 3px;
     background-color: var(--color-dark-green);
     border-radius: 50%;
 }
 
+[data-theme='light'] .profilePic {
+    background-color: var(--color-dark-pink);
+    border: var(--color-pale-green) solid 3px;
+}
+
 #adachiPfp {
-    background-image: url('../assets/adachi_pfp.png');
+    background-image: url('../assets/images/adachi_pfp.png');
 }
 
 .originalPoster {
@@ -200,5 +230,13 @@ const getPosts = async (waypointState) => {
     border: 2px solid;
     border-radius: 25px;
     padding: 1em 1em 1em 1em;
+}
+
+.count {
+    margin: auto 0 auto 0;
+}
+
+svg path:hover {
+    fill:orangered
 }
 </style>
