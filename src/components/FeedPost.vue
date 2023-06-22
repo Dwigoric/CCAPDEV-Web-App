@@ -84,6 +84,10 @@ defineProps({
 }
 
 .user {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
     width: 100px;
     height: 100%;
     margin-right: 20px;
