@@ -111,7 +111,7 @@ const addPost = (post) => {
                 image="https://placekitten.com/500"
                 @click="specicPostStore.setCurrentPost"
             />
-            <!-- <div class="flexboxColumn" id="PostLayout">
+            <div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
                     <span class="profilePic" id="adachiPfp"></span>
                     <span class="originalPoster"> Adachi </span>
