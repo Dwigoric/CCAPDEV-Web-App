@@ -71,13 +71,14 @@ const getPosts = async (waypointState) => {
 }
 
 const addPost = (post) => {
-    posts.push({
+    tempPosts.push({
         ...post,
         user: {
             username: loggedIn.username,
             image: loggedIn.image
         }
     })
+    posts.push(tempPosts[tempPosts.length - 1])
 }
 </script>
 
@@ -102,51 +103,9 @@ const addPost = (post) => {
                 :title="post.title"
                 :body="post.body"
                 :user="post.user"
-                :image="post.id % 4 === 0 ? 'https://placekitten.com/400' : ''"
+                :image="post.id % 4 === 0 ? 'https://placekitten.com/1000' : ''"
             />
-            <!--<div class="flexboxColumn" id="PostLayout">
-                <div class="flexboxRow">
-                    <span class="profilePic" id="adachiPfp"></span>
-                    <span class="originalPoster"> Adachi </span>
-                    <span class="originalPoster"> @Cabbage_Man </span>
-                </div>
-                <div class="postContent" id="adachiPost"></div>
-                <div class="flexboxRow" id="updoots">
-                    <a>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="32"
-                            height="32"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                fill="#888888"
-                                d="M11 20V7.825l-5.6 5.6L4 12l8-8l8 8l-1.4 1.425l-5.6-5.6V20h-2Z"
-                            />
-                        </svg>
-                    </a>
-                    <div class="count">5</div>
-                    <a>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="32"
-                            height="32"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                fill="#888888"
-                                d="m12 20l-8-8l1.4-1.425l5.6 5.6V4h2v12.175l5.6-5.6L20 12l-8 8Z"
-                            />
-                        </svg>
-                    </a>
-                </div>
-                <div>
-                    Hello, did you know that the deepest part of the ocean is called the Challenger
-                    Deep and it 10,935 deep, tallest than Mount Everest and people managed to reach
-                    there
-                </div>
-            </div> -->
-            <NewPost v-if="loggedIn.username" :add-post="addPost" />
+            <NewPost v-if="loggedIn.username && posts.length > 0" :add-post="addPost" />
         </div>
         <div
             class="feed-element"
