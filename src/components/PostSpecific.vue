@@ -26,7 +26,7 @@ defineProps({
         <div class="user">
             <div class="header">
                 <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
-                <div>
+                <div class="data">
                     <div class="user-name">{{ user['username'] }}</div>
                     <span class="title">{{ title }}</span>
                 </div>
@@ -50,10 +50,6 @@ defineProps({
     flex-direction: row;
 }
 .post {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    justify-content: center;
     width: 100%;
     height: 100%;
     padding: 2rem;
@@ -76,10 +72,16 @@ defineProps({
     background-color: var(--color-dark-pink);
 }
 
+.data {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-left: 20px;
+}
+
 .user {
     display: flex;
     flex-flow: column nowrap;
-    align-items: center;
     justify-content: center;
     width: 100%;
     height: 100%;
@@ -103,15 +105,14 @@ defineProps({
 .user-name {
     margin-top: 10px;
     padding: 0.2rem;
+    font-size: 1rem;
     border-radius: 5px;
     background-color: var(--color-bright-blue);
 }
 
 .title {
-    
     font-size: 1.5rem;
     font-weight: bold;
-    margin-bottom: 10px;
 }
 
 .body {

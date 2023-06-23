@@ -41,7 +41,8 @@ const tempUser3 = {
             <PostSpecific
                 :user="tempUser"
                 title="Motivational Duck"
-                body="Never giving up is the attitude that one should carry and live his/her life with, no matter what the situation is. One should keep struggling and fighting with the odds and should wait for the day when he/she will find what he/she has actually been looking for in his/her life. Failure is not an option for anyone."
+                body="Never giving up is the attitude that one should carry and live his/her life with, no matter what the situation is. 
+                One should keep struggling and fighting with the odds and should wait for the day when he/she will find what he/she has actually been looking for in his/her life. Failure is not an option for anyone.Never giving up is the attitude that one should carry and live his/her life with, no matter what the situation is. One should keep struggling and fighting with the odds and should wait for the day when he/she will find what he/she has actually been looking for in his/her life. Failure is not an option for anyone. Even though you have failed in any process, you should stand up and do it again, but in any case, you should never give up on your dreams. One should never give up on his/her goals, and one should never give up on a struggle that he/she is doing for attaining something which is very important in life. This attitude has great importance in our lives. To be able to never give up is a virtue that not many people possess. Keeping all the above points in mind, always make sure that no matter what the situation is, you should never ever give up on your life."
                 image="https://cdn.drawception.com/images/panels/2016/8-20/BkMa3ZqkeZ-10.png"
             />
         </div>
