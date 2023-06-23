@@ -24,10 +24,12 @@ defineProps({
 <template>
     <div class="post">
         <div class="user">
-            <div class="chuchu">
+            <div class="header">
                 <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
-                <div class="user-name">{{ user['username'] }}</div>
-                <div class="title">{{ title }}</div>
+                <div>
+                    <div class="user-name">{{ user['username'] }}</div>
+                    <span class="title">{{ title }}</span>
+                </div>
             </div>
         </div>
          <div class="content">
@@ -43,7 +45,7 @@ defineProps({
 </template>
 
 <style scoped>
-.chuchu {
+.header {
     display : flex;
     flex-direction: row;
 }
@@ -67,7 +69,7 @@ defineProps({
 
 [data-theme='light'] .user-image {
     background-color: var(--color-dark-pink);
-    border: var(--color-pale-green) solid 3px;
+    border: var(--color-white) solid 3px;
 }
 
 [data-theme='light'] .user-name {
@@ -79,7 +81,7 @@ defineProps({
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
-    width: 200px;
+    width: 100%;
     height: 100%;
     margin-right: 20px;
 }
@@ -106,6 +108,7 @@ defineProps({
 }
 
 .title {
+    
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 10px;
@@ -113,12 +116,19 @@ defineProps({
 
 .body {
     width: 100%;
+    text-align: justify;
+    padding: 10px;
+    font-size: 1rem;
 }
 
 .post-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: 20px;
     width: 100%;
-    height: 300px;
+    height: auto;
+    max-width: fit-content;
     background-color: var(--color-background-mute);
 }
 </style>

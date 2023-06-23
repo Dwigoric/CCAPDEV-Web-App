@@ -104,7 +104,7 @@ const addPost = (post) => {
                 :user="post.user"
                 image="https://placekitten.com/500"
             />
-            <div class="flexboxColumn" id="PostLayout">
+            <!--<div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
                     <span class="profilePic" id="adachiPfp"></span>
                     <span class="originalPoster"> Adachi </span>
@@ -145,7 +145,7 @@ const addPost = (post) => {
                     Deep and it 10,935 deep, tallest than Mount Everest and people managed to reach
                     there
                 </div>
-            </div>
+            </div> -->
             <NewPost v-if="loggedIn.username" :add-post="addPost" />
         </div>
         <div

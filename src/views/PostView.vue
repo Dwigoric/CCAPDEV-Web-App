@@ -46,7 +46,7 @@ const tempUser3 = {
             />
         </div>
         <div id="CommentStart">
-            <h1>Comments</h1>
+            <h1 style="color:white;">Comments</h1>
             <div class="CommentHandle">
             <div class="comments">
                 <Comments
@@ -57,7 +57,7 @@ const tempUser3 = {
             <div class="comments">
                 <Comments
                     :user="tempUser2"
-                    body="Tara Kopi, walang tulogan dito"
+                    body="Tara Kopi, Sleep is for the weak"
                 />
             </div>
             <div class="comments">
@@ -84,12 +84,11 @@ const tempUser3 = {
 <style scoped>
 .comments {
     padding: 10px;
-    display: flex;
-    flex-flow: row;
+    display: flex;;
 }
 .CommentHandle {
     display: flex;
-    flex-flow: row nowrap;
+    flex-direction: column;
     align-items: flex-start;
     width: 100%;
     height: 100%;
