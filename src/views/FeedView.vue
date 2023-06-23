@@ -12,8 +12,8 @@ import NewPost from '../components/NewPost.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
-import { useTempPostsStore } from '../stores/tempPosts'
-import { useLoggedInStore } from '../stores/loggedIn'
+import { useTempPostsStore } from '@/stores/tempPosts'
+import { useLoggedInStore } from '@/stores/loggedIn'
 
 // Set document title
 document.title = 'Compact Donuts | Feed'
@@ -194,7 +194,7 @@ const addPost = (post) => {
 #posts {
     flex-flow: column-reverse nowrap;
     flex: 6;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     background-color: var(--color-background-mute);
     gap: 2rem;
@@ -261,27 +261,11 @@ const addPost = (post) => {
     border: var(--color-pale-green) solid 3px;
 }
 
-#adachiPfp {
-    background-image: url('../assets/images/adachi_pfp.png');
-}
-
-.originalPoster {
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-right: 1em;
-}
-/*Post Layout*/
-#PostLayout {
-    border: 2px solid;
-    border-radius: 25px;
-    padding: 1em 1em 1em 1em;
-}
-
 .count {
     margin: auto 0 auto 0;
 }
 
 svg path:hover {
-    fill:orangered
+    fill: orangered;
 }
 </style>

@@ -37,10 +37,10 @@ defineProps({
                     />
                 </svg>
             </div>
-            <div class="user">
-                <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
-                <span class="user-name">{{ user['username'] }}</span>
-            </div>
+        </div>
+        <div class="user">
+            <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
+            <span class="user-name">{{ user['username'] }}</span>
         </div>
         <div class="content">
             <p class="title">{{ title }}</p>
@@ -81,6 +81,11 @@ defineProps({
 
 [data-theme='light'] .user-name {
     background-color: var(--color-dark-pink);
+}
+
+.post {
+    text-decoration: none;
+    color: var(--color-text);
 }
 
 .user {
@@ -128,7 +133,7 @@ defineProps({
 .flexboxRow {
     display: flex;
     flex-direction: row;
-    margin: auto;
+    margin: auto 0;
 }
 
 .flexboxColumn {
