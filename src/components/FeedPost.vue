@@ -1,4 +1,8 @@
 <script setup>
+import { useSpecificPostStore } from '@/stores/post'
+
+const postStore = useSpecificPostStore()
+
 defineProps({
     user: {
         type: Object,
@@ -20,7 +24,18 @@ defineProps({
 </script>
 
 <template>
-    <RouterLink to="/post" class="post">
+    <RouterLink
+        to="/post"
+        class="post"
+        @click="
+            postStore.setCurrentPost({
+                user,
+                title,
+                body,
+                image
+            })
+        "
+    >
         <div class="flexboxRow">
             <div class="flexboxColumn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">

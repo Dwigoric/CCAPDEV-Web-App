@@ -1,30 +1,39 @@
 <script setup>
+// Import packages
 import { useMediaQuery } from '@vueuse/core'
+import { onUnmounted } from 'vue'
+import router from '@/router'
+
+// Import components
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import PostSpecific from '../components/PostSpecific.vue'
 import Comments from '../components/Comments.vue'
 
-const tempUser = { 
-    username:"pagodNaAko",
-    image:"https://placekitten.com/200/200"
+// Import stores
+import { useSpecificPostStore } from '@/stores/post'
+
+const { currentPost, currentPostId, unsetCurrentPost } = useSpecificPostStore()
+
+const tempUser1 = {
+    username: 'legitCrammer',
+    image: 'https://media.istockphoto.com/id/1158030230/photo/portrait-of-a-cute-little-duckling-closeup-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=ipLksGRzH5Sj6ER0c1MTWn4K_EgEHHKP__1ezNc_WoM='
 }
 
-const tempUser1 = { 
-    username:"legitCrammer",
-    image:"https://media.istockphoto.com/id/1158030230/photo/portrait-of-a-cute-little-duckling-closeup-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=ipLksGRzH5Sj6ER0c1MTWn4K_EgEHHKP__1ezNc_WoM="
+const tempUser2 = {
+    username: 'NoobMaster69',
+    image: 'https://blogtimenow.com/wp-content/uploads/2014/06/hide-facebook-profile-picture-notification.jpg'
+}
+const tempUser3 = {
+    username: 'Barbie',
+    image: 'https://i.pinimg.com/474x/81/73/ff/8173ff1430a9bd44f0b0cf49bdb9bcde.jpg'
 }
 
-const tempUser2 = { 
-    username:"NoobMaster69",
-    image:"https://blogtimenow.com/wp-content/uploads/2014/06/hide-facebook-profile-picture-notification.jpg"
-}
+onUnmounted(unsetCurrentPost)
 
-const tempUser3 = { 
-    username:"Barbie",
-    image:"https://i.pinimg.com/474x/81/73/ff/8173ff1430a9bd44f0b0cf49bdb9bcde.jpg"
+if (currentPostId === null) {
+    router.push({ name: 'feed' })
 }
-
 </script>
 <template>
     <NavigationBar />
@@ -38,38 +47,27 @@ const tempUser3 = {
         </div>
         <div>
             <div class="feed-element" id="posts">
-            <PostSpecific
-                :user="tempUser"
-                title="Motivational Duck"
-                body="Never giving up is the attitude that one should carry and live his/her life with, no matter what the situation is. 
-                One should keep struggling and fighting with the odds and should wait for the day when he/she will find what he/she has actually been looking for in his/her life. Failure is not an option for anyone.Never giving up is the attitude that one should carry and live his/her life with, no matter what the situation is. One should keep struggling and fighting with the odds and should wait for the day when he/she will find what he/she has actually been looking for in his/her life. Failure is not an option for anyone. Even though you have failed in any process, you should stand up and do it again, but in any case, you should never give up on your dreams. One should never give up on his/her goals, and one should never give up on a struggle that he/she is doing for attaining something which is very important in life. This attitude has great importance in our lives. To be able to never give up is a virtue that not many people possess. Keeping all the above points in mind, always make sure that no matter what the situation is, you should never ever give up on your life."
-                image="https://cdn.drawception.com/images/panels/2016/8-20/BkMa3ZqkeZ-10.png"
-            />
-        </div>
-        <div id="CommentStart">
-            <h1 style="color:white;">Comments</h1>
-            <div class="CommentHandle">
-            <div class="comments">
-                <Comments
-                :user="tempUser3"
-                body="Wow! So Motivational!"
+                <PostSpecific
+                    :user="currentPost.user"
+                    :title="currentPost.title"
+                    :body="currentPost.body"
+                    :image="currentPost.image"
                 />
             </div>
-            <div class="comments">
-                <Comments
-                    :user="tempUser2"
-                    body="Tara Kopi, Sleep is for the weak"
-                />
+            <div id="CommentStart">
+                <h1 style="color: white">Comments</h1>
+                <div class="CommentHandle">
+                    <div class="comments">
+                        <Comments :user="tempUser3" body="Wow! So Motivational!" />
+                    </div>
+                    <div class="comments">
+                        <Comments :user="tempUser2" body="Tara Kopi, Sleep is for the weak" />
+                    </div>
+                    <div class="comments">
+                        <Comments :user="tempUser1" body="That's me. Fr FR FR" />
+                    </div>
+                </div>
             </div>
-            <div class="comments">
-                <Comments
-                    :user="tempUser1"
-                    body="That's me. Fr FR FR"
-                />
-            </div>
-            </div>
-        </div>
-        
         </div>
         <div
             class="feed-element"
@@ -85,7 +83,7 @@ const tempUser3 = {
 <style scoped>
 .comments {
     padding: 10px;
-    display: flex;;
+    display: flex;
 }
 .CommentHandle {
     display: flex;
@@ -171,6 +169,5 @@ const tempUser3 = {
     display: flex;
     flex-direction: row;
     margin-bottom: 1em;
-    
 }
 </style>

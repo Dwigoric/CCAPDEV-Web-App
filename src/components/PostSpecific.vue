@@ -1,5 +1,4 @@
 <script setup>
-
 defineProps({
     user: {
         type: Object,
@@ -18,7 +17,6 @@ defineProps({
         required: false
     }
 })
-
 </script>
 
 <template>
@@ -32,7 +30,7 @@ defineProps({
                 </div>
             </div>
         </div>
-         <div class="content">
+        <div class="content">
             <img
                 class="post-image"
                 v-if="image"
@@ -46,7 +44,7 @@ defineProps({
 
 <style scoped>
 .header {
-    display : flex;
+    display: flex;
     flex-direction: row;
 }
 .post {
@@ -65,7 +63,7 @@ defineProps({
 
 [data-theme='light'] .user-image {
     background-color: var(--color-dark-pink);
-    border: var(--color-white) solid 3px;
+    border: var(--vt-c-white) solid 3px;
 }
 
 [data-theme='light'] .user-name {
@@ -89,17 +87,17 @@ defineProps({
 }
 
 .user-image {
-	margin-right: 5px;
-	border-radius: 50%;
-	background-color: #FAFAFA;
-	vertical-align: baseline;
-	border: 1px solid #EFEFEF;
-    width: 100pxpx;
+    margin-right: 5px;
+    border-radius: 50%;
+    background-color: #fafafa;
+    vertical-align: baseline;
+    border: 1px solid #efefef;
+    width: 100px;
     height: 100px;
     border-radius: 80%;
     border: var(--color-border) solid 3px;
     background-color: var(--color-dark-green);
-    vertical-align : baseline;
+    vertical-align: baseline;
 }
 
 .user-name {

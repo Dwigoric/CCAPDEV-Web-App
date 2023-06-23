@@ -1,21 +1,26 @@
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
-const id = ref('')
-const title = ref('')
-const body = ref('')
-const user = ref('')
+
+const currentPost = reactive({})
+const currentPostId = ref(null)
 
 export const useSpecificPostStore = defineStore('post', () => {
-
     return {
-        id, 
-        title, 
-        body, 
-        user,
-        setCurrentPost
+        currentPost,
+        currentPostId,
+        setCurrentPost,
+        unsetCurrentPost
     }
 })
 
-function setCurrentPost (post){
-    console.log(post)
+function setCurrentPost(post) {
+    currentPost.image = ''
+    Object.assign(currentPost, post)
+    currentPostId.value = post.id
+}
+
+function unsetCurrentPost() {
+    currentPost.image = ''
+    Object.assign(currentPost, {})
+    currentPostId.value = null
 }
