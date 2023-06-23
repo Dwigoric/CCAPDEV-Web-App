@@ -36,7 +36,8 @@ const addPost = (post) => {
         ...post,
         user: {
             username: loggedIn.username,
-            image: loggedIn.image
+            image: loggedIn.image,
+            reactions: 0
         }
     })
     cachedPosts.push(tempPosts[tempPosts.length - 1])
@@ -65,6 +66,7 @@ const addPost = (post) => {
                 :body="post.body"
                 :user="post.user"
                 :image="post.id % 4 === 0 ? 'https://placekitten.com/1000' : ''"
+                :reactions="post.reactions"
             />
             <NewPost v-if="loggedIn.username && cachedPosts.length > 0" :add-post="addPost" />
         </div>
