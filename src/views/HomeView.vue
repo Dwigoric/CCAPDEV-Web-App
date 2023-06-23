@@ -5,7 +5,7 @@ import ThemeSwitch from '../components/ThemeSwitch.vue'
 
 document.title = 'Compact Donuts | Home'
 
-import { useLoggedInStore } from '../stores/loggedIn'
+import { useLoggedInStore } from '@/stores/loggedIn'
 
 const loggedInStore = useLoggedInStore()
 

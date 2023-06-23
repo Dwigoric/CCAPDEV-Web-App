@@ -102,7 +102,7 @@ const addPost = (post) => {
                 :title="post.title"
                 :body="post.body"
                 :user="post.user"
-                image="https://placekitten.com/500"
+                :image="post.id % 4 === 0 ? 'https://placekitten.com/400' : ''"
             />
             <!--<div class="flexboxColumn" id="PostLayout">
                 <div class="flexboxRow">
@@ -204,65 +204,6 @@ const addPost = (post) => {
     flex-flow: row nowrap;
     justify-content: left;
     flex: 3 0;
-}
-/* Flex Box for the class*/
-.flexboxColumn {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-pale-blue);
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: center;
-    width: 100%;
-}
-
-[data-theme='light'] .flexboxColumn {
-    background-color: var(--color-bright-pink);
-    box-shadow: none;
-}
-.flexboxRow {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 1em;
-}
-
-#updoots {
-    margin: auto;
-}
-/* CSS FOR THE POST */
-.postContent {
-    background-color: brown;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    border-radius: 2%;
-    margin: auto auto 0.2rem auto;
-}
-/* ID for the anime man post image */
-#adachiPost {
-    background-image: url('../assets/images/adachi_true.jpg');
-    height: 383px;
-    width: 414px;
-}
-/* Profile CSS */
-.profilePic {
-    margin-left: 1em;
-    margin-right: 1em;
-    width: 50px;
-    height: 50px;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    border: var(--color-border) solid 3px;
-    background-color: var(--color-dark-green);
-    border-radius: 50%;
-}
-
-[data-theme='light'] .profilePic {
-    background-color: var(--color-dark-pink);
-    border: var(--color-pale-green) solid 3px;
-}
-
-.count {
-    margin: auto 0 auto 0;
 }
 
 svg path:hover {
