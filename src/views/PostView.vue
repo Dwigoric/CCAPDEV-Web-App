@@ -36,7 +36,8 @@ const tempUser3 = {
         >
             This is the left sidebar.
         </div>
-        <div class="feed-element" id="posts">
+        <div>
+            <div class="feed-element" id="posts">
             <PostSpecific
                 :user="tempUser"
                 title="Motivational Duck"
@@ -46,20 +47,28 @@ const tempUser3 = {
         </div>
         <div id="CommentStart">
             <h1>Comments</h1>
-            <div class="Comments">
-            <Comments
+            <div class="CommentHandle">
+            <div class="comments">
+                <Comments
                 :user="tempUser3"
                 body="Wow! So Motivational!"
-            />
-            <Comments
-                :user="tempUser2"
-                body="Tara Kopi, walang tulogan dito"
-            />
-            <Comments
-                :user="tempUser1"
-                body="That's me. Fr FR FR"
-            />
+                />
             </div>
+            <div class="comments">
+                <Comments
+                    :user="tempUser2"
+                    body="Tara Kopi, walang tulogan dito"
+                />
+            </div>
+            <div class="comments">
+                <Comments
+                    :user="tempUser1"
+                    body="That's me. Fr FR FR"
+                />
+            </div>
+            </div>
+        </div>
+        
         </div>
         <div
             class="feed-element"
@@ -73,6 +82,22 @@ const tempUser3 = {
 </template>
 
 <style scoped>
+.comments {
+    padding: 10px;
+    display: flex;
+    flex-flow: row;
+}
+.CommentHandle {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    background-color: var(--color-pale-blue);
+    border-radius: 10px;
+}
+
 #CommentStart {
     display: flex;
     flex-flow: column nowrap;
