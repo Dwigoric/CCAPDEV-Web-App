@@ -34,10 +34,10 @@ const getPosts = async (waypointState) => {
 const addPost = (post) => {
     tempPosts.push({
         ...post,
+        reactions: 0,
         user: {
             username: loggedIn.username,
-            image: loggedIn.image,
-            reactions: 0
+            image: loggedIn.image
         }
     })
     cachedPosts.push(tempPosts[tempPosts.length - 1])
