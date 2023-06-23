@@ -8,10 +8,10 @@ import router from '@/router'
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import PostSpecific from '../components/PostSpecific.vue'
-import Comments from '../components/Comments.vue'
+import Comments from '../components/PostComments.vue'
 
 // Import stores
-import { useSpecificPostStore } from '@/stores/post'
+import { useSpecificPostStore } from '@/stores/currentPost'
 
 const { currentPost, currentPostId, unsetCurrentPost } = useSpecificPostStore()
 

@@ -1,5 +1,5 @@
 <script setup>
-import { useSpecificPostStore } from '@/stores/post'
+import { useSpecificPostStore } from '@/stores/currentPost'
 
 const postStore = useSpecificPostStore()
 
