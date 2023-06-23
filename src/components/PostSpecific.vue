@@ -22,82 +22,58 @@ defineProps({
 <template>
     <div class="post">
         <div class="user">
-            <div class="header">
-                <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
-                <div class="data">
-                    <div class="user-name">{{ user['username'] }}</div>
-                    <span class="title">{{ title }}</span>
-                </div>
-            </div>
+            <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
+            <span class="user-name">{{ user['username'] }}</span>
         </div>
         <div class="content">
+            <p class="title">{{ title }}</p>
+            <p class="body">{{ body }}</p>
             <img
                 class="post-image"
                 v-if="image"
                 :src="image"
                 :alt="`An image in ${user['username']}'s post`"
             />
-            <p class="body">{{ body }}</p>
         </div>
     </div>
 </template>
 
 <style scoped>
-.header {
-    display: flex;
-    flex-direction: row;
-}
 .post {
-    width: 100%;
-    height: 100%;
-    padding: 2rem;
+    padding: 1rem 2rem 2rem 2rem;
     background-color: var(--color-pale-blue);
-    border-radius: 10px;
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
 }
 
 [data-theme='light'] .post {
-    background-color: var(--color-bright-pink);
+    background-color: var(--color-dark-pink);
     box-shadow: none;
 }
 
 [data-theme='light'] .user-image {
-    background-color: var(--color-dark-pink);
+    background-color: var(--color-bright-pink);
     border: var(--vt-c-white) solid 3px;
 }
 
 [data-theme='light'] .user-name {
-    background-color: var(--color-dark-pink);
-}
-
-.data {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding-left: 20px;
+    background-color: var(--color-bright-pink);
 }
 
 .user {
     display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    margin-right: 20px;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .user-image {
     margin-right: 5px;
-    border-radius: 50%;
-    background-color: #fafafa;
     vertical-align: baseline;
-    border: 1px solid #efefef;
-    width: 100px;
-    height: 100px;
-    border-radius: 80%;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
     border: var(--color-border) solid 3px;
     background-color: var(--color-dark-green);
-    vertical-align: baseline;
 }
 
 .user-name {
@@ -111,23 +87,20 @@ defineProps({
 .title {
     font-size: 1.5rem;
     font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .body {
-    width: 100%;
     text-align: justify;
-    padding: 10px;
     font-size: 1rem;
 }
 
 .post-image {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-    width: 100%;
     height: auto;
-    max-width: fit-content;
+    max-width: 500px;
     background-color: var(--color-background-mute);
+    border-radius: 10px;
+    margin: 20px 0 0;
 }
 </style>

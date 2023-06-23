@@ -1,14 +1,14 @@
 <script setup>
 // Import packages
-import { useMediaQuery } from '@vueuse/core'
 import { onUnmounted } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 import router from '@/router'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import PostSpecific from '../components/PostSpecific.vue'
-import Comments from '../components/PostComments.vue'
+import PostComment from '../components/PostComment.vue'
 
 // Import stores
 import { useSpecificPostStore } from '@/stores/currentPost'
@@ -35,139 +35,79 @@ if (currentPostId === null) {
     router.push({ name: 'feed' })
 }
 </script>
+
 <template>
+    <ThemeSwitch v-if="useMediaQuery('(min-width: 1024px)').value" />
     <NavigationBar />
-    <div id="feed">
-        <div
-            class="feed-element"
-            id="left-sidebar"
-            v-if="useMediaQuery('(min-width: 1024px)').value"
-        >
-            This is the left sidebar.
-        </div>
-        <div>
-            <div class="feed-element" id="posts">
-                <PostSpecific
-                    :user="currentPost.user"
-                    :title="currentPost.title"
-                    :body="currentPost.body"
-                    :image="currentPost.image"
-                />
-            </div>
-            <div id="CommentStart">
-                <h1 style="color: white">Comments</h1>
-                <div class="CommentHandle">
-                    <div class="comments">
-                        <Comments :user="tempUser3" body="Wow! So Motivational!" />
-                    </div>
-                    <div class="comments">
-                        <Comments :user="tempUser2" body="Tara Kopi, Sleep is for the weak" />
-                    </div>
-                    <div class="comments">
-                        <Comments :user="tempUser1" body="That's me. Fr FR FR" />
-                    </div>
+    <div id="view">
+        <div id="post-details">
+            <PostSpecific
+                :user="currentPost.user"
+                :title="currentPost.title"
+                :body="currentPost.body"
+                :image="currentPost.image"
+            />
+            <div id="comments">
+                <div class="comment">
+                    <PostComment :user="tempUser3" body="Wow! So Motivational!" />
                 </div>
+                <div class="comment">
+                    <PostComment :user="tempUser2" body="Tara Kopi, Sleep is for the weak" />
+                </div>
+                <div class="comment">
+                    <PostComment :user="tempUser1" body="That's me. Fr FR FR" />
+                </div>
+                <div id="comments-end">You've reached the end.</div>
             </div>
-        </div>
-        <div
-            class="feed-element"
-            id="right-sidebar"
-            v-if="useMediaQuery('(min-width: 1024px)').value"
-        >
-            This is the right sidebar.
-            <ThemeSwitch />
         </div>
     </div>
 </template>
 
 <style scoped>
-.comments {
-    padding: 10px;
+.comment {
     display: flex;
-}
-.CommentHandle {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    background: var(--color-background-soft);
     width: 100%;
-    height: 100%;
-    padding: 1rem;
-    background-color: var(--color-pale-blue);
-    border-radius: 10px;
+    flex-grow: 1;
 }
 
-#CommentStart {
+#comments {
     display: flex;
     flex-flow: column nowrap;
     align-items: flex-start;
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding: 2rem;
-    background-color: var(--color-pale-blue);
-    border-radius: 10px;
-    box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
+    flex-basis: 100%;
+    background-color: var(--color-background-soft);
 }
 
-#feed {
+#view {
     display: flex;
     flex-flow: row nowrap;
-    align-items: flex-start;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding: 2rem;
-    background-color: var(--color-pale-blue);
-    border-radius: 10px;
-    box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
-}
-
-.feed-element {
-    display: flex;
     flex-grow: 1;
-    padding: 40px;
-}
-
-#left-sidebar,
-#right-sidebar {
-    background-color: var(--color-background);
-    position: sticky;
-    height: calc(100vh - var(--navbar-height));
-    align-self: flex-start;
-    top: var(--navbar-height);
-    bottom: 0;
-}
-
-#left-sidebar {
-    flex-flow: row nowrap;
-    justify-content: right;
-    flex: 2 0;
-}
-
-#posts {
-    flex-flow: column-reverse nowrap;
-    flex: 1;
     justify-content: center;
-    align-items: center;
-    background-color: var(--color-background-mute);
-    gap: 2rem;
+    align-self: baseline;
+    min-height: calc(100vh - var(--navbar-height));
+    margin-top: var(--navbar-height);
 }
 
-#right-sidebar {
+#post-details {
+    flex-basis: 100vw;
+    min-height: calc(100vh - var(--navbar-height));
+    top: calc(var(--navbar-height));
+    background: var(--color-background-soft);
+}
+
+@media (min-width: 1024px) {
+    #post-details {
+        flex-basis: 40vw;
+    }
+}
+
+#comments-end {
+    width: 100%;
+    display: flex;
     flex-flow: row nowrap;
-    justify-content: left;
-    flex: 3 0;
-}
-/* Flex Box for the class*/
-.flexboxColumn {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-pale-blue);
-}
-
-.flexboxRow {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 1em;
+    justify-content: center;
+    color: var(--color-bright-blue);
 }
 </style>
