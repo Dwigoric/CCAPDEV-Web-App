@@ -1,9 +1,14 @@
 <script setup>
-import { useLoggedInStore } from '../stores/loggedIn'
+// Import packages
 import { useMediaQuery } from '@vueuse/core'
 
+// Import stores
+import { useLoggedInStore } from '@/stores/loggedIn'
+
+// Define variables
 const loggedInStore = useLoggedInStore()
 
+// Define functions
 const logout = () => {
     // Unset username and password in the loggedInStore
     loggedInStore.username = ''
