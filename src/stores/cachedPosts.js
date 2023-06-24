@@ -4,20 +4,18 @@ import { defineStore } from 'pinia'
 const API_URL = 'https://dummyjson.com'
 
 const cachedPosts = reactive([])
-const skip = ref(130)
+const skip = ref(140)
 const limit = 20
-const loadedAllPosts = ref(false)
 
 export const useCachedPostsStore = defineStore('cachedPosts', () => {
     return {
         cachedPosts,
-        fetchPosts,
-        loadedAllPosts
+        fetchPosts
     }
 })
 
 async function fetchPosts() {
-    if (loadedAllPosts.value) return
+    if (cachedPosts.length > 0 && cachedPosts[0].id === 1) return
 
     const userParams = new URLSearchParams()
     userParams.set('limit', '0')
@@ -47,8 +45,4 @@ async function fetchPosts() {
             )
             .catch(console.error))
     )
-
-    if (cachedPosts.length >= 150) {
-        loadedAllPosts.value = true
-    }
 }

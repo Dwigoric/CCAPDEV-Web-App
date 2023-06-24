@@ -19,7 +19,7 @@ import { useLoggedInStore } from '@/stores/loggedIn'
 document.title = 'Compact Donuts | Feed'
 
 // Define variables
-const { cachedPosts, fetchPosts, loadedAllPosts } = useCachedPostsStore()
+const { cachedPosts, fetchPosts } = useCachedPostsStore()
 const { tempPosts } = useTempPostsStore()
 const loggedIn = useLoggedInStore()
 
@@ -56,7 +56,7 @@ const addPost = (post) => {
             This is the left sidebar.
         </div>
         <div class="feed-element" id="posts">
-            <Waypoint @change="getPosts" v-if="!loadedAllPosts">
+            <Waypoint @change="getPosts" v-if="!cachedPosts.length || cachedPosts[0].id !== 1">
                 <LoaderHeart />
             </Waypoint>
             <span v-else> You're all caught up! </span>
