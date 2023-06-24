@@ -22,17 +22,19 @@ const props = defineProps({
 // Preprocess input
 const processInput = (ref) => {
     if (!ref.files.length) {
-        props.addPost({ title, body, image: null })
+        props.addPost({ title: title.value, body: body.value, image: null })
     } else {
         // Retrieve image input file
         const file = ref.files[0]
 
-        // Return the base 64 string of the file
+        // Read the image file
         const reader = new FileReader()
         reader.readAsDataURL(file)
+        const _title = title.value
+        const _body = body.value
         reader.onload = () => {
             // Add post
-            props.addPost({ title, body, image: reader.result })
+            props.addPost({ title: _title, body: _body, image: reader.result })
         }
         reader.onerror = (error) => {
             console.log('Error: ', error)
@@ -135,13 +137,7 @@ const processInput = (ref) => {
     cursor: pointer;
 }
 
-.v-btn:hover {
-    background: var(--color-bright-pink);
-    color: var(--color-dark-pink);
-}
-
 [data-theme='light'] .v-btn {
-    color: var(--color-pale-green);
-    background-color: var(--color-pale-blue);
+    background-color: var(--color-bright-blue);
 }
 </style>
