@@ -50,45 +50,47 @@ const processInput = (ref) => {
 </script>
 
 <template>
-    <VForm>
-        <VTextField
-            type="text"
-            placeholder="Title"
-            v-model="title"
-            :theme="isDark ? 'dark' : 'light'"
-        />
-        <VTextarea
-            placeholder="Body"
-            id="new-post-body"
-            v-model="body"
-            :no-resize="true"
-            :theme="isDark ? 'dark' : 'light'"
-        ></VTextarea>
-        <VFileInput
-            label="Insert image"
-            variant="outlined"
-            clearable="clearable"
-            accept="image/*"
-            v-model="filename"
-            prepend-icon="mdi-camera"
-            ref="inputImage"
-        ></VFileInput>
-        <VBtn
-            @click="processInput(this.$refs.inputImage)"
-            :disabled="!title || !body"
-            :theme="isDark ? 'dark' : 'light'"
-        >
-            Bake!
-        </VBtn>
-    </VForm>
+    <VContainer>
+        <VForm>
+            <VTextField
+                type="text"
+                placeholder="Title"
+                v-model="title"
+                :theme="isDark ? 'dark' : 'light'"
+            />
+            <VTextarea
+                placeholder="Body"
+                id="new-post-body"
+                v-model="body"
+                :no-resize="true"
+                :theme="isDark ? 'dark' : 'light'"
+            ></VTextarea>
+            <VFileInput
+                label="Insert image"
+                variant="outlined"
+                clearable="clearable"
+                accept="image/*"
+                v-model="filename"
+                prepend-icon="mdi-camera"
+                ref="inputImage"
+            ></VFileInput>
+            <VBtn
+                @click="processInput(this.$refs.inputImage)"
+                :disabled="!title || !body"
+                :theme="isDark ? 'dark' : 'light'"
+            >
+                Bake!
+            </VBtn>
+        </VForm>
+    </VContainer>
 </template>
 
 <style scoped>
 .v-form {
     display: flex;
     flex-flow: column nowrap;
-    align-items: flex-start;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start;
     width: 100%;
     padding: 2rem;
     background: var(--color-pale-green);
@@ -111,7 +113,6 @@ const processInput = (ref) => {
 
 .v-textarea {
     width: 100%;
-    height: 100%;
     border-radius: 5px;
     font-size: 1.5rem;
     font-weight: 700;

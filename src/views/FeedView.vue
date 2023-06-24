@@ -69,14 +69,13 @@ const addPost = (post) => {
                 :image="post.image || (post.id % 4 === 0 ? 'https://placekitten.com/1000' : '')"
                 :reactions="post.reactions"
             />
-            <NewPost v-if="loggedIn.username && cachedPosts.length > 0" :add-post="addPost" />
         </div>
         <div
             class="feed-element"
             id="right-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            This is the right sidebar.
+            <NewPost v-if="loggedIn.username && cachedPosts.length > 0" :add-post="addPost" />
             <ThemeSwitch />
         </div>
     </div>
@@ -95,7 +94,7 @@ const addPost = (post) => {
 .feed-element {
     display: flex;
     flex-grow: 1;
-    padding: 40px;
+    padding: 2rem;
 }
 
 #left-sidebar,
@@ -127,6 +126,7 @@ const addPost = (post) => {
     flex-flow: row nowrap;
     justify-content: left;
     flex: 3 0;
+    padding: 1rem;
 }
 
 svg path:hover {
