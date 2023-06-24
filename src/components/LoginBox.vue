@@ -60,6 +60,11 @@ defineProps({
     flex-basis: 100%;
 }
 
+[data-theme='light'] #loginBox {
+    background: var(--vt-c-white-mute);
+    color: var(--vt-c-black-soft);
+}
+
 #loginHeader {
     font-weight: 500;
     font-size: 1.6rem;
