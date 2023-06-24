@@ -78,6 +78,7 @@ defineProps({
 
 .user-name {
     margin-top: 10px;
+    margin-left: 10px;
     padding: 0.2rem;
     font-size: 1rem;
     border-radius: 5px;
@@ -88,6 +89,7 @@ defineProps({
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .body {
@@ -97,10 +99,12 @@ defineProps({
 
 .post-image {
     display: block;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
     height: auto;
     max-width: 500px;
     background-color: var(--color-background-mute);
     border-radius: 10px;
-    margin: 20px 0 0;
 }
 </style>
