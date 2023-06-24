@@ -9,6 +9,7 @@ import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import PostSpecific from '../components/PostSpecific.vue'
 import PostComment from '../components/PostComment.vue'
+import Vote from '../components/Vote.vue'
 
 // Import stores
 import { useSpecificPostStore } from '@/stores/currentPost'
@@ -47,6 +48,9 @@ if (currentPostId === null) {
                 :body="currentPost.body"
                 :image="currentPost.image"
             />
+            <div id="vote">
+                <Vote />
+            </div>
             <div id="comments">
                 <div class="comment">
                     <PostComment :user="tempUser3" body="Wow! So Motivational!" />
