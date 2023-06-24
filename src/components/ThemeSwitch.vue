@@ -1,13 +1,18 @@
 <script setup>
+// Import packages
 import { useIsDarkStore } from '../stores/is-dark'
+import { useTheme } from 'vuetify'
 
+// Define variables
 const isDarkStore = useIsDarkStore()
+const theme = useTheme()
 
 const toggleTheme = () => {
     const { isDark } = isDarkStore
     isDarkStore.isDark = !isDark
 
     document.documentElement.setAttribute('data-theme', !isDark ? 'dark' : 'light')
+    theme.global.name.value = !isDark ? 'dark' : 'light'
 }
 </script>
 

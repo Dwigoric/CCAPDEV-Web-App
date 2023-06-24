@@ -1,12 +1,19 @@
 <script setup>
-import { useIsDarkStore } from './stores/is-dark'
+// Import packages
 import { useMediaQuery } from '@vueuse/core'
 
+// Import stores
+import { useIsDarkStore } from './stores/is-dark'
+import { useTheme } from 'vuetify'
+
+// Define variables
 const isDarkStore = useIsDarkStore()
+const theme = useTheme()
 
 const prefersDark = useMediaQuery('(prefers-color-scheme: dark)').value
 document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
 isDarkStore.isDark = prefersDark
+theme.global.name.value = prefersDark ? 'dark' : 'light'
 </script>
 
 <template>

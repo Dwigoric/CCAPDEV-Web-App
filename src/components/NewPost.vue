@@ -2,12 +2,7 @@
 // Import packages
 import { ref } from 'vue'
 
-// Import stores
-import { useIsDarkStore } from '../stores/is-dark'
-
 // Define variables
-const { isDark } = useIsDarkStore()
-
 const title = ref('')
 const body = ref('')
 const filename = ref([])
@@ -52,18 +47,12 @@ const processInput = (ref) => {
 <template>
     <VContainer>
         <VForm>
-            <VTextField
-                type="text"
-                placeholder="Title"
-                v-model="title"
-                :theme="isDark ? 'dark' : 'light'"
-            />
+            <VTextField type="text" placeholder="Title" v-model="title" />
             <VTextarea
                 placeholder="Body"
                 id="new-post-body"
                 v-model="body"
                 :no-resize="true"
-                :theme="isDark ? 'dark' : 'light'"
             ></VTextarea>
             <VFileInput
                 label="Insert image"
@@ -74,11 +63,7 @@ const processInput = (ref) => {
                 prepend-icon="mdi-camera"
                 ref="inputImage"
             ></VFileInput>
-            <VBtn
-                @click="processInput(this.$refs.inputImage)"
-                :disabled="!title || !body"
-                :theme="isDark ? 'dark' : 'light'"
-            >
+            <VBtn @click="processInput(this.$refs.inputImage)" :disabled="!title || !body">
                 Bake!
             </VBtn>
         </VForm>
