@@ -1,38 +1,88 @@
 <script setup>
+// Import packages
 import { ref } from 'vue'
+
+// Import stores
+import { useIsDarkStore } from '../stores/is-dark'
+
+// Define variables
+const { isDark } = useIsDarkStore()
 
 const title = ref('')
 const body = ref('')
+const filename = ref([])
 
-defineProps({
+const props = defineProps({
     addPost: {
         type: Function,
         required: true
     }
 })
+
+// Preprocess input
+const processInput = (ref) => {
+    if (!ref.files.length) {
+        props.addPost({ title, body, image: null })
+    } else {
+        // Retrieve image input file
+        const file = ref.files[0]
+
+        // Return the base 64 string of the file
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => {
+            // Add post
+            props.addPost({ title, body, image: reader.result })
+        }
+        reader.onerror = (error) => {
+            console.log('Error: ', error)
+        }
+    }
+
+    // Reset form
+    title.value = ''
+    body.value = ''
+    filename.value = []
+    ref.reset()
+}
 </script>
 
 <template>
-    <div id="new-post">
-        <input type="text" placeholder="Title" id="new-post-title" v-model="title" />
-        <textarea placeholder="Body" id="new-post-body" v-model="body"></textarea>
-        <button
-            @click="
-                () => {
-                    addPost({ title, body })
-                    title = ''
-                    body = ''
-                }
-            "
+    <VForm>
+        <VTextField
+            type="text"
+            placeholder="Title"
+            v-model="title"
+            :theme="isDark ? 'dark' : 'light'"
+        />
+        <VTextarea
+            placeholder="Body"
+            id="new-post-body"
+            v-model="body"
+            :no-resize="true"
+            :theme="isDark ? 'dark' : 'light'"
+        ></VTextarea>
+        <VFileInput
+            label="Insert image"
+            variant="outlined"
+            clearable="clearable"
+            accept="image/*"
+            v-model="filename"
+            prepend-icon="mdi-camera"
+            ref="inputImage"
+        ></VFileInput>
+        <VBtn
+            @click="processInput(this.$refs.inputImage)"
             :disabled="!title || !body"
+            :theme="isDark ? 'dark' : 'light'"
         >
             Bake!
-        </button>
-    </div>
+        </VBtn>
+    </VForm>
 </template>
 
 <style scoped>
-#new-post {
+.v-form {
     display: flex;
     flex-flow: column nowrap;
     align-items: flex-start;
@@ -44,62 +94,54 @@ defineProps({
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
 }
 
-[data-theme='light'] #new-post {
+[data-theme='light'] .v-form {
     background-color: var(--color-dark-pink);
     box-shadow: none;
 }
 
-#new-post-title {
+.v-text-field {
     width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border: 1px solid var(--color-dark-pink);
     border-radius: 5px;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-dark-pink);
-    background: var(--color-background);
 }
 
-[data-theme='light'] #new-post-title {
-    border: 1px solid var(--color-pale-green);
-    color: var(--color-pale-green);
-}
-
-#new-post-body {
+.v-textarea {
     width: 100%;
     height: 100%;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border: 1px solid var(--color-dark-pink);
     border-radius: 5px;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-dark-pink);
-    background: var(--color-background);
     resize: none;
 }
 
-[data-theme='light'] #new-post-body {
-    border: 1px solid var(--color-pale-green);
-    color: var(--color-pale-green);
+.v-file-input {
+    width: 100%;
 }
 
-button {
-    width: 100%;
+.v-icon {
+    color: var(--color-dark-pink);
+}
+
+.v-btn {
+    align-self: center;
     padding: 0.5rem;
-    border: 1px solid var(--color-dark-pink);
     border-radius: 5px;
-    font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-text);
     background: var(--color-dark-pink);
     cursor: pointer;
 }
 
-[data-theme='light'] button {
-    border: 1px solid var(--color-pale-green);
+.v-btn:hover {
+    background: var(--color-bright-pink);
+    color: var(--color-dark-pink);
+}
+
+[data-theme='light'] .v-btn {
     color: var(--color-pale-green);
-    background-color: var(--color-dark-pink);
+    background-color: var(--color-pale-blue);
 }
 </style>

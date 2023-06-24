@@ -34,6 +34,7 @@ const getPosts = async (waypointState) => {
 const addPost = (post) => {
     tempPosts.push({
         ...post,
+        id: cachedPosts.length === 0 ? 0 : cachedPosts[cachedPosts.length - 1].id + 1,
         reactions: 0,
         user: {
             username: loggedIn.username,
@@ -65,7 +66,7 @@ const addPost = (post) => {
                 :title="post.title"
                 :body="post.body"
                 :user="post.user"
-                :image="post.id % 4 === 0 ? 'https://placekitten.com/1000' : ''"
+                :image="post.image || (post.id % 4 === 0 ? 'https://placekitten.com/1000' : '')"
                 :reactions="post.reactions"
             />
             <NewPost v-if="loggedIn.username && cachedPosts.length > 0" :add-post="addPost" />
