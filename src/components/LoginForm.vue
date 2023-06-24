@@ -1,10 +1,13 @@
 <script>
+// Import packages
 import { ref } from 'vue'
 import router from '../router'
 
-import { useLoggedInStore } from '../stores/loggedIn'
-import { useTempRegisterStore } from '../stores/tempRegister'
+// Import stores
+import { useLoggedInStore } from '@/stores/loggedIn'
+import { useTempRegisterStore } from '@/stores/tempRegister'
 
+// Define variables
 const USER_API = 'https://dummyjson.com/users/'
 
 const username = ref('')
@@ -13,6 +16,7 @@ const confirmPassword = ref('')
 const isClicked = ref()
 const invalidCredentials = ref(false)
 const invalidCredentialsMessage = ref('Invalid Credentials')
+const showPassword = ref(false)
 
 const authenticate = async (image) => {
     const loggedInStore = useLoggedInStore()
@@ -121,6 +125,8 @@ export default {
         password.value = ''
         confirmPassword.value = ''
         isClicked.value = false
+        invalidCredentials.value = false
+        showPassword.value = false
 
         return {
             username,
@@ -130,7 +136,8 @@ export default {
             login,
             registerUser,
             invalidCredentials,
-            invalidCredentialsMessage
+            invalidCredentialsMessage,
+            showPassword
         }
     },
 
@@ -153,27 +160,27 @@ export default {
 </script>
 
 <template>
-    <form id="loginForm" method="post">
-        <input
-            class="inputField"
+    <VForm method="post">
+        <VTextField
             type="text"
             id="username"
             name="username"
             placeholder="Username"
             v-model.lazy="username"
         />
-        <input
-            class="inputField"
-            type="password"
+        <VTextField
+            :type="showPassword ? 'text' : 'password'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             id="password"
             name="password"
             placeholder="Password"
             v-model.lazy="password"
+            @click:append="showPassword = !showPassword"
         />
-        <input
+        <VTextField
             v-if="showConfirmPassword"
-            class="inputField"
-            type="password"
+            :type="showPassword ? 'text' : 'password'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             id="confirmPassword"
             name="confirmPassword"
             placeholder="Confirm Password"
@@ -199,23 +206,16 @@ export default {
             "
             :value="isClicked ? buttonTextOnClick : buttonText"
         />
-    </form>
+    </VForm>
 </template>
 
 <style scoped>
-#loginForm {
+.v-form {
     display: flex;
     flex-flow: column wrap;
     align-items: center;
     justify-content: center;
     width: 100%;
-}
-
-.inputField {
-    margin: 10px;
-    flex-basis: 75%;
-    min-width: 75%;
-    float: left;
 }
 
 .loginButton {
@@ -241,16 +241,11 @@ export default {
     pointer-events: none;
 }
 
-input[type='text'],
-input[type='password'] {
+.v-input {
     font-family: var(--source-sans);
     width: 100%;
-    padding: 20px 25px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid var(--vt-c-black-soft);
     border-radius: 30px;
-    background-color: var(--vt-c-white-soft);
+    color: var(--color-text);
 }
 
 #invalidCredentials {

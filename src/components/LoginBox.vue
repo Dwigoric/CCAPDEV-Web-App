@@ -67,6 +67,7 @@ defineProps({
     justify-content: center;
     font-family: Montserrat, sans-serif;
     text-align: center;
+    margin-bottom: 1rem;
 }
 
 #loginHeader span {
