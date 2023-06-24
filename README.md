@@ -1,6 +1,13 @@
-# MCO Web App
+# Compact Donuts
 
-This template should help get you started developing with Vue 3 in Vite.
+This is the forum for the Compact Donuts project.
+This is for partial fulfillment of the requirements for the course CCAPDEV.
+
+# Existing Users
+
+You can find the placeholder users in the
+[users.json](users.json) or [users.txt](users.txt) 
+files. You can use these to log into the website.
 
 ## Recommended IDE Setup
 
