@@ -1,17 +1,24 @@
 <script setup>
+// Import packages
 import router from '../router'
+import { onBeforeMount } from 'vue'
+
+// Import components
 import HomePage from '../components/HomePage.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 
-document.title = 'Compact Donuts | Home'
-
+// Import stores
 import { useLoggedInStore } from '@/stores/loggedIn'
 
-const loggedInStore = useLoggedInStore()
+document.title = 'Compact Donuts | Home'
 
-if (loggedInStore.username) {
-    router.push({ name: 'feed' })
-}
+onBeforeMount(() => {
+    const loggedInStore = useLoggedInStore()
+
+    if (loggedInStore.username) {
+        router.push({ name: 'feed' })
+    }
+})
 </script>
 
 <template>
