@@ -19,22 +19,23 @@ const invalidCredentialsMessage = ref('Invalid Credentials')
 const showPassword = ref(false)
 const remember = ref(false)
 
-const authenticate = async (image) => {
+const authenticate = async ({ id, username, image }) => {
     const loggedInStore = useLoggedInStore()
 
     // Store user in the loggedInStore
-    loggedInStore.username = username.value
+    loggedInStore.id = id
+    loggedInStore.username = username
     loggedInStore.image = image
 
     invalidCredentials.value = false
 
-    // Redirect to the feed page using the router
-    await router.replace('feed')
-
     // Set cookie
     if (remember.value) {
-        window.$cookies.set('user', { username: username.value, image })
+        window.$cookies.set('user', { id, username: username.value, image })
     }
+
+    // Redirect to the feed page using the router
+    return router.push({ name: 'feed' })
 }
 
 const login = async () => {
@@ -46,7 +47,11 @@ const login = async () => {
     const tempUser = tempRegisterStore.tempUsers.find((user) => user.username === username.value)
     if (tempUser) {
         if (tempUser.password === password.value) {
-            await authenticate(tempUser.image)
+            await authenticate({
+                id: tempUser.id,
+                username: tempUser.username,
+                image: tempUser.image
+            })
             return
         } else {
             isClicked.value = false
@@ -78,7 +83,7 @@ const login = async () => {
         return
     }
 
-    await authenticate(users[0].image)
+    await authenticate({ id: users[0].id, username: users[0].username, image: users[0].image })
 }
 
 const registerUser = async () => {
@@ -117,12 +122,17 @@ const registerUser = async () => {
 
     const tempRegisterStore = useTempRegisterStore()
     tempRegisterStore.tempUsers.push({
+        id: tempRegisterStore.tempUsers.length + 1,
         username: username.value,
         password: password.value,
         image: `https://robohash.org/${username.value}.png`
     })
 
-    await authenticate(`https://robohash.org/${username.value}.png`)
+    await authenticate({
+        id: tempRegisterStore.tempUsers.length,
+        username: username.value,
+        image: `https://robohash.org/${username.value}.png`
+    })
 }
 
 export default {
