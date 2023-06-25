@@ -17,20 +17,25 @@ defineProps({
 
 <template>
     <div>
-        <button @click="upvote" :class="upvoted">&uarr;</button>
+        <button id="up" @click="upvote" class="upvoted">&uarr;</button>
         <span class="votes">{{ count + reactions }}</span>
-        <button @click="downvote" :class="downvoted">&darr;</button>
+        <button id="down" @click="downvote" class="downvoted">&darr;</button>
     </div>
 </template>
 
 <style>
-button {
+.button {
   &:hover {
     cursor: pointer;
   }
   
   &:focus {
-    outline: none;
+    background-color: #9494FF;
+  }
+
+  &:visited {
+    background-color: #9494FF;
+    color: white;
   }
 }
 
@@ -40,12 +45,12 @@ button {
   width: 1.5em;
 }
 
-.upvoted {
+.upvoted:focus {
   background-color: #FF8B60;
   color: white;
 }
 
-.downvoted {
+.downvoted:focus {
   background-color: #9494FF;
   color: white;
 }
