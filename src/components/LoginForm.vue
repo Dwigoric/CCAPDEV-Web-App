@@ -9,6 +9,7 @@ import { useTempRegisterStore } from '@/stores/tempRegister'
 
 // Define variables
 const USER_API = 'https://dummyjson.com/users/'
+const DEFAULT_BG_IMAGE = 'https://ik.imagekit.io/ikmedia/backlit.jpg'
 
 const username = ref('')
 const password = ref('')
@@ -19,22 +20,24 @@ const invalidCredentialsMessage = ref('Invalid Credentials')
 const showPassword = ref(false)
 const remember = ref(false)
 
-const authenticate = async (image) => {
+const authenticate = async (userLogin) => {
     const loggedInStore = useLoggedInStore()
 
     // Store user in the loggedInStore
-    loggedInStore.username = username.value
-    loggedInStore.image = image
+    loggedInStore.id = userLogin.id
+    loggedInStore.username = userLogin.username
+    loggedInStore.image = userLogin.image
+    loggedInStore.bgImage = userLogin.bgImage || DEFAULT_BG_IMAGE
 
     invalidCredentials.value = false
 
-    // Redirect to the feed page using the router
-    await router.replace('feed')
-
     // Set cookie
     if (remember.value) {
-        window.$cookies.set('user', { username: username.value, image })
+        window.$cookies.set('user', userLogin)
     }
+
+    // Redirect to the feed page using the router
+    return router.push({ name: 'feed' })
 }
 
 const login = async () => {
@@ -46,7 +49,12 @@ const login = async () => {
     const tempUser = tempRegisterStore.tempUsers.find((user) => user.username === username.value)
     if (tempUser) {
         if (tempUser.password === password.value) {
-            await authenticate(tempUser.image)
+            await authenticate({
+                id: tempUser.id,
+                username: tempUser.username,
+                image: tempUser.image,
+                bgImage: tempUser.bgImage
+            })
             return
         } else {
             isClicked.value = false
@@ -78,7 +86,11 @@ const login = async () => {
         return
     }
 
-    await authenticate(users[0].image)
+    await authenticate({
+        id: users[0].id,
+        username: users[0].username,
+        image: users[0].image
+    })
 }
 
 const registerUser = async () => {
@@ -117,12 +129,17 @@ const registerUser = async () => {
 
     const tempRegisterStore = useTempRegisterStore()
     tempRegisterStore.tempUsers.push({
+        id: tempRegisterStore.tempUsers.length + 1,
         username: username.value,
         password: password.value,
         image: `https://robohash.org/${username.value}.png`
     })
 
-    await authenticate(`https://robohash.org/${username.value}.png`)
+    await authenticate({
+        id: tempRegisterStore.tempUsers.length,
+        username: username.value,
+        image: `https://robohash.org/${username.value}.png`
+    })
 }
 
 export default {

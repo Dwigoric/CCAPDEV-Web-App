@@ -11,6 +11,7 @@ import PostSpecific from '../components/PostSpecific.vue'
 import PostComment from '../components/PostComment.vue'
 import PostSpecificVote from '../components/PostSpecificVote.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
+import NewComment from '../components/NewComment.vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -101,7 +102,7 @@ if (specificPostStore.currentPostId === null) {
                 <PostSpecificVote :reactions="specificPostStore.currentPost.reactions" />
             </div>
             <div id="new-comment">
-                <VTextarea
+                <!-- <VTextField
                     placeholder="Add a comment..."
                     id="new-comment-body"
                     variant="outlined"
@@ -110,7 +111,8 @@ if (specificPostStore.currentPostId === null) {
                     :rows="1"
                     v-model="newCommentBody"
                     @keyup.enter="addComment"
-                />
+                />-->
+                 <NewComment />
             </div>
             <div id="comments">
                 <div id="loader-wrapper" v-if="isLoading">

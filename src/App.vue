@@ -14,8 +14,10 @@ const isDarkStore = useIsDarkStore()
 const theme = useTheme()
 
 const $cookies = inject('$cookies')
+loggedInStore.id = $cookies.get('user')?.id
 loggedInStore.username = $cookies.get('user')?.username
 loggedInStore.image = $cookies.get('user')?.image
+loggedInStore.bgImage = $cookies.get('user')?.bgImage
 
 const prefersDark = useMediaQuery('(prefers-color-scheme: dark)').value
 document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
