@@ -48,13 +48,13 @@ const processInput = (ref) => {
     <VContainer>
         <VForm>
             <VTextField type="text" placeholder="Title" v-model="title" />
-            <VTextarea
+            <VTextField
                 placeholder="Body"
                 id="new-post-body"
                 variant="outlined"
                 v-model="body"
                 :no-resize="true"
-            ></VTextarea>
+            />
             <VFileInput
                 label="Insert image"
                 variant="outlined"
@@ -64,7 +64,7 @@ const processInput = (ref) => {
                 prepend-icon="mdi-camera"
                 ref="inputImage"
             ></VFileInput>
-            <VBtn @click="processInput(this.$refs.inputImage)" :disabled="!title || !body">
+            <VBtn @click="processInput(this.$refs.inputImage)" :disabled="!title || !body" class="Submit">
                 Bake!
             </VBtn>
         </VForm>
@@ -72,6 +72,7 @@ const processInput = (ref) => {
 </template>
 
 <style scoped>
+
 .v-form {
     display: flex;
     flex-flow: column nowrap;
@@ -126,5 +127,6 @@ const processInput = (ref) => {
 
 [data-theme='light'] .v-btn {
     background-color: var(--color-bright-blue);
+    color: white;
 }
 </style>
