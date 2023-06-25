@@ -11,20 +11,21 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 import { useSearchStore } from '../stores/search'
 
 // Define variables
-const { searchPosts } = useSearchStore()
+const searchStore = useSearchStore()
 
 onUnmounted(() => {
-    searchPosts.splice(0, searchPosts.length)
+    searchStore.searchPosts.splice(0, searchStore.searchPosts.length)
 })
 </script>
 
 <template>
     <NavigationBar />
     <div class="search-view">
-        <LoaderHeart v-if="searchPosts.length === 0" />
+        <LoaderHeart v-if="searchStore.fetching" />
+        <span v-else-if="searchStore.searchPosts.length === 0"> No posts found </span>
         <FeedPost
             class="search-post"
-            v-for="post in searchPosts"
+            v-for="post in searchStore.searchPosts"
             :key="post.id"
             :title="post.title"
             :body="post.body"

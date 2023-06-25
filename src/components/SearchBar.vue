@@ -8,11 +8,13 @@ import { useSearchStore } from '../stores/search'
 
 // Define variables
 const query = ref('')
-const { search } = useSearchStore()
+const searchStore = useSearchStore()
 
 // Process search
 const processSearch = () => {
-    search(query.value)
+    searchStore.searchPosts.splice(0, searchStore.searchPosts.length)
+    searchStore.search(query.value)
+    searchStore.fetching = true
     router.push({ name: 'search' })
 }
 </script>

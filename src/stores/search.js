@@ -1,14 +1,16 @@
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 
 const API_URL = 'https://dummyjson.com'
 
 const searchPosts = reactive([])
+const fetching = ref(false)
 
 export const useSearchStore = defineStore('search', () => {
     return {
         search,
-        searchPosts
+        searchPosts,
+        fetching
     }
 })
 
@@ -40,4 +42,7 @@ async function search(query) {
 
     // Set posts
     searchPosts.splice(0, searchPosts.length, ...posts)
+
+    // Set fetching to false
+    fetching.value = false
 }
