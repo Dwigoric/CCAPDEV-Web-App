@@ -2,6 +2,9 @@
 // Import packages
 import { useMediaQuery } from '@vueuse/core'
 
+// Import components
+import SearchBar from './SearchBar.vue'
+
 // Import stores
 import { useLoggedInStore } from '@/stores/loggedIn'
 
@@ -36,7 +39,9 @@ const dayMessage = () => {
         <div class="navbar-item" v-if="useMediaQuery('(min-width: 1024px)').value">
             <RouterLink to="/feed" id="feed-link">Compact Donuts</RouterLink>
         </div>
-        <div class="navbar-item" id="search-bar">There is a search bar here.</div>
+        <div class="navbar-item" id="search-bar">
+            <SearchBar />
+        </div>
         <div class="navbar-item" v-if="loggedInStore.username" id="user-panel">
             <span>
                 <span v-if="useMediaQuery('(min-width: 1024px)').value">{{ dayMessage() }}, </span>
@@ -114,6 +119,7 @@ header {
     flex-grow: 10;
     display: flex;
     justify-content: center;
+    padding: 0;
 }
 
 #username {
