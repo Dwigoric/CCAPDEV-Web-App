@@ -1,33 +1,45 @@
-Vue.config.silent = false;
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-Vue.component('post', {
-  template: '#post-template',
-  props: ['post'],
-  data: function() {
-    return {
-      upvoted: false,
-      downvoted: false
+export const useVoteStore = defineStore('count', () => {
+  const count = ref(0)
+  var isUpvoted = false;
+  var isDownvoted = false;
+
+const upvote = () => {
+  if(isUpvoted == false) {
+    if(isDownvoted == true) {
+      isDownvoted = false;
+      count.value++;
     }
-  },
-  methods: {
-    upvote: function() {
-      this.upvoted = !this.upvoted;
-      this.downvoted = false;
-    },
-    downvote: function() {
-      this.downvoted = !this.downvoted;
-      this.upvoted = false;
-    }
-  },
-  computed: {
-    votes: function() {
-      if (this.upvoted) {
-        return this.post.votes + 1;
-      } else if (this.downvoted) {
-        return this.post.votes - 1;
-      } else {
-        return this.post.votes;
-      }
-    }
+    count.value++;
+    isUpvoted = true;
   }
-});
+  else {
+    isUpvoted = false;
+    count.value--;
+  }
+}
+
+const downvote = () => {
+  if(isDownvoted == false) {
+    if(isUpvoted == true) {
+      isUpvoted = false;
+      count.value--;
+    }
+    count.value--;
+    isDownvoted = true;
+  }
+  else {
+    isDownvoted = false;
+    count.value++;
+  }
+}
+
+
+return {
+  count,
+  upvote,
+  downvote
+}
+})

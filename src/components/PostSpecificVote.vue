@@ -1,4 +1,11 @@
 <script setup>
+import { storeToRefs } from 'pinia';
+import { useVoteStore } from '../stores/vote'
+
+const VoteStore = useVoteStore();
+const { upvote, downvote } = VoteStore;
+const { count } = storeToRefs(VoteStore);
+
 defineProps({
     reactions: {
         type: Number,
@@ -8,11 +15,11 @@ defineProps({
 })
 </script>
 
-<template id="post-template">
-    <div class>
-        <button @click="upvote" :class="{upvoted: upvoted}">&uarr;</button>
-        <span class="votes">{{ reactions }}</span>
-        <button @click="downvote" :class="{downvoted: downvoted}">&darr;</button>
+<template>
+    <div>
+        <button @click="upvote" :class="upvoted">&uarr;</button>
+        <span class="votes">{{ count + reactions }}</span>
+        <button @click="downvote" :class="downvoted">&darr;</button>
     </div>
 </template>
 
@@ -41,9 +48,5 @@ button {
 .downvoted {
   background-color: #9494FF;
   color: white;
-}
-
-a {
-  margin-left: 0.75em;
 }
 </style>
