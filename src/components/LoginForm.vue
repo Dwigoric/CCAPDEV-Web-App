@@ -17,6 +17,7 @@ const isClicked = ref()
 const invalidCredentials = ref(false)
 const invalidCredentialsMessage = ref('Invalid Credentials')
 const showPassword = ref(false)
+const remember = ref(false)
 
 const authenticate = async (image) => {
     const loggedInStore = useLoggedInStore()
@@ -29,6 +30,11 @@ const authenticate = async (image) => {
 
     // Redirect to the feed page using the router
     await router.replace('feed')
+
+    // Set cookie
+    if (remember.value) {
+        window.$cookies.set('user', { username: username.value, image })
+    }
 }
 
 const login = async () => {
@@ -127,6 +133,7 @@ export default {
         isClicked.value = false
         invalidCredentials.value = false
         showPassword.value = false
+        remember.value = false
 
         return {
             username,
@@ -137,7 +144,8 @@ export default {
             registerUser,
             invalidCredentials,
             invalidCredentialsMessage,
-            showPassword
+            showPassword,
+            remember
         }
     },
 
@@ -186,6 +194,7 @@ export default {
             placeholder="Confirm Password"
             v-model.lazy="confirmPassword"
         />
+        <VCheckbox label="Remember me" v-model="remember" />
         <span v-if="invalidCredentials" id="invalidCredentials">
             {{ invalidCredentialsMessage }}
         </span>

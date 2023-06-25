@@ -1,14 +1,21 @@
 <script setup>
 // Import packages
+import { inject } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 
 // Import stores
+import { useLoggedInStore } from './stores/loggedIn'
 import { useIsDarkStore } from './stores/is-dark'
 import { useTheme } from 'vuetify'
 
 // Define variables
+const loggedInStore = useLoggedInStore()
 const isDarkStore = useIsDarkStore()
 const theme = useTheme()
+
+const $cookies = inject('$cookies')
+loggedInStore.username = $cookies.get('user')?.username
+loggedInStore.image = $cookies.get('user')?.image
 
 const prefersDark = useMediaQuery('(prefers-color-scheme: dark)').value
 document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light')

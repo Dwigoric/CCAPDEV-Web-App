@@ -13,6 +13,9 @@ const logout = () => {
     // Unset username and password in the loggedInStore
     loggedInStore.username = ''
     loggedInStore.image = ''
+
+    // Remove cookie
+    window.$cookies.remove('user')
 }
 
 const dayMessage = () => {
