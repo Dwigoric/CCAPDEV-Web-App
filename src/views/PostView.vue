@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import router from '@/router'
 
@@ -10,29 +10,48 @@ import ThemeSwitch from '../components/ThemeSwitch.vue'
 import PostSpecific from '../components/PostSpecific.vue'
 import PostComment from '../components/PostComment.vue'
 import PostSpecificVote from '../components/PostSpecificVote.vue'
+import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
 import { useSpecificPostStore } from '@/stores/currentPost'
 
-const { currentPost, currentPostId, unsetCurrentPost } = useSpecificPostStore()
+// Define variables
+const API_URL = 'https://dummyjson.com'
 
-const tempUser1 = {
-    username: 'legitCrammer',
-    image: 'https://media.istockphoto.com/id/1158030230/photo/portrait-of-a-cute-little-duckling-closeup-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=ipLksGRzH5Sj6ER0c1MTWn4K_EgEHHKP__1ezNc_WoM='
+const specificPostStore = useSpecificPostStore()
+
+const comments = reactive([])
+const isLoading = ref(true)
+
+// Define functions
+async function fetchComments() {
+    const response = await fetch(`${API_URL}/comments/post/${specificPostStore.currentPost.id}`)
+    const data = await response.json()
+
+    // Define search query for user
+    const userParams = new URLSearchParams()
+    userParams.set('limit', '0')
+    userParams.set('select', 'id,username,image')
+
+    const userResponse = await fetch(`${API_URL}/users?${userParams}`)
+    const userData = await userResponse.json()
+
+    data.comments.map((comment) => {
+        comments.push({
+            ...comment,
+            user: userData.users.find((user) => user.id === comment.user.id)
+        })
+    })
+
+    isLoading.value = false
 }
 
-const tempUser2 = {
-    username: 'NoobMaster69',
-    image: 'https://blogtimenow.com/wp-content/uploads/2014/06/hide-facebook-profile-picture-notification.jpg'
-}
-const tempUser3 = {
-    username: 'Barbie',
-    image: 'https://i.pinimg.com/474x/81/73/ff/8173ff1430a9bd44f0b0cf49bdb9bcde.jpg'
-}
+// Define lifecycle hooks
+onMounted(fetchComments)
 
-onUnmounted(unsetCurrentPost)
+onUnmounted(specificPostStore.unsetCurrentPost)
 
-if (currentPostId === null) {
+if (specificPostStore.currentPostId === null) {
     router.push({ name: 'feed' })
 }
 </script>
@@ -43,24 +62,25 @@ if (currentPostId === null) {
     <div id="view">
         <div id="post-details">
             <PostSpecific
-                :user="currentPost.user"
-                :title="currentPost.title"
-                :body="currentPost.body"
-                :image="currentPost.image"
+                :user="specificPostStore.currentPost.user"
+                :title="specificPostStore.currentPost.title"
+                :body="specificPostStore.currentPost.body"
+                :image="specificPostStore.currentPost.image"
             />
             <div id="vote">
-                <PostSpecificVote :reactions="currentPost.reactions" />
+                <PostSpecificVote :reactions="specificPostStore.currentPost.reactions" />
             </div>
             <div id="comments">
-                <div class="comment">
-                    <PostComment :user="tempUser3" body="Wow! So Motivational!" />
+                <div id="loader-wrapper" v-if="isLoading">
+                    <LoaderHeart />
                 </div>
-                <div class="comment">
-                    <PostComment :user="tempUser2" body="Tara Kopi, Sleep is for the weak" />
-                </div>
-                <div class="comment">
-                    <PostComment :user="tempUser1" body="That's me. Fr FR FR" />
-                </div>
+                <PostComment
+                    v-else
+                    v-for="comment in comments"
+                    :key="comment.id"
+                    :body="comment.body"
+                    :user="comment.user"
+                />
                 <div id="comments-end">You've reached the end.</div>
             </div>
         </div>
@@ -68,13 +88,6 @@ if (currentPostId === null) {
 </template>
 
 <style scoped>
-.comment {
-    display: flex;
-    background: var(--color-background-soft);
-    width: 100%;
-    flex-grow: 1;
-}
-
 #comments {
     display: flex;
     flex-flow: column nowrap;
@@ -113,5 +126,12 @@ if (currentPostId === null) {
     flex-flow: row nowrap;
     justify-content: center;
     color: var(--color-bright-blue);
+}
+
+#loader-wrapper {
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
 }
 </style>

@@ -63,6 +63,7 @@ const addPost = (post) => {
             <FeedPost
                 v-for="post in cachedPosts"
                 :key="post.id"
+                :id="post.id"
                 :title="post.title"
                 :body="post.body"
                 :user="post.user"

@@ -4,6 +4,10 @@ import { useSpecificPostStore } from '@/stores/currentPost'
 const postStore = useSpecificPostStore()
 
 defineProps({
+    id: {
+        type: Number,
+        required: true
+    },
     user: {
         type: Object,
         required: true
@@ -33,6 +37,7 @@ defineProps({
         class="post"
         @click="
             postStore.setCurrentPost({
+                id,
                 user,
                 title,
                 body,
