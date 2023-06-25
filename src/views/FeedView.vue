@@ -66,7 +66,7 @@ const addPost = (post) => {
                 :title="post.title"
                 :body="post.body"
                 :user="post.user"
-                :image="post.image || (post.id % 4 === 0 ? 'https://placekitten.com/1000' : '')"
+                :image="post.image"
                 :reactions="post.reactions"
             />
         </div>

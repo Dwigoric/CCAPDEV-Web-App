@@ -147,7 +147,13 @@ defineProps({
     border-radius: 10px;
     justify-self: center;
     margin: 20px auto 0;
-    max-width: 500px;
+    max-width: 300px;
+}
+
+@media (min-width: 1024px) {
+    .post-image {
+        max-width: 500px;
+    }
 }
 
 .dooters {
