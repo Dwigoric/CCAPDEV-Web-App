@@ -102,6 +102,8 @@ if (specificPostStore.currentPostId === null) {
                 <VTextarea
                     placeholder="Add a comment..."
                     id="new-comment-body"
+                    variant="outlined"
+                    active="true"
                     :no-resize="true"
                     :rows="1"
                     v-model="newCommentBody"
@@ -193,5 +195,10 @@ if (specificPostStore.currentPostId === null) {
     font-size: 1rem;
     color: var(--color-text);
     resize: none;
+}
+
+#vote {
+    display: flex;
+    margin: 10px;
 }
 </style>

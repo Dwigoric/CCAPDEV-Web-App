@@ -51,6 +51,7 @@ const processInput = (ref) => {
             <VTextarea
                 placeholder="Body"
                 id="new-post-body"
+                variant="outlined"
                 v-model="body"
                 :no-resize="true"
             ></VTextarea>
