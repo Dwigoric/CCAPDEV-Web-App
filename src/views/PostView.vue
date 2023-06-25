@@ -9,7 +9,7 @@ import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import PostSpecific from '../components/PostSpecific.vue'
 import PostComment from '../components/PostComment.vue'
-import Vote from '../components/Vote.vue'
+import PostSpecificVote from '../components/PostSpecificVote.vue'
 
 // Import stores
 import { useSpecificPostStore } from '@/stores/currentPost'
@@ -49,7 +49,7 @@ if (currentPostId === null) {
                 :image="currentPost.image"
             />
             <div id="vote">
-                <Vote />
+                <PostSpecificVote :reactions="currentPost.reactions" />
             </div>
             <div id="comments">
                 <div class="comment">

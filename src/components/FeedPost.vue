@@ -36,7 +36,8 @@ defineProps({
                 user,
                 title,
                 body,
-                image
+                image,
+                reactions
             })
         "
     >
