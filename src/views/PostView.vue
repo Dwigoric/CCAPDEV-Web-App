@@ -13,37 +13,65 @@ import PostSpecificVote from '../components/PostSpecificVote.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
-import { useSpecificPostStore } from '@/stores/currentPost'
+import { useLoggedInStore } from '../stores/loggedIn'
+import { useSpecificPostStore } from '../stores/currentPost'
+import { useCommentsStore } from '../stores/comments'
 
 // Define variables
 const API_URL = 'https://dummyjson.com'
 
+const loggedInStore = useLoggedInStore()
 const specificPostStore = useSpecificPostStore()
+const commentsStore = useCommentsStore()
 
+const newCommentBody = ref('')
 const comments = reactive([])
 const isLoading = ref(true)
 
 // Define functions
 async function fetchComments() {
-    const response = await fetch(`${API_URL}/comments/post/${specificPostStore.currentPost.id}`)
-    const data = await response.json()
+    if (specificPostStore.currentPostId <= 150) {
+        const response = await fetch(`${API_URL}/comments/post/${specificPostStore.currentPostId}`)
+        const data = await response.json()
 
-    // Define search query for user
-    const userParams = new URLSearchParams()
-    userParams.set('limit', '0')
-    userParams.set('select', 'id,username,image')
+        // Define search query for user
+        const userParams = new URLSearchParams()
+        userParams.set('limit', '0')
+        userParams.set('select', 'id,username,image')
 
-    const userResponse = await fetch(`${API_URL}/users?${userParams}`)
-    const userData = await userResponse.json()
+        const userResponse = await fetch(`${API_URL}/users?${userParams}`)
+        const userData = await userResponse.json()
 
-    data.comments.map((comment) => {
-        comments.push({
-            ...comment,
-            user: userData.users.find((user) => user.id === comment.user.id)
+        data.comments.forEach((comment) => {
+            comments.push({
+                ...comment,
+                user: userData.users.find((user) => user.id === comment.user.id)
+            })
         })
-    })
+    }
+
+    comments.push(
+        ...commentsStore.comments.filter(
+            (comment) => comment.postId === specificPostStore.currentPostId
+        )
+    )
 
     isLoading.value = false
+}
+
+function addComment() {
+    commentsStore.comments.push({
+        id: 340 + commentsStore.comments.length + 1,
+        body: newCommentBody.value,
+        user: {
+            username: loggedInStore.username,
+            image: loggedInStore.image
+        },
+        postId: specificPostStore.currentPostId
+    })
+    newCommentBody.value = ''
+
+    comments.push(commentsStore.comments[commentsStore.comments.length - 1])
 }
 
 // Define lifecycle hooks
@@ -70,7 +98,18 @@ if (specificPostStore.currentPostId === null) {
             <div id="vote">
                 <PostSpecificVote :reactions="specificPostStore.currentPost.reactions" />
             </div>
+            <div id="new-comment">
+                <VTextarea
+                    placeholder="Add a comment..."
+                    id="new-comment-body"
+                    :no-resize="true"
+                    :rows="1"
+                    v-model="newCommentBody"
+                    @keyup.enter="addComment"
+                />
+            </div>
             <div id="comments">
+                <div id="comments-end">You've reached the end.</div>
                 <div id="loader-wrapper" v-if="isLoading">
                     <LoaderHeart />
                 </div>
@@ -81,7 +120,6 @@ if (specificPostStore.currentPostId === null) {
                     :body="comment.body"
                     :user="comment.user"
                 />
-                <div id="comments-end">You've reached the end.</div>
             </div>
         </div>
     </div>
@@ -90,7 +128,7 @@ if (specificPostStore.currentPostId === null) {
 <style scoped>
 #comments {
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: column-reverse nowrap;
     align-items: flex-start;
     justify-content: center;
     flex-basis: 100%;
@@ -133,5 +171,27 @@ if (specificPostStore.currentPostId === null) {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+}
+
+#new-comment {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-background-soft);
+    padding: 1rem;
+    border-top: 1px solid var(--color-background);
+}
+
+#new-comment-body {
+    width: 100%;
+    background-color: var(--color-background);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    color: var(--color-text);
+    resize: none;
 }
 </style>
