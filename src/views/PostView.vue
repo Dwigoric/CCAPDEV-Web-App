@@ -45,7 +45,8 @@ async function fetchComments() {
         data.comments.forEach((comment) => {
             comments.push({
                 ...comment,
-                user: userData.users.find((user) => user.id === comment.user.id)
+                user: userData.users.find((user) => user.id === comment.user.id),
+                replies: []
             })
         })
     }
@@ -62,12 +63,13 @@ async function fetchComments() {
 function addComment() {
     commentsStore.comments.push({
         id: 340 + commentsStore.comments.length + 1,
+        postId: specificPostStore.currentPostId,
         body: newCommentBody.value,
+        replies: [],
         user: {
             username: loggedInStore.username,
             image: loggedInStore.image
-        },
-        postId: specificPostStore.currentPostId
+        }
     })
     newCommentBody.value = ''
 
@@ -111,7 +113,6 @@ if (specificPostStore.currentPostId === null) {
                 />
             </div>
             <div id="comments">
-                <div id="comments-end">You've reached the end.</div>
                 <div id="loader-wrapper" v-if="isLoading">
                     <LoaderHeart />
                 </div>
@@ -121,7 +122,8 @@ if (specificPostStore.currentPostId === null) {
                     :key="comment.id"
                     :body="comment.body"
                     :user="comment.user"
-                />
+                >
+                </PostComment>
             </div>
         </div>
     </div>
@@ -135,6 +137,7 @@ if (specificPostStore.currentPostId === null) {
     justify-content: center;
     flex-basis: 100%;
     background-color: var(--color-background-soft);
+    padding: 0 2rem 1.5rem 0;
 }
 
 #view {
@@ -158,14 +161,6 @@ if (specificPostStore.currentPostId === null) {
     #post-details {
         flex-basis: 40vw;
     }
-}
-
-#comments-end {
-    width: 100%;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    color: var(--color-bright-blue);
 }
 
 #loader-wrapper {
