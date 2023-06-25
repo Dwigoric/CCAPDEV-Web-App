@@ -62,6 +62,8 @@ async function fetchComments() {
 }
 
 function addComment() {
+    if (newCommentBody.value === '') return
+
     commentsStore.comments.push({
         id: 340 + commentsStore.comments.length + 1,
         postId: specificPostStore.currentPostId,
@@ -101,18 +103,16 @@ if (specificPostStore.currentPostId === null) {
             <div id="vote">
                 <PostSpecificVote :reactions="specificPostStore.currentPost.reactions" />
             </div>
-            <div id="new-comment">
-                <!-- <VTextField
+            <div id="new-comment" v-if="loggedInStore.username">
+                <VTextarea
                     placeholder="Add a comment..."
                     id="new-comment-body"
-                    variant="outlined"
                     active="true"
-                    :no-resize="true"
-                    :rows="1"
+                    no-resize="true"
+                    rows="1"
                     v-model="newCommentBody"
                     @keyup.enter="addComment"
-                />-->
-                 <NewComment />
+                />
             </div>
             <div id="comments">
                 <div id="loader-wrapper" v-if="isLoading">

@@ -14,6 +14,7 @@ const loggedInStore = useLoggedInStore()
 // Define functions
 const logout = () => {
     // Unset username and password in the loggedInStore
+    loggedInStore.id = -1
     loggedInStore.username = ''
     loggedInStore.image = ''
 
