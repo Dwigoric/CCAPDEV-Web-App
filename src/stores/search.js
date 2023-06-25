@@ -1,6 +1,8 @@
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 
+import { useTempPostsStore } from './tempPosts'
+
 const API_URL = 'https://dummyjson.com'
 
 const searchPosts = reactive([])
@@ -42,6 +44,16 @@ async function search(query) {
 
     // Set posts
     searchPosts.splice(0, searchPosts.length, ...posts)
+
+    // Append temporary posts
+    const { tempPosts } = useTempPostsStore()
+    searchPosts.push(
+        ...tempPosts.filter(
+            (post) =>
+                post.title.toLowerCase().includes(query.toLowerCase()) ||
+                post.body.toLowerCase().includes(query.toLowerCase())
+        )
+    )
 
     // Set fetching to false
     fetching.value = false
