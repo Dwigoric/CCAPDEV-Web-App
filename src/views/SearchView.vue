@@ -13,6 +13,8 @@ import { useSearchStore } from '../stores/search'
 // Define variables
 const searchStore = useSearchStore()
 
+document.title = 'Compact Donuts | Search'
+
 onUnmounted(() => {
     searchStore.searchPosts.splice(0, searchStore.searchPosts.length)
 })

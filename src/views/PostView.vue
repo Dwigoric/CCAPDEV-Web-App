@@ -24,6 +24,8 @@ const loggedInStore = useLoggedInStore()
 const specificPostStore = useSpecificPostStore()
 const commentsStore = useCommentsStore()
 
+document.title = 'Compact Donuts | Post'
+
 const newCommentBody = ref('')
 const comments = reactive([])
 const isLoading = ref(true)
