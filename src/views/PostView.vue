@@ -11,7 +11,6 @@ import PostSpecific from '../components/PostSpecific.vue'
 import PostComment from '../components/PostComment.vue'
 import PostSpecificVote from '../components/PostSpecificVote.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
-import NewComment from '../components/NewComment.vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -185,7 +184,6 @@ if (specificPostStore.currentPostId === null) {
 
 #new-comment-body {
     width: 100%;
-    background-color: var(--color-background);
     border: none;
     border-radius: 0.5rem;
     padding: 0.5rem;

@@ -47,13 +47,15 @@ const processInput = (ref) => {
 <template>
     <VContainer>
         <VForm>
-            <VTextField type="text" placeholder="Title" v-model="title" />
-            <VTextField
+            <VTextField placeholder="Title" v-model="title" />
+            <VTextarea
                 placeholder="Body"
                 id="new-post-body"
-                variant="outlined"
+                active="true"
+                flat="true"
+                variant="solo"
                 v-model="body"
-                :no-resize="true"
+                no-resize="true"
             />
             <VFileInput
                 label="Insert image"
@@ -64,7 +66,11 @@ const processInput = (ref) => {
                 prepend-icon="mdi-camera"
                 ref="inputImage"
             ></VFileInput>
-            <VBtn @click="processInput(this.$refs.inputImage)" :disabled="!title || !body" class="Submit">
+            <VBtn
+                @click="processInput(this.$refs.inputImage)"
+                :disabled="!title || !body"
+                class="Submit"
+            >
                 Bake!
             </VBtn>
         </VForm>
@@ -72,7 +78,6 @@ const processInput = (ref) => {
 </template>
 
 <style scoped>
-
 .v-form {
     display: flex;
     flex-flow: column nowrap;
@@ -95,24 +100,20 @@ const processInput = (ref) => {
     border-radius: 5px;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-dark-pink);
 }
 
 .v-textarea {
     width: 100%;
     border-radius: 5px;
+    border: none;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-dark-pink);
-    resize: none;
+    outline: none;
 }
 
 .v-file-input {
     width: 100%;
-}
-
-.v-icon {
-    color: var(--color-dark-pink);
 }
 
 .v-btn {
