@@ -9,6 +9,7 @@ import { useTempRegisterStore } from '@/stores/tempRegister'
 
 // Define variables
 const USER_API = 'https://dummyjson.com/users/'
+const DEFAULT_BG_IMAGE = 'https://ik.imagekit.io/ikmedia/backlit.jpg'
 
 const username = ref('')
 const password = ref('')
@@ -19,19 +20,20 @@ const invalidCredentialsMessage = ref('Invalid Credentials')
 const showPassword = ref(false)
 const remember = ref(false)
 
-const authenticate = async ({ id, username, image }) => {
+const authenticate = async (userLogin) => {
     const loggedInStore = useLoggedInStore()
 
     // Store user in the loggedInStore
-    loggedInStore.id = id
-    loggedInStore.username = username
-    loggedInStore.image = image
+    loggedInStore.id = userLogin.id
+    loggedInStore.username = userLogin.username
+    loggedInStore.image = userLogin.image
+    loggedInStore.bgImage = userLogin.bgImage || DEFAULT_BG_IMAGE
 
     invalidCredentials.value = false
 
     // Set cookie
     if (remember.value) {
-        window.$cookies.set('user', { id, username: username.value, image })
+        window.$cookies.set('user', userLogin)
     }
 
     // Redirect to the feed page using the router
@@ -50,7 +52,8 @@ const login = async () => {
             await authenticate({
                 id: tempUser.id,
                 username: tempUser.username,
-                image: tempUser.image
+                image: tempUser.image,
+                bgImage: tempUser.bgImage
             })
             return
         } else {
@@ -83,7 +86,11 @@ const login = async () => {
         return
     }
 
-    await authenticate({ id: users[0].id, username: users[0].username, image: users[0].image })
+    await authenticate({
+        id: users[0].id,
+        username: users[0].username,
+        image: users[0].image
+    })
 }
 
 const registerUser = async () => {
