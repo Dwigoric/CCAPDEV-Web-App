@@ -16,6 +16,7 @@ function addComment({ postId, body, parentCommentId, user }) {
         postId,
         body,
         parentCommentId,
-        user
+        user,
+        deleted: false
     })
 }

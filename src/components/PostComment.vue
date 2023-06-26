@@ -19,7 +19,6 @@ const newReplyBody = ref('')
 const newComment = ref('')
 
 const editFlag = ref(false)
-const deleteFlag = ref(false)
 
 // Define functions
 function addReply(parentCommentId) {
@@ -62,9 +61,8 @@ const props = defineProps({
 })
 
 function deleteComment() {
-    deleteFlag.value = true
     const comment = commentsStore.comments.find((cm) => cm.id === props.id)
-    comment.body = 'Comment have been deleted'
+    comment.deleted = true
 }
 
 function editComment() {
@@ -83,44 +81,53 @@ function saveComment() {
 <template>
     <div class="comment">
         <div class="main-comment" @click="onclick(id)">
-            <div class="user">
-                <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
-                <div class="user-name">{{ user['username'] }}</div>
+            <div
+                class="existing-comment"
+                v-if="commentsStore.comments.some((cm) => cm.id === id && !cm.deleted)"
+            >
+                <div class="user">
+                    <img
+                        class="user-image"
+                        :src="user['image']"
+                        :alt="`${user['username']}'s image`"
+                    />
+                    <div class="user-name">{{ user['username'] }}</div>
+                </div>
+                <div class="content">
+                    <p v-if="!editFlag" class="body">{{ body }}</p>
+                    <VTextarea
+                        v-else
+                        class="new-reply-input"
+                        v-model="newComment"
+                        placeholder="Enter a new comment..."
+                        rows="1"
+                        no-resize=""
+                        append-inner-icon="mdi-send"
+                        @click:append-inner="saveComment"
+                    />
+                </div>
+                <VMenu v-if="loggedInStore.id === user.id">
+                    <template v-slot:activator="{ props }">
+                        <VBtn
+                            v-bind="props"
+                            size="large"
+                            density="compact"
+                            variant="text"
+                            icon="mdi-dots-vertical"
+                        >
+                        </VBtn>
+                    </template>
+                    <VList>
+                        <VListItem @click="editComment">
+                            <VListItemTitle>Edit</VListItemTitle>
+                        </VListItem>
+                        <VListItem @click="deleteComment">
+                            <VListItemTitle>Delete</VListItemTitle>
+                        </VListItem>
+                    </VList>
+                </VMenu>
             </div>
-            <div class="content">
-                <p v-if="!editFlag" class="body">{{ body }}</p>
-                <p v-else-if="deleteFlag" class="body">Comment have been deleted</p>
-                <VTextarea
-                    v-else
-                    class="new-reply-input"
-                    v-model="newComment"
-                    placeholder="Enter a new comment..."
-                    rows="1"
-                    no-resize=""
-                    append-inner-icon="mdi-send"
-                    @click:append-inner="saveComment"
-                />
-            </div>
-            <VMenu v-if="loggedInStore.id === user.id">
-                <template v-slot:activator="{ props }">
-                    <VBtn
-                        v-bind="props"
-                        size="large"
-                        density="compact"
-                        variant="text"
-                        icon="mdi-dots-vertical"
-                    >
-                    </VBtn>
-                </template>
-                <VList>
-                    <VListItem @click="editComment">
-                        <VListItemTitle>Edit</VListItemTitle>
-                    </VListItem>
-                    <VListItem @click="deleteComment">
-                        <VListItemTitle>Delete</VListItemTitle>
-                    </VListItem>
-                </VList>
-            </VMenu>
+            <span class="deleted-comment" v-else> This comment has been deleted </span>
         </div>
         <VTextarea
             placeholder="Reply to this comment..."
@@ -183,6 +190,16 @@ function saveComment() {
 
 .main-comment:hover {
     background-color: var(--color-background-mute);
+}
+
+.existing-comment {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.deleted-comment {
+    padding-left: 0.5rem;
 }
 
 .user {

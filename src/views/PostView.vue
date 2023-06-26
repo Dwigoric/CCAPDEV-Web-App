@@ -50,6 +50,7 @@ async function fetchComments() {
         comments.push(
             ...data.comments.map((comment) => ({
                 ...comment,
+                deleted: false,
                 parentCommentId: comment.parentCommentId || null,
                 user: userData.users.find((user) => user.id === comment.user.id)
             }))
