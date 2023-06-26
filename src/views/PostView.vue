@@ -47,14 +47,13 @@ async function fetchComments() {
         const userResponse = await fetch(`${API_URL}/users?${userParams}`)
         const userData = await userResponse.json()
 
-        data.comments.forEach((comment) => {
-            comments.push({
+        comments.push(
+            ...data.comments.map((comment) => ({
                 ...comment,
                 parentCommentId: comment.parentCommentId || null,
-                user: userData.users.find((user) => user.id === comment.user.id),
-                replies: []
-            })
-        })
+                user: userData.users.find((user) => user.id === comment.user.id)
+            }))
+        )
     }
 
     comments.push(
@@ -75,6 +74,7 @@ function addComment() {
         body: newCommentBody.value,
         parentCommentId: null,
         user: {
+            id: loggedInStore.id,
             username: loggedInStore.username,
             image: loggedInStore.image
         }
@@ -149,8 +149,8 @@ onUnmounted(specificPostStore.unsetCurrentPost)
                     no-resize="true"
                     rows="1"
                     v-model="newCommentBody"
-                    append-icon="mdi-send"
-                    @click:append="addComment"
+                    append-inner-icon="mdi-send"
+                    @click:append-inner="addComment"
                 />
             </div>
             <div id="comments">
