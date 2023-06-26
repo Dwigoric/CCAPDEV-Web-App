@@ -72,12 +72,18 @@ onMounted(getPosts)
             <h2>{{ login.username }}</h2>
         </div>
         <div class="description">
-            <h5>User hasn't placed a description of themselves yet.</h5>
+            <h5>{{ login.description}}</h5>
             <!--default description, can be blank if they want-->
         </div>
     </div>
 
-    <input type="button" value="Edit Profile" class="button" />
+    <!---<input type="button" value="Edit Profile" class="button" @click=""/>-->
+    <VBtn
+        to="/editprofile"
+        class="button"
+    >
+    Edit Profile
+    </VBtn>
 
     <hr class="solid" />
     <!-- supposed to be the divider between profile details (username, pfp, etc.) and posts -->
