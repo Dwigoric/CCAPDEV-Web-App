@@ -292,6 +292,7 @@ svg {
     pointer-events: none;
 }
 
+/* background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzg4ODg4OCIgZD0iTTE1NiAxMjhhMjggMjggMCAxIDEtMjgtMjhhMjggMjggMCAwIDEgMjggMjhabS0yOC01MmEyOCAyOCAwIDEgMC0yOC0yOGEyOCAyOCAwIDAgMCAyOCAyOFptMCAxMDRhMjggMjggMCAxIDAgMjggMjhhMjggMjggMCAwIDAtMjgtMjhaIi8+PC9zdmc+); */
 .dropbutton {
   background-color: rgba(0, 0, 0, 0);
   background-size: 100%;

@@ -9,7 +9,6 @@ import { useLoggedInStore } from '../stores/loggedIn'
 import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
 import { VTextarea } from 'vuetify/lib/components/index.mjs'
-import { VTextField } from 'vuetify/lib/components/index.mjs'
 
 // Define variables
 const loggedInStore = useLoggedInStore()
@@ -17,8 +16,10 @@ const commentsStore = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
 
 const newReplyBody = ref('')
+const newComment = ref('')
 
 const editFlag = ref(false);
+const deleteFlag = ref(false);
 
 // Define functions
 function addReply(parentCommentId) {
@@ -36,7 +37,7 @@ function addReply(parentCommentId) {
     }
 }
 
-defineProps({
+const props = defineProps({
     id: {
         type: Number,
         required: true
@@ -60,15 +61,38 @@ defineProps({
 })
 
 function deleteComment() {
-    cachedPosts.splice(cachedPosts.findIndex(post => post.comment === props.id), 1)
+    deleteFlag.value = true;
+    const comment = commentsStore.comments.find(cm => cm.id === props.id);
+    comment.body = "Comment have been deleted";
 }
 
 function editComment() {
-    editFlag.value = true
+    editFlag.value = true;
 }
 
 function saveComment() {
+    editFlag.value = false ;
+    const comment = commentsStore.comments.find(cm => cm.id === props.id);
+    comment.body = newComment.value;
+}
 
+/* toggle between hiding and showing the dropdown content */
+function openDropdown() {
+     document.getElementById("Dropdownlist").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+     if (!event.target.matches('.dropbutton')) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+               if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                    }
+               }
+          }
 }
 </script>
 
@@ -81,7 +105,21 @@ function saveComment() {
             </div>
             <div class="content">
                 <p v-if="!editFlag" class="body">{{ body }}</p>
-                
+                <p v-else-if="deleteFlag" class="body"> Comment have been deleted </p>
+                <VTextarea
+                    v-else
+                    class="new-reply-input"
+                    placeholder="Enter a new comment..."
+                    v-model="newComment"
+                    />
+                    
+                <v-btn 
+                    v-if="editFlag && !deleteFlag" 
+                    
+                    @click="saveComment" 
+                    icon="mdi-send"
+                >
+                </v-btn>
             </div>
             <div class="dropdown">
                 <v-btn
@@ -97,8 +135,9 @@ function saveComment() {
                     <v-btn @click="editComment"> Edit </v-btn>
                     <v-btn @click="deleteComment"> Delete</v-btn>
                 </div>
-            </div> 
+            </div>
         </div>
+        
         <VTextarea
             placeholder="Reply to this comment..."
             class="new-reply-input"
@@ -110,7 +149,6 @@ function saveComment() {
             append-icon="mdi-send"
             @click:append="addReply(id)"
         />
-
         <div class="replies">
             <PostComment
                 v-for="reply in commentsStore.comments.filter(
@@ -212,6 +250,11 @@ function saveComment() {
 
 svg {
     pointer-events: none;
+}
+
+.content {
+    display: flex;
+    flex-flow: row;
 }
 
 /* background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzg4ODg4OCIgZD0iTTE1NiAxMjhhMjggMjggMCAxIDEtMjgtMjhhMjggMjggMCAwIDEgMjggMjhabS0yOC01MmEyOCAyOCAwIDEgMC0yOC0yOGEyOCAyOCAwIDAgMCAyOCAyOFptMCAxMDRhMjggMjggMCAxIDAgMjggMjhhMjggMjggMCAwIDAtMjgtMjhaIi8+PC9zdmc+); */
