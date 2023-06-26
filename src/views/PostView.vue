@@ -112,7 +112,8 @@ if (specificPostStore.currentPostId === null) {
                     no-resize="true"
                     rows="1"
                     v-model="newCommentBody"
-                    @keyup.enter="addComment"
+                    append-icon="mdi-send"
+                    @click:append="addComment"
                 />
             </div>
             <div id="comments">
