@@ -1,5 +1,5 @@
 <script setup>
-import { useSpecificPostStore } from '@/stores/currentPost'
+import { useSpecificPostStore } from '../stores/currentPost'
 
 const postStore = useSpecificPostStore()
 
@@ -92,6 +92,7 @@ defineProps({
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
     text-decoration: none;
     color: var(--color-text);
+    position: relative;
 }
 
 [data-theme='light'] .post {
@@ -113,7 +114,6 @@ defineProps({
     flex-flow: row nowrap;
     align-items: center;
     width: 100px;
-    height: 100%;
     gap: 1rem;
     margin-bottom: 10px;
 }
@@ -134,6 +134,7 @@ defineProps({
 
 .content {
     width: 100%;
+    margin-bottom: 2.5rem;
 }
 
 .title {
@@ -162,9 +163,11 @@ defineProps({
 }
 
 .dooters {
+    position: absolute;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    bottom: 2rem;
 }
 
 .count {
