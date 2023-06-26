@@ -16,14 +16,38 @@ defineProps({
 </script>
 
 <template>
-    <div>
-        <button id="up" @click="upvote" class="upvoted">&uarr;</button>
-        <span class="votes">{{ count + reactions }}</span>
-        <button id="down" @click="downvote" class="downvoted">&darr;</button>
+    <div id="placeholder">
+        <div v-if="count == 1" class="upvoted"> 
+            <button @click="upvote">&uarr;</button>
+        </div>
+        <div v-if="count < 1" class="updown"> 
+            <button @click="upvote">&uarr;</button>
+        </div>
+        
+        <div class="votes">{{ count + reactions }}</div>
+
+        <div v-if="count == -1" class="downvoted">
+            <button @click="downvote">&darr;</button>
+        </div>
+        <div v-if="count > -1" class="updown">
+            <button @click="downvote">&darr;</button>
+        </div>
     </div>
 </template>
 
 <style scoped>
+
+#placeholder {
+    display: flex;
+}
+
+.updown {
+    display: flex;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+    
 .button {
     &:hover {
         cursor: pointer;
@@ -40,18 +64,30 @@ defineProps({
 }
 
 .votes {
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
     text-align: center;
+    height: 1.5rem;
     width: 1.5em;
 }
 
-.upvoted:focus {
+.upvoted {
+    display: flex;
+    justify-content: center;
     background-color: #ff8b60;
     color: white;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
-.downvoted:focus {
+.downvoted {
+    display: flex;
+    justify-content: center;
     background-color: #9494ff;
     color: white;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 </style>
