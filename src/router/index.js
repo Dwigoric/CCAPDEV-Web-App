@@ -19,6 +19,7 @@ const router = createRouter({
             beforeEnter: (to, from, next) => {
                 const loggedInStore = useLoggedInStore()
                 if (loggedInStore.username) next({ name: 'feed' })
+                else next()
             }
         },
         {
@@ -36,6 +37,7 @@ const router = createRouter({
             beforeEnter: (to, from, next) => {
                 const loggedInStore = useLoggedInStore()
                 if (loggedInStore.username) next({ name: 'feed' })
+                else next()
             }
         },
         {
@@ -45,6 +47,7 @@ const router = createRouter({
             beforeEnter: (to, from, next) => {
                 const postStore = useSpecificPostStore()
                 if (postStore.currentPostId === null) next({ name: 'feed' })
+                else next()
             }
         },
         {
