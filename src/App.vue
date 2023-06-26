@@ -19,6 +19,8 @@ loggedInStore.username = $cookies.get('user')?.username
 loggedInStore.image = $cookies.get('user')?.image
 loggedInStore.bgImage = $cookies.get('user')?.bgImage
 
+if ($cookies.get('user')) $cookies.config('21d')
+
 const prefersDark = useMediaQuery('(prefers-color-scheme: dark)').value
 document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
 isDarkStore.isDark = prefersDark

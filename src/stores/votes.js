@@ -36,8 +36,6 @@ export const useVoteStore = defineStore('voteCount', () => {
         else votes[loggedInStore.id].push({ postId, vote: -1 })
     }
 
-    const resetVotes = () => votes[loggedInStore.id].splice(0, votes[loggedInStore.id].length)
-
     const getVoteCount = (postId) => {
         const voteRecord = getVoteRecord(postId)
         if (!voteRecord) return 0
@@ -61,10 +59,8 @@ export const useVoteStore = defineStore('voteCount', () => {
     }
 
     return {
-        votes,
         upvote,
         downvote,
-        resetVotes,
         getVoteCount,
         getTotalVotes
     }
