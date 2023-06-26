@@ -1,12 +1,16 @@
 <script setup>
+// Import packages
+import { ref } from 'vue'
+
 // Import stores
 import { useSpecificPostStore } from '../stores/currentPost'
 import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { ref } from 'vue'
+import { useLoggedInStore } from '../stores/loggedIn'
 
 // Define variables
 const voteStore = useVoteStore()
+const loggedIn = useLoggedInStore()
 
 // Define form rules
 const editTitleRules = [(v) => !!v || 'Title is required']
@@ -84,7 +88,7 @@ function savePost() {
         <div class="user">
             <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
             <span class="user-name">{{ user['username'] }}</span>
-            <VMenu>
+            <VMenu v-if="loggedIn.id === user.id">
                 <template v-slot:activator="{ props }">
                     <VBtn
                         v-bind="props"
@@ -282,62 +286,5 @@ svg path:hover {
 
 svg {
     pointer-events: none;
-}
-
-/* background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzg4ODg4OCIgZD0iTTE1NiAxMjhhMjggMjggMCAxIDEtMjgtMjhhMjggMjggMCAwIDEgMjggMjhabS0yOC01MmEyOCAyOCAwIDEgMC0yOC0yOGEyOCAyOCAwIDAgMCAyOCAyOFptMCAxMDRhMjggMjggMCAxIDAgMjggMjhhMjggMjggMCAwIDAtMjgtMjhaIi8+PC9zdmc+); */
-.dropbutton {
-  background-color: rgba(0, 0, 0, 0);
-  background-size: 100%;
-  width: auto;
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-/* Dropdown button on hover & focus */
-.dropbutton:hover {
-    
-    background-size: 100%;
-}
-
-/* The container location */
-.dropdown {
-  margin-left: auto;
-}
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-/* Links inside the dropdown */
-.dropdown-content button {
-  background-color: var(--color-dark-green);
-  color: var(--color-text);
-  width: 100%;
-  text-decoration: none;
-  padding: 12px 16px;
-  display: block;
-  text-align: left;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content button:hover {background-color: var(--color-background-mute)}
-
-/* Show the dropdown menu*/
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.savebutton {
-    background-color: var(--color-dark-green);
-    padding: 0.2em;
-    margin-top: 1em;
-
-}
-
-.savebutton:hover {
-    background-color: var(--color-background-mute);
 }
 </style>
