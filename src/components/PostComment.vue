@@ -8,6 +8,8 @@ import PostComment from './PostComment.vue'
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
+import { VTextarea } from 'vuetify/lib/components/index.mjs'
+import { VTextField } from 'vuetify/lib/components/index.mjs'
 
 // Define variables
 const loggedInStore = useLoggedInStore()
@@ -15,6 +17,8 @@ const commentsStore = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
 
 const newReplyBody = ref('')
+
+const editFlag = ref(false);
 
 // Define functions
 function addReply(parentCommentId) {
@@ -54,6 +58,18 @@ defineProps({
         required: false
     }
 })
+
+function deleteComment() {
+    cachedPosts.splice(cachedPosts.findIndex(post => post.comment === props.id), 1)
+}
+
+function editComment() {
+    editFlag.value = true
+}
+
+function saveComment() {
+
+}
 </script>
 
 <template>
@@ -64,8 +80,24 @@ defineProps({
                 <div class="user-name">{{ user['username'] }}</div>
             </div>
             <div class="content">
-                <p class="body">{{ body }}</p>
+                <p v-if="!editFlag" class="body">{{ body }}</p>
+                
             </div>
+            <div class="dropdown">
+                <v-btn
+                    @click="openDropdown()"
+                    class="dropbutton"
+                    size="large"
+                    density="compact"
+                    variant="text"
+                    icon="mdi-dots-vertical"
+                >
+                </v-btn>
+                <div id="Dropdownlist" class="dropdown-content">
+                    <v-btn @click="editComment"> Edit </v-btn>
+                    <v-btn @click="deleteComment"> Delete</v-btn>
+                </div>
+            </div> 
         </div>
         <VTextarea
             placeholder="Reply to this comment..."
@@ -78,6 +110,7 @@ defineProps({
             append-icon="mdi-send"
             @click:append="addReply(id)"
         />
+
         <div class="replies">
             <PostComment
                 v-for="reply in commentsStore.comments.filter(
@@ -91,6 +124,9 @@ defineProps({
                 :onclick="onclick"
             >
             </PostComment>
+        </div>
+        <div>
+            
         </div>
     </div>
 </template>
@@ -172,5 +208,68 @@ defineProps({
     border: none;
     border-radius: 0.5rem;
     padding: 0.5rem;
+}
+
+svg {
+    pointer-events: none;
+}
+
+/* background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzg4ODg4OCIgZD0iTTE1NiAxMjhhMjggMjggMCAxIDEtMjgtMjhhMjggMjggMCAwIDEgMjggMjhabS0yOC01MmEyOCAyOCAwIDEgMC0yOC0yOGEyOCAyOCAwIDAgMCAyOCAyOFptMCAxMDRhMjggMjggMCAxIDAgMjggMjhhMjggMjggMCAwIDAtMjgtMjhaIi8+PC9zdmc+); */
+.dropbutton {
+  background-color: rgba(0, 0, 0, 0);
+  background-size: 100%;
+  width: auto;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+/* Dropdown button on hover & focus */
+.dropbutton:hover {
+    
+    background-size: 100%;
+}
+
+/* The container location */
+.dropdown {
+  margin-left: auto;
+}
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+/* Links inside the dropdown */
+.dropdown-content button {
+  background-color: var(--color-dark-green);
+  color: var(--color-text);
+  width: 100%;
+  text-decoration: none;
+  padding: 12px 16px;
+  display: block;
+  text-align: left;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content button:hover {background-color: var(--color-background-mute)}
+
+/* Show the dropdown menu*/
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+
+.savebutton {
+    background-color: var(--color-dark-green);
+    padding: 0.2em;
+    margin-top: 1em;
+
+}
+
+.savebutton:hover {
+    background-color: var(--color-background-mute);
 }
 </style>

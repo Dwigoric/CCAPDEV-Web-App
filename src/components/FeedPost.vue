@@ -3,14 +3,18 @@
 import { useSpecificPostStore } from '../stores/currentPost'
 import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { BaseTransitionPropsValidators, ReactiveFlags, ref } from 'vue';
+import { ref } from 'vue';
 
 // Define variables
 const voteStore = useVoteStore()
 
 // Define variables
+const { cachedPosts } = useCachedPostsStore()
 const postStore = useSpecificPostStore()
-const titleFlag = ref(false);
+const editFlag = ref(false);
+
+const newTitle = ref('')
+const newBody = ref('')
 
 const props = defineProps({
     id: {
@@ -69,33 +73,21 @@ function setPost() {
         reactions: props.reactions
     })
 }
+
 function deletePost() {
-    const cachedPosts = useCachedPostsStore().cachedPosts
     cachedPosts.splice(cachedPosts.findIndex(post => post.id === props.id), 1)
 }
 
 function editPost() {
-     titleFlag.value = true;
-     const content = document.querySelector(".content");
-     const edit = document.querySelector(".edit-post");
-
-     content.classList.add('hide');
-     edit.classList.remove('hide');
-     console.log("Hello")
+     editFlag.value = true;
 }
 
 function savePost() {
-    const content = document.querySelector(".content");
-    const edit = document.querySelector(".edit-post");
+    editFlag.value = false;
 
-    var title = document.getElementById("title");
-    var body = document.getElementById("body");
-    
-    title.innerHTML = document.getElementById("title_in").value;
-    body.innerHTML = document.getElementById("textarea_in").value;
-
-     content.classList.remove('hide');
-     edit.classList.add('hide');
+    const post = cachedPosts.find(post => post.id === props.id);
+    post.title = newTitle.value
+    post.body = newBody.value
 }
 
 
@@ -107,28 +99,44 @@ function savePost() {
             <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
             <span class="user-name">{{ user['username'] }}</span>
             <div class="dropdown">
-                <button v-on:click="edit_deletePost.openDropdown()" class="dropbutton"></button>
-                    <div id="Dropdownlist" class="dropdown-content">
-                        <button v-on:click="editPost()"> Edit </button>
-                        <button v-on:click="deletePost()"> Delete</button>
-                    </div>
+                <v-btn
+                    @click="openDropdown()"
+                    class="dropbutton"
+                    size="large"
+                    density="compact"
+                    variant="text"
+                    icon="mdi-dots-vertical"
+                >
+                </v-btn>
+                <div id="Dropdownlist" class="dropdown-content">
+                    <v-btn @click="editPost"> Edit </v-btn>
+                    <v-btn @click="deletePost"> Delete</v-btn>
+                </div>
             </div> 
         </div>
         <div class="content">
-            <p v-if="titleFlag" class="title" id="title">{{ title }}</p>
-            <input class="title" type="text" id="title_in" value="abcde" v-else/> 
-            <p class="body" id="body">{{ body }}</p>
+            <p v-if="!editFlag" class="title" id="title">{{ title }}</p>
+            <VTextField
+                v-else
+                v-model="newTitle"
+                placeholder="Enter new title..."
+            />
+            <p v-if="!editFlag" class="body" id="body">{{ body }}</p>
+            <VTextarea
+                v-else
+                v-model="newBody"
+                placeholder="What's up?"
+                no-resize
+            />
             <img
+                v-if="image && !editFlag"
                 class="post-image"
-                v-if="image"
                 :src="image"
                 :alt="`An image in ${user['username']}'s post`"
             />
+            <button v-if="editFlag" class="savebutton" @click="savePost" > Save </button>
         </div>
-        <div class="edit-post hide">
-            <textarea class="body" id="textarea_in" cols="50" row="5"></textarea> <br>
-            <button class="savebutton" v-on:click="savePost()" > Save </button> <br>
-        </div>
+
         <div class="post-footer">
             <VHover v-slot="{ isHovering, props }">
                 <VBtn
@@ -279,29 +287,22 @@ svg path:hover {
     fill: var(--color-dark-pink);
 }
 
-.hide {
-  display: none;
-}
 
-/* The container location */
 svg {
     pointer-events: none;
 }
-/* Dropdown Button */
+
 .dropbutton {
   background-color: rgba(0, 0, 0, 0);
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzg4ODg4OCIgZD0iTTE1NiAxMjhhMjggMjggMCAxIDEtMjgtMjhhMjggMjggMCAwIDEgMjggMjhabS0yOC01MmEyOCAyOCAwIDEgMC0yOC0yOGEyOCAyOCAwIDAgMCAyOCAyOFptMCAxMDRhMjggMjggMCAxIDAgMjggMjhhMjggMjggMCAwIDAtMjgtMjhaIi8+PC9zdmc+);
   background-size: 100%;
+  width: auto;
   color: var(--color-text);
-  font-size: 16px;
   cursor: pointer;
-  width: 2em;
-  height: 2em;
 }
 
 /* Dropdown button on hover & focus */
-.dropbutton:hover, .dropbutton:focus {
-    background-image: url(https://api.iconify.design/ph:dots-three-outline-vertical-fill.svg?color=%23FF4500);
+.dropbutton:hover {
+    
     background-size: 100%;
 }
 
@@ -334,12 +335,6 @@ svg {
 /* Show the dropdown menu*/
 .dropdown:hover .dropdown-content {
   display: block;
-}
-
-
-.edit-post {
-    width: 100%;
-    margin-bottom: 2.5rem;
 }
 
 .savebutton {
