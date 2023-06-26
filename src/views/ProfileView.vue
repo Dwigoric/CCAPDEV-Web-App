@@ -1,32 +1,66 @@
 <script setup>
-import { useLoggedInStore } from '../stores/loggedIn'
-import { useCachedPostsStore } from '@/stores/cachedPosts'
+// Import packages
 import { useMediaQuery } from '@vueuse/core'
+import { onMounted, reactive, ref } from 'vue'
+
+// Import components
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import FeedPost from '../components/FeedPost.vue'
-import NewPost from '../components/NewPost.vue'
+import LoaderHeart from '../components/LoaderHeart.vue'
+
+// Import stores
+import { useLoggedInStore } from '../stores/loggedIn'
+import { useCachedPostsStore } from '../stores/cachedPosts'
+
+// Define variables
+const API_URL = 'https://dummyjson.com'
 
 const login = useLoggedInStore()
-//const cachePosts = useCachedPostsStore();
-const navbar = NavigationBar
-var { cachedPosts } = useCachedPostsStore()
+const userPosts = reactive([])
+const loading = ref(true)
 
-defineProps({
-    user: {
-        type: Object,
-        required: true
-    },
+// Define functions
+const fetchPosts = async () => {
+    // Get list of users
+    const userParams = new URLSearchParams()
+    userParams.set('select', 'id,username,image')
 
-    image: {
-        type: String,
-        required: true
-    }
-})
+    const user = await fetch(`${API_URL}/users/${login.id}?${userParams}`)
+        .then((res) => res.json())
+        .catch(console.error)
+
+    // Process posts
+    const postParams = new URLSearchParams()
+    postParams.set('limit', '0')
+
+    const response = await fetch(`${API_URL}/posts/user/${login.id}?${postParams}`)
+    const data = await response.json()
+    userPosts.push(
+        ...data.posts.map((post) => ({
+            ...post,
+            user
+        }))
+    )
+
+    loading.value = false
+}
+
+const getPosts = async () => {
+    if (login.id <= 100) return fetchPosts()
+
+    const { cachedPosts } = useCachedPostsStore()
+
+    userPosts.push(...cachedPosts.filter((post) => post.user.id === login.id))
+
+    loading.value = false
+}
+
+onMounted(getPosts)
 </script>
 
 <template>
-    <navbar />
+    <NavigationBar />
     <div class="profile">
         <div class="prof-bg">
             <img class="bg" src="https://ik.imagekit.io/ikmedia/backlit.jpg" />
@@ -56,22 +90,23 @@ defineProps({
         >
             This is the left sidebar.
         </div>
+        <LoaderHeart v-if="loading" />
         <FeedPost
-            v-for="posts in cachedPosts.filter((post) => post.user.id === login.id)"
-            :key="posts.id"
-            :id="posts.id"
-            :title="posts.title"
-            :body="posts.body"
-            :user="posts.user"
-            :image="posts.image"
-            :reactions="posts.reactions"
+            v-else
+            v-for="post in userPosts"
+            :key="post.id"
+            :id="post.id"
+            :title="post.title"
+            :body="post.body"
+            :user="post.user"
+            :image="post.image"
+            :reactions="post.reactions"
         />
         <div
             class="feed-element"
             id="right-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            <NewPost v-if="login.username && cachedPosts.length > 0" :add-post="addPost" />
             <ThemeSwitch />
         </div>
     </div>
@@ -100,8 +135,7 @@ defineProps({
 
 .pfp {
     border-radius: 50%;
-    border: 5px solid;
-    border-color: black;
+    border: black 5px solid;
     height: 125px;
     width: 125px;
     background-color: lightyellow;
