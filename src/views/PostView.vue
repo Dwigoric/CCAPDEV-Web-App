@@ -16,6 +16,7 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useSpecificPostStore } from '../stores/currentPost'
 import { useCommentsStore } from '../stores/comments'
+import { useCurrentCommentStore } from '../stores/currentComment'
 
 // Define variables
 const API_URL = 'https://dummyjson.com'
@@ -23,10 +24,12 @@ const API_URL = 'https://dummyjson.com'
 const loggedInStore = useLoggedInStore()
 const specificPostStore = useSpecificPostStore()
 const commentsStore = useCommentsStore()
+const currentCommentStore = useCurrentCommentStore()
 
 document.title = 'Compact Donuts | Post'
 
 const newCommentBody = ref('')
+const newReplyBody = ref('')
 const comments = reactive([])
 const isLoading = ref(true)
 
@@ -47,6 +50,7 @@ async function fetchComments() {
         data.comments.forEach((comment) => {
             comments.push({
                 ...comment,
+                parentCommentId: comment.parentCommentId || null,
                 user: userData.users.find((user) => user.id === comment.user.id),
                 replies: []
             })
@@ -65,19 +69,19 @@ async function fetchComments() {
 function addComment() {
     if (newCommentBody.value === '') return
 
-    commentsStore.comments.push({
+    commentsStore.addComment({
         id: 340 + commentsStore.comments.length + 1,
         postId: specificPostStore.currentPostId,
         body: newCommentBody.value,
-        replies: [],
+        parentCommentId: null,
         user: {
             username: loggedInStore.username,
             image: loggedInStore.image
         }
     })
-    newCommentBody.value = ''
 
     comments.push(commentsStore.comments[commentsStore.comments.length - 1])
+    newCommentBody.value = ''
 }
 
 // Define lifecycle hooks
@@ -122,10 +126,20 @@ if (specificPostStore.currentPostId === null) {
                 </div>
                 <PostComment
                     v-else
-                    v-for="comment in comments"
+                    v-for="comment in comments.filter(
+                        (_comment) => _comment.parentCommentId === null
+                    )"
                     :key="comment.id"
+                    :id="comment.id"
+                    :post-id="specificPostStore.currentPostId"
                     :body="comment.body"
                     :user="comment.user"
+                    :onclick="
+                        (parentId) => {
+                            currentCommentStore.setCurrentComment(parentId)
+                            newReplyBody = ''
+                        }
+                    "
                 >
                 </PostComment>
             </div>
