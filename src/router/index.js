@@ -5,13 +5,21 @@ import ProfileView from '../views/ProfileView.vue'
 import PostView from '../views/PostView.vue'
 import SearchView from '../views/SearchView.vue'
 
+// Import stores
+import { useSpecificPostStore } from '../stores/currentPost'
+import { useLoggedInStore } from '../stores/loggedIn'
+
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: '/',
             name: 'home',
-            component: HomeView
+            component: HomeView,
+            beforeEnter: (to, from, next) => {
+                const loggedInStore = useLoggedInStore()
+                if (loggedInStore.username) next({ name: 'feed' })
+            }
         },
         {
             path: '/feed',
@@ -24,12 +32,20 @@ const router = createRouter({
         {
             path: '/register',
             name: 'register',
-            component: RegisterView
+            component: RegisterView,
+            beforeEnter: (to, from, next) => {
+                const loggedInStore = useLoggedInStore()
+                if (loggedInStore.username) next({ name: 'feed' })
+            }
         },
         {
             path: '/post',
             name: 'post',
-            component: PostView
+            component: PostView,
+            beforeEnter: (to, from, next) => {
+                const postStore = useSpecificPostStore()
+                if (postStore.currentPostId === null) next({ name: 'feed' })
+            }
         },
         {
             path: '/search',
