@@ -51,12 +51,9 @@ const dayMessage = () => {
             </span>
             <div v-if="loggedInStore.image">
                 <RouterLink to="/profile" id="profile-picture-link">
-                    <img
-                        class="user-image"
-                        id="loggedin-user-image"
-                        :src="loggedInStore.image"
-                        alt="User"
-                    />
+                    <VAvatar class="mx-2">
+                        <img id="user-image" :src="loggedInStore.image" alt="User" />
+                    </VAvatar>
                 </RouterLink>
             </div>
             <RouterLink to="/" @click="logout">Logout</RouterLink>
@@ -75,14 +72,8 @@ const dayMessage = () => {
     text-align: center;
 }
 
-.user-image {
-    border-radius: 50%;
-    border: 2px solid var(--color-border);
-    margin: 0 1rem;
-}
-
-#loggedin-user-image {
-    height: var(--navbar-height);
+#user-image {
+    height: calc(var(--navbar-height) * 0.8);
     border-radius: 50%;
     border: none;
 }
@@ -154,5 +145,9 @@ header a.router-link-exact-active:hover {
 
 #user-panel {
     flex-grow: 0;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
 }
 </style>
