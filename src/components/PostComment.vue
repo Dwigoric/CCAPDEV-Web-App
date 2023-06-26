@@ -108,7 +108,6 @@ defineProps({
     margin-left: 13px;
     background-color: var(--color-background-soft);
     border-left: var(--color-border) solid 3px;
-    cursor: pointer;
 }
 
 [data-theme='light'] .user-image {
@@ -123,6 +122,7 @@ defineProps({
     justify-content: flex-start;
     width: 100%;
     height: 100%;
+    cursor: pointer;
 }
 
 .main-comment:hover {
