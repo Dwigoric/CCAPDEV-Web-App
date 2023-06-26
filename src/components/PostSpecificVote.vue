@@ -17,19 +17,19 @@ defineProps({
 
 <template>
     <div id="placeholder">
-        <div v-if="count == 1" class="upvoted"> 
+        <div v-if="count == 1" class="voted"> 
             <button @click="upvote">&uarr;</button>
         </div>
-        <div v-if="count < 1" class="updown"> 
+        <div v-if="count < 1" class="notvoted"> 
             <button @click="upvote">&uarr;</button>
         </div>
         
         <div class="votes">{{ count + reactions }}</div>
 
-        <div v-if="count == -1" class="downvoted">
+        <div v-if="count == -1" class="voted">
             <button @click="downvote">&darr;</button>
         </div>
-        <div v-if="count > -1" class="updown">
+        <div v-if="count > -1" class="notvoted">
             <button @click="downvote">&darr;</button>
         </div>
     </div>
@@ -41,7 +41,7 @@ defineProps({
     display: flex;
 }
 
-.updown {
+.notvoted {
     display: flex;
     justify-content: center;
     width: 1.5rem;
@@ -73,7 +73,7 @@ defineProps({
     width: 1.5em;
 }
 
-.upvoted {
+[data-theme='light'] .voted {
     display: flex;
     justify-content: center;
     background-color: #ff8b60;
@@ -82,7 +82,7 @@ defineProps({
     height: 1.5rem;
 }
 
-.downvoted {
+.voted {
     display: flex;
     justify-content: center;
     background-color: #9494ff;
