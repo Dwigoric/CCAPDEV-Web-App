@@ -127,14 +127,14 @@ const registerUser = async () => {
 
     const tempRegisterStore = useTempRegisterStore()
     tempRegisterStore.tempUsers.push({
-        id: tempRegisterStore.tempUsers.length + 1,
+        id: 100 + tempRegisterStore.tempUsers.length + 1,
         username: username.value,
         password: password.value,
         image: `https://robohash.org/${username.value}.png`
     })
 
     await authenticate({
-        id: tempRegisterStore.tempUsers.length,
+        id: 100 + tempRegisterStore.tempUsers.length + 1,
         username: username.value,
         image: `https://robohash.org/${username.value}.png`
     })
