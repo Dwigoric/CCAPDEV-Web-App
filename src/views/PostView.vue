@@ -2,7 +2,6 @@
 // Import packages
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
-import router from '../router'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -89,10 +88,6 @@ function addComment() {
 onMounted(fetchComments)
 
 onUnmounted(specificPostStore.unsetCurrentPost)
-
-if (specificPostStore.currentPostId === null) {
-    router.push({ name: 'feed' })
-}
 </script>
 
 <template>

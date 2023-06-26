@@ -1,16 +1,10 @@
 <script setup>
+// Import components
 import NavigationBar from '../components/NavigationBar.vue'
 import LoginBox from '../components/LoginBox.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
-import { useLoggedInStore } from '../stores/loggedIn'
-import router from '../router'
 
 document.title = 'Compact Donuts | Register'
-
-const loggedInStore = useLoggedInStore()
-if (loggedInStore.username) {
-    router.push({ name: 'feed' })
-}
 </script>
 
 <template>
