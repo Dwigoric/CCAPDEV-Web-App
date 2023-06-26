@@ -83,7 +83,7 @@ function saveComment() {
         <div class="main-comment" @click="onclick(id)">
             <div
                 class="existing-comment"
-                v-if="commentsStore.comments.some((cm) => cm.id === id && !cm.deleted)"
+                v-if="!commentsStore.comments.some((cm) => cm.id === id && cm.deleted)"
             >
                 <div class="user">
                     <img
