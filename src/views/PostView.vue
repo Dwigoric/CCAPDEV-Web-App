@@ -50,7 +50,6 @@ async function fetchComments() {
         comments.push(
             ...data.comments.map((comment) => ({
                 ...comment,
-                deleted: false,
                 parentCommentId: comment.parentCommentId || null,
                 user: userData.users.find((user) => user.id === comment.user.id)
             }))
@@ -96,12 +95,7 @@ onUnmounted(specificPostStore.unsetCurrentPost)
     <NavigationBar />
     <div id="view">
         <div id="post-details">
-            <PostSpecific
-                :user="specificPostStore.currentPost.user"
-                :title="specificPostStore.currentPost.title"
-                :body="specificPostStore.currentPost.body"
-                :image="specificPostStore.currentPost.image"
-            />
+            <PostSpecific />
             <div id="vote">
                 <VHover v-slot="{ isHovering, props }">
                     <VBtn

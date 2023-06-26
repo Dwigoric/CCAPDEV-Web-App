@@ -12,11 +12,14 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCachedPostsStore } from '../stores/cachedPosts'
+import { useDeletedPostsStore } from '../stores/deletedPosts'
 
 // Define variables
 const API_URL = 'https://dummyjson.com'
 
 const login = useLoggedInStore()
+const { deletedPosts } = useDeletedPostsStore()
+
 const userPosts = reactive([])
 const loading = ref(true)
 
@@ -35,9 +38,9 @@ const fetchPosts = async () => {
     postParams.set('limit', '0')
 
     const response = await fetch(`${API_URL}/posts/user/${login.id}?${postParams}`)
-    const data = await response.json()
+    const { posts } = await response.json()
     userPosts.push(
-        ...data.posts.map((post) => ({
+        ...posts.map((post) => ({
             ...post,
             user
         }))
@@ -72,18 +75,13 @@ onMounted(getPosts)
             <h2>{{ login.username }}</h2>
         </div>
         <div class="description">
-            <h5>{{ login.description}}</h5>
+            <h5>{{ login.description }}</h5>
             <!--default description, can be blank if they want-->
         </div>
     </div>
 
     <!---<input type="button" value="Edit Profile" class="button" @click=""/>-->
-    <VBtn
-        to="/editprofile"
-        class="button"
-    >
-    Edit Profile
-    </VBtn>
+    <VBtn to="/editprofile" class="button"> Edit Profile </VBtn>
 
     <hr class="solid" />
     <!-- supposed to be the divider between profile details (username, pfp, etc.) and posts -->
@@ -99,7 +97,7 @@ onMounted(getPosts)
         <LoaderHeart v-if="loading" />
         <FeedPost
             v-else
-            v-for="post in userPosts"
+            v-for="post in userPosts.filter((p) => !deletedPosts.has(p.id))"
             :key="post.id"
             :id="post.id"
             :title="post.title"

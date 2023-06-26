@@ -12,6 +12,7 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
 import { useCachedPostsStore } from '../stores/cachedPosts'
+import { useDeletedPostsStore } from '../stores/deletedPosts'
 import { useTempPostsStore } from '../stores/tempPosts'
 import { useSpecificPostStore } from '../stores/currentPost'
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -23,6 +24,7 @@ document.title = 'Compact Donuts | Feed'
 
 // Define variables
 const { cachedPosts, fetchPosts } = useCachedPostsStore()
+const { deletedPosts } = useDeletedPostsStore()
 const { tempPosts } = useTempPostsStore()
 const postStore = useSpecificPostStore()
 const loggedIn = useLoggedInStore()
@@ -62,6 +64,7 @@ const addPost = (post) => {
             <VList lines="two" class="bg-transparent">
                 <VListItem
                     v-for="post in cachedPosts
+                        .filter((p) => !deletedPosts.has(p.id))
                         .slice()
                         .sort(
                             (a, b) =>
@@ -91,7 +94,7 @@ const addPost = (post) => {
             </Waypoint>
             <span v-else> You're all caught up! </span>
             <FeedPost
-                v-for="post in cachedPosts"
+                v-for="post in cachedPosts.filter((p) => !deletedPosts.has(p.id))"
                 :key="post.id"
                 :id="post.id"
                 :title="post.title"

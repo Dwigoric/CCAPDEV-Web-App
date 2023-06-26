@@ -3,22 +3,22 @@
 import { ref } from 'vue'
 
 // Import stores
+import { useLoggedInStore } from '../stores/loggedIn'
 import { useSpecificPostStore } from '../stores/currentPost'
 import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { useLoggedInStore } from '../stores/loggedIn'
-
-// Define variables
-const voteStore = useVoteStore()
-const loggedIn = useLoggedInStore()
+import { useDeletedPostsStore } from '../stores/deletedPosts'
 
 // Define form rules
 const editTitleRules = [(v) => !!v || 'Title is required']
 const editBodyRules = [(v) => !!v || 'Body is required']
 
 // Define variables
+const voteStore = useVoteStore()
+const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
 const postStore = useSpecificPostStore()
+const { deletedPosts } = useDeletedPostsStore()
 const editFlag = ref(false)
 
 const newTitle = ref('')
@@ -64,10 +64,7 @@ function setPost() {
 }
 
 function deletePost() {
-    cachedPosts.splice(
-        cachedPosts.findIndex((post) => post.id === props.id),
-        1
-    )
+    deletedPosts.add(props.id)
 }
 
 function editPost() {

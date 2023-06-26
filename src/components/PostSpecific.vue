@@ -1,11 +1,16 @@
 <script setup>
 import { ref } from 'vue'
+import router from '../router'
 
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCachedPostsStore } from '../stores/cachedPosts'
+import { useDeletedPostsStore } from '../stores/deletedPosts'
+import { useSpecificPostStore } from '../stores/currentPost'
 
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
+const { deletedPosts } = useDeletedPostsStore()
+const { currentPost, currentPostId } = useSpecificPostStore()
 
 const newTitle = ref('')
 const newBody = ref('')
@@ -14,30 +19,10 @@ const editFlag = ref(false)
 const editTitleRules = [(v) => !!v || 'Title is required']
 const editBodyRules = [(v) => !!v || 'Body is required']
 
-const props = defineProps({
-    user: {
-        type: Object,
-        required: true
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    body: {
-        type: String,
-        required: true
-    },
-    image: {
-        type: String,
-        required: false
-    }
-})
-
 function deletePost() {
-    cachedPosts.splice(
-        cachedPosts.findIndex((post) => post.id === props.id),
-        1
-    )
+    deletedPosts.add(currentPostId)
+
+    router.back()
 }
 
 function editPost() {
@@ -47,18 +32,25 @@ function editPost() {
 function savePost() {
     editFlag.value = false
 
-    const post = cachedPosts.find((post) => post.id === props.id)
-    post.title = newTitle.value
-    post.body = newBody.value
+    const cachedPost = cachedPosts.find((p) => p.id === currentPostId)
+    cachedPost.title = newTitle.value
+    cachedPost.body = newBody.value
+
+    currentPost.title = newTitle.value
+    currentPost.body = newBody.value
 }
 </script>
 
 <template>
     <div class="post">
         <div class="user">
-            <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
-            <span class="user-name">{{ user['username'] }}</span>
-            <VMenu v-if="loggedIn.id === user.id">
+            <img
+                class="user-image"
+                :src="currentPost.user.image"
+                :alt="`${currentPost.user.username}'s image`"
+            />
+            <span class="user-name">{{ currentPost.user.username }}</span>
+            <VMenu v-if="loggedIn.id === currentPost.user.id">
                 <template v-slot:activator="{ props }">
                     <VBtn
                         v-bind="props"
@@ -80,14 +72,14 @@ function savePost() {
             </VMenu>
         </div>
         <div class="content">
-            <p v-if="!editFlag" class="title" id="title">{{ title }}</p>
+            <p v-if="!editFlag" class="title" id="title">{{ currentPost.title }}</p>
             <VTextField
                 v-else
                 :rules="editTitleRules"
                 v-model="newTitle"
                 placeholder="Enter new title..."
             />
-            <p v-if="!editFlag" class="body" id="body">{{ body }}</p>
+            <p v-if="!editFlag" class="body" id="body">{{ currentPost.body }}</p>
             <VTextarea
                 v-else
                 :rules="editBodyRules"
@@ -97,9 +89,9 @@ function savePost() {
             />
             <img
                 class="post-image"
-                v-if="image"
-                :src="image"
-                :alt="`An image in ${user['username']}'s post`"
+                v-if="currentPost.image"
+                :src="currentPost.image"
+                :alt="`An image in ${currentPost.user.username}'s post`"
             />
             <VBtn v-if="editFlag" @click="savePost">Save</VBtn>
         </div>
