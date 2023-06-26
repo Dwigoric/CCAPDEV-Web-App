@@ -61,12 +61,14 @@ const addPost = (post) => {
             <span id="top-posts">Top Posts</span>
             <VList lines="two" class="bg-transparent">
                 <VListItem
-                    v-for="post in cachedPosts.sort(
-                        (a, b) =>
-                            b.reactions +
-                            voteStore.getTotalVotes(b.id) -
-                            (a.reactions + voteStore.getTotalVotes(a.id))
-                    )"
+                    v-for="post in cachedPosts
+                        .slice()
+                        .sort(
+                            (a, b) =>
+                                b.reactions +
+                                voteStore.getTotalVotes(b.id) -
+                                (a.reactions + voteStore.getTotalVotes(a.id))
+                        )"
                     :key="post.id"
                     :title="`${post.user.username} • ${
                         post.reactions + voteStore.getTotalVotes(post.id)
