@@ -3,15 +3,19 @@
 import { useSpecificPostStore } from '../stores/currentPost'
 import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 // Define variables
 const voteStore = useVoteStore()
 
+// Define form rules
+const editTitleRules = [(v) => !!v || 'Title is required']
+const editBodyRules = [(v) => !!v || 'Body is required']
+
 // Define variables
 const { cachedPosts } = useCachedPostsStore()
 const postStore = useSpecificPostStore()
-const editFlag = ref(false);
+const editFlag = ref(false)
 
 const newTitle = ref('')
 const newBody = ref('')
@@ -44,25 +48,6 @@ const props = defineProps({
     }
 })
 
-/* toggle between hiding and showing the dropdown content */
-function openDropdown() {
-     document.getElementById("Dropdownlist").classList.toggle("show");
-}
-
-// Close the dropdown menu if the user clicks outside of it
-window.onclick = function(event) {
-     if (!event.target.matches('.dropbutton')) {
-          var dropdowns = document.getElementsByClassName("dropdown-content");
-          var i;
-          for (i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-               if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                    }
-               }
-          }
-}
-
 function setPost() {
     postStore.setCurrentPost({
         id: props.id,
@@ -75,22 +60,23 @@ function setPost() {
 }
 
 function deletePost() {
-    cachedPosts.splice(cachedPosts.findIndex(post => post.id === props.id), 1)
+    cachedPosts.splice(
+        cachedPosts.findIndex((post) => post.id === props.id),
+        1
+    )
 }
 
 function editPost() {
-     editFlag.value = true;
+    editFlag.value = true
 }
 
 function savePost() {
-    editFlag.value = false;
+    editFlag.value = false
 
-    const post = cachedPosts.find(post => post.id === props.id);
+    const post = cachedPosts.find((post) => post.id === props.id)
     post.title = newTitle.value
     post.body = newBody.value
 }
-
-
 </script>
 
 <template>
@@ -98,35 +84,42 @@ function savePost() {
         <div class="user">
             <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
             <span class="user-name">{{ user['username'] }}</span>
-            <div class="dropdown">
-                <v-btn
-                    @click="openDropdown()"
-                    class="dropbutton"
-                    size="large"
-                    density="compact"
-                    variant="text"
-                    icon="mdi-dots-vertical"
-                >
-                </v-btn>
-                <div id="Dropdownlist" class="dropdown-content">
-                    <v-btn @click="editPost"> Edit </v-btn>
-                    <v-btn @click="deletePost"> Delete</v-btn>
-                </div>
-            </div> 
+            <VMenu>
+                <template v-slot:activator="{ props }">
+                    <VBtn
+                        v-bind="props"
+                        size="large"
+                        density="compact"
+                        variant="text"
+                        icon="mdi-dots-vertical"
+                    >
+                    </VBtn>
+                </template>
+                <VList>
+                    <VListItem @click="editPost">
+                        <VListItemTitle>Edit</VListItemTitle>
+                    </VListItem>
+                    <VListItem @click="deletePost">
+                        <VListItemTitle>Delete</VListItemTitle>
+                    </VListItem>
+                </VList>
+            </VMenu>
         </div>
         <div class="content">
             <p v-if="!editFlag" class="title" id="title">{{ title }}</p>
             <VTextField
                 v-else
+                :rules="editTitleRules"
                 v-model="newTitle"
                 placeholder="Enter new title..."
             />
             <p v-if="!editFlag" class="body" id="body">{{ body }}</p>
             <VTextarea
                 v-else
+                :rules="editBodyRules"
                 v-model="newBody"
                 placeholder="What's up?"
-                no-resize
+                no-resize=""
             />
             <img
                 v-if="image && !editFlag"
@@ -134,7 +127,7 @@ function savePost() {
                 :src="image"
                 :alt="`An image in ${user['username']}'s post`"
             />
-            <button v-if="editFlag" class="savebutton" @click="savePost" > Save </button>
+            <VBtn v-if="editFlag" @click="savePost">Save</VBtn>
         </div>
 
         <div class="post-footer">
@@ -287,64 +280,7 @@ svg path:hover {
     fill: var(--color-dark-pink);
 }
 
-
 svg {
     pointer-events: none;
-}
-
-.dropbutton {
-  background-color: rgba(0, 0, 0, 0);
-  background-size: 100%;
-  width: auto;
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-/* Dropdown button on hover & focus */
-.dropbutton:hover {
-    
-    background-size: 100%;
-}
-
-/* The container location */
-.dropdown {
-  margin-left: auto;
-}
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-/* Links inside the dropdown */
-.dropdown-content button {
-  background-color: var(--color-dark-green);
-  color: var(--color-text);
-  width: 100%;
-  text-decoration: none;
-  padding: 12px 16px;
-  display: block;
-  text-align: left;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content button:hover {background-color: var(--color-background-mute)}
-
-/* Show the dropdown menu*/
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.savebutton {
-    background-color: var(--color-dark-green);
-    padding: 0.2em;
-    margin-top: 1em;
-
-}
-
-.savebutton:hover {
-    background-color: var(--color-background-mute);
 }
 </style>
