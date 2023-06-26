@@ -11,9 +11,12 @@ import NewPost from '../components/NewPost.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
-import { useCachedPostsStore } from '@/stores/cachedPosts'
-import { useTempPostsStore } from '@/stores/tempPosts'
-import { useLoggedInStore } from '@/stores/loggedIn'
+import { useCachedPostsStore } from '../stores/cachedPosts'
+import { useTempPostsStore } from '../stores/tempPosts'
+import { useSpecificPostStore } from '../stores/currentPost'
+import { useLoggedInStore } from '../stores/loggedIn'
+import { useVoteStore } from '../stores/votes'
+import router from '../router'
 
 // Set document title
 document.title = 'Compact Donuts | Feed'
@@ -21,7 +24,9 @@ document.title = 'Compact Donuts | Feed'
 // Define variables
 const { cachedPosts, fetchPosts } = useCachedPostsStore()
 const { tempPosts } = useTempPostsStore()
+const postStore = useSpecificPostStore()
 const loggedIn = useLoggedInStore()
+const voteStore = useVoteStore()
 
 const getPosts = async (waypointState) => {
     if (waypointState.going !== 'IN') {
@@ -53,7 +58,30 @@ const addPost = (post) => {
             id="left-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            This is the left sidebar.
+            <span id="top-posts">Top Posts</span>
+            <VList lines="two" class="bg-transparent">
+                <VListItem
+                    v-for="post in cachedPosts.sort(
+                        (a, b) =>
+                            b.reactions +
+                            voteStore.getTotalVotes(b.id) -
+                            (a.reactions + voteStore.getTotalVotes(a.id))
+                    )"
+                    :key="post.id"
+                    :title="`${post.user.username} • ${
+                        post.reactions + voteStore.getTotalVotes(post.id)
+                    }`"
+                    :subtitle="post.title"
+                    :prepend-avatar="post.user.image"
+                    @click="
+                        () => {
+                            postStore.setCurrentPost(post)
+                            router.push({ name: 'post' })
+                        }
+                    "
+                >
+                </VListItem>
+            </VList>
         </div>
         <div class="feed-element" id="posts">
             <Waypoint @change="getPosts" v-if="!cachedPosts.length || cachedPosts[0].id !== 1">
@@ -109,9 +137,19 @@ const addPost = (post) => {
 }
 
 #left-sidebar {
-    flex-flow: row nowrap;
-    justify-content: right;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: center;
     flex: 2 0;
+}
+
+#top-posts {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, var(--color-dark-pink) 0%, var(--color-bright-blue) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
 }
 
 #posts {
