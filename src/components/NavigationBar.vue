@@ -6,10 +6,12 @@ import { useMediaQuery } from '@vueuse/core'
 import SearchBar from './SearchBar.vue'
 
 // Import stores
-import { useLoggedInStore } from '@/stores/loggedIn'
+import { useLoggedInStore } from '../stores/loggedIn'
+import { useVoteStore } from '../stores/votes'
 
 // Define variables
 const loggedInStore = useLoggedInStore()
+const voteStore = useVoteStore()
 
 // Define functions
 const logout = () => {
@@ -17,6 +19,10 @@ const logout = () => {
     loggedInStore.id = -1
     loggedInStore.username = ''
     loggedInStore.image = ''
+
+    // TODO: Remove this once the voteStore uses backend
+    // Unset votes in the voteStore
+    voteStore.resetVotes()
 
     // Remove cookie
     window.$cookies.remove('user')

@@ -2,14 +2,13 @@
 // Import packages
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
-import router from '@/router'
+import router from '../router'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
 import ThemeSwitch from '../components/ThemeSwitch.vue'
 import PostSpecific from '../components/PostSpecific.vue'
 import PostComment from '../components/PostComment.vue'
-import PostSpecificVote from '../components/PostSpecificVote.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
@@ -17,6 +16,7 @@ import { useLoggedInStore } from '../stores/loggedIn'
 import { useSpecificPostStore } from '../stores/currentPost'
 import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
+import { useVoteStore } from '../stores/votes'
 
 // Define variables
 const API_URL = 'https://dummyjson.com'
@@ -25,6 +25,7 @@ const loggedInStore = useLoggedInStore()
 const specificPostStore = useSpecificPostStore()
 const commentsStore = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
+const voteStore = useVoteStore()
 
 document.title = 'Compact Donuts | Post'
 
@@ -106,7 +107,44 @@ if (specificPostStore.currentPostId === null) {
                 :image="specificPostStore.currentPost.image"
             />
             <div id="vote">
-                <PostSpecificVote :reactions="specificPostStore.currentPost.reactions" />
+                <VHover v-slot="{ isHovering, props }">
+                    <VBtn
+                        class="ma-1 upvote"
+                        v-bind="props"
+                        :color="
+                            isHovering ||
+                            voteStore.getVoteCount(specificPostStore.currentPostId) > 0
+                                ? 'deep-orange-darken-1'
+                                : 'blue-grey-lighten-1'
+                        "
+                        density="compact"
+                        variant="text"
+                        icon="mdi-arrow-up-circle-outline"
+                        @click="voteStore.upvote(specificPostStore.currentPostId)"
+                    >
+                    </VBtn>
+                </VHover>
+                <span>{{
+                    specificPostStore.currentPost.reactions +
+                    voteStore.getTotalVotes(specificPostStore.currentPostId)
+                }}</span>
+                <VHover v-slot="{ isHovering, props }">
+                    <VBtn
+                        class="ma-1 downvote"
+                        v-bind="props"
+                        :color="
+                            isHovering ||
+                            voteStore.getVoteCount(specificPostStore.currentPostId) < 0
+                                ? 'blue-darken-3'
+                                : 'blue-grey-lighten-1'
+                        "
+                        density="compact"
+                        variant="text"
+                        icon="mdi-arrow-down-circle-outline"
+                        @click="voteStore.downvote(specificPostStore.currentPostId)"
+                    >
+                    </VBtn>
+                </VHover>
             </div>
             <div id="new-comment" v-if="loggedInStore.username">
                 <VTextarea
@@ -211,6 +249,7 @@ if (specificPostStore.currentPostId === null) {
 
 #vote {
     display: flex;
+    align-items: center;
     margin: 10px;
 }
 </style>

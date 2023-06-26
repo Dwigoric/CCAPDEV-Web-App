@@ -1,9 +1,15 @@
 <script setup>
+// Import stores
 import { useSpecificPostStore } from '../stores/currentPost'
+import { useVoteStore } from '../stores/votes'
 
+// Define variables
+const voteStore = useVoteStore()
+
+// Define variables
 const postStore = useSpecificPostStore()
 
-defineProps({
+const props = defineProps({
     id: {
         type: Number,
         required: true
@@ -26,26 +32,25 @@ defineProps({
     },
     reactions: {
         type: Number,
-        required: true
+        required: false,
+        default: 0
     }
 })
+
+function setPost() {
+    postStore.setCurrentPost({
+        id: props.id,
+        user: props.user,
+        title: props.title,
+        body: props.body,
+        image: props.image,
+        reactions: props.reactions
+    })
+}
 </script>
 
 <template>
-    <RouterLink
-        to="/post"
-        class="post"
-        @click="
-            postStore.setCurrentPost({
-                id,
-                user,
-                title,
-                body,
-                image,
-                reactions
-            })
-        "
-    >
+    <div class="post">
         <div class="user">
             <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
             <span class="user-name">{{ user['username'] }}</span>
@@ -60,22 +65,52 @@ defineProps({
                 :alt="`An image in ${user['username']}'s post`"
             />
         </div>
-        <div class="dooters">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                <path
-                    fill="#888888"
-                    d="M11 20V7.825l-5.6 5.6L4 12l8-8l8 8l-1.4 1.425l-5.6-5.6V20h-2Z"
-                />
-            </svg>
-            <div class="count">{{ reactions }}</div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-                <path
-                    fill="#888888"
-                    d="m12 20l-8-8l1.4-1.425l5.6 5.6V4h2v12.175l5.6-5.6L20 12l-8 8Z"
-                />
-            </svg>
+        <div class="post-footer">
+            <VHover v-slot="{ isHovering, props }">
+                <VBtn
+                    class="ma-1 upvote"
+                    v-bind="props"
+                    :color="
+                        isHovering || voteStore.getVoteCount(id) > 0
+                            ? 'deep-orange-darken-1'
+                            : 'blue-grey-lighten-1'
+                    "
+                    density="compact"
+                    variant="text"
+                    icon="mdi-arrow-up-circle-outline"
+                    @click="voteStore.upvote(id)"
+                >
+                </VBtn>
+            </VHover>
+            <span>{{ reactions + voteStore.getTotalVotes(id) }}</span>
+            <VHover v-slot="{ isHovering, props }">
+                <VBtn
+                    class="ma-1 downvote"
+                    v-bind="props"
+                    :color="
+                        isHovering || voteStore.getVoteCount(id) < 0
+                            ? 'blue-darken-3'
+                            : 'blue-grey-lighten-1'
+                    "
+                    density="compact"
+                    variant="text"
+                    icon="mdi-arrow-down-circle-outline"
+                    @click="voteStore.downvote(id)"
+                >
+                </VBtn>
+            </VHover>
+            <VBtn
+                to="/post"
+                @click="setPost"
+                class="comment-icon ma-1 ml-2"
+                density="compact"
+                variant="text"
+                color="teal-darken-2"
+                icon="mdi-comment-text-multiple-outline"
+            >
+            </VBtn>
         </div>
-    </RouterLink>
+    </div>
 </template>
 
 <style scoped>
@@ -90,8 +125,6 @@ defineProps({
     background-color: var(--color-pale-blue);
     border-radius: 10px;
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
-    text-decoration: none;
-    color: var(--color-text);
     position: relative;
 }
 
@@ -135,6 +168,8 @@ defineProps({
 .content {
     width: 100%;
     margin-bottom: 2.5rem;
+    text-decoration: none;
+    color: var(--color-text);
 }
 
 .title {
@@ -162,7 +197,7 @@ defineProps({
     }
 }
 
-.dooters {
+.post-footer {
     position: absolute;
     display: flex;
     flex-flow: row nowrap;
@@ -170,11 +205,13 @@ defineProps({
     bottom: 2rem;
 }
 
-.count {
-    margin: auto;
+.content,
+.comment-icon {
+    color: var(--color-text);
+    text-decoration: none;
 }
 
 svg path:hover {
-    fill: orangered;
+    fill: var(--color-dark-pink);
 }
 </style>
