@@ -104,7 +104,7 @@ defineProps({
     margin-right: auto;
     height: auto;
     max-width: 500px;
-    background-color: var(--color-background-mute);
+    background-color: transparent;
     border-radius: 10px;
 }
 </style>

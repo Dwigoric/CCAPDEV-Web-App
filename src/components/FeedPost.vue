@@ -149,7 +149,7 @@ defineProps({
 
 .post-image {
     flex-basis: 30rem;
-    background-color: var(--color-background-mute);
+    background-color: transparent;
     border-radius: 10px;
     justify-self: center;
     margin: 20px auto 0;
