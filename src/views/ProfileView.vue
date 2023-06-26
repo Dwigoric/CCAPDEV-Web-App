@@ -45,13 +45,25 @@ defineProps({
             <h2>{{ login.username }}</h2>
         </div>
         <div class="description">
-            <h5>User hasn't placed a description of themselves yet.</h5>
+            <h5>User hasn't placed a description of themselves yet.</h5> <!--default description, can be blank if they want-->
         </div>
     </div>
 
     <input type="button" value="Edit Profile" class="button"/>
 
+    <hr class="solid"/> <!-- supposed to be the divider between profile details (username, pfp, etc.) and posts -->
+
+    
+
+
     <div class="post" id="posts">
+        <div
+            class="feed-element"
+            id="left-sidebar"
+            v-if="useMediaQuery('(min-width: 1024px)').value"
+        >
+            This is the left sidebar.
+        </div>
         <FeedPost 
             v-for="posts in cachedPosts.filter(post => post.user.id === login.id)" 
             :key="posts.id"
@@ -61,8 +73,17 @@ defineProps({
             :user = "posts.user"
             :image = "posts.image"
             :reactions = "posts.reactions"/>
+            <div
+            class="feed-element"
+            id="right-sidebar"
+            v-if="useMediaQuery('(min-width: 1024px)').value"
+        >
+            <NewPost v-if="loggedIn.username && cachedPosts.length > 0" :add-post="addPost" />
+            <ThemeSwitch />
+        </div>    
 
     </div>
+
 </template>
 
 <style scoped>
@@ -110,21 +131,6 @@ defineProps({
         font-size: 19px;
     }
 
-    .post{
-        display: flex;
-        flex-flow: column nowrap;
-        padding: 2rem;
-    }
-
-    #posts {
-        flex-flow: column-reverse nowrap;
-        flex: 6;
-        justify-content: center;
-        align-items: center;
-        background-color: var(--color-background-mute);
-        gap: 2rem;
-    }
-
     .button{
         position: relative;
         font-family: var(--source-sans);
@@ -140,6 +146,35 @@ defineProps({
         height: 35px;
         width: 100px;
     }
+
+    .button:hover{
+        background-color: lightpink;
+        color: lightpink;
+    }
     
+
+    .solid{
+        height: 5px;
+        background: #6ad4d9;
+        bottom: 200px;
+    }
+    .post{
+        display: flex;
+        flex-flow: column nowrap;
+        padding: 2rem;
+        top: 460px;
+        right: 200px;
+    }
+
+    #posts {
+        flex-flow: column-reverse nowrap;
+        flex: 6;
+        justify-content: center;
+        align-items: center;
+        /*background-color: var(--color-background-mute);*/
+        gap: 2rem;
+    }
+
+
     
 </style>
