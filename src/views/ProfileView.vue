@@ -1,7 +1,6 @@
 <script setup>
 // Import packages
-import { useMediaQuery } from '@vueuse/core'
-import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -22,9 +21,10 @@ const { deletedPosts } = useDeletedPostsStore()
 
 const userPosts = reactive([])
 const loading = ref(true)
+const editing = ref(false)
 
 // Define functions
-const fetchPosts = async () => {
+async function fetchPosts() {
     // Get list of users
     const userParams = new URLSearchParams()
     userParams.set('select', 'id,username,image')
@@ -49,7 +49,7 @@ const fetchPosts = async () => {
     loading.value = false
 }
 
-const getPosts = async () => {
+async function getPosts() {
     if (login.id <= 100) return fetchPosts()
 
     const { cachedPosts } = useCachedPostsStore()
@@ -59,42 +59,62 @@ const getPosts = async () => {
     loading.value = false
 }
 
-onMounted(getPosts)
+getPosts()
 </script>
 
 <template>
     <NavigationBar />
-    <div class="profile">
-        <div class="prof-bg">
-            <img class="bg" src="https://ik.imagekit.io/ikmedia/backlit.jpg" />
+    <div id="header">
+        <VImg
+            src="https://ik.imagekit.io/ikmedia/backlit.jpg"
+            alt="Background image"
+            id="bg-image"
+            height="150"
+            :aspect-ratio="1"
+            cover=""
+        />
+        <div id="user-panel">
+            <div id="user-data">
+                <VAvatar
+                    size="150"
+                    class="mb-3"
+                    variant="tonal"
+                    :style="{ cursor: editing ? 'pointer' : 'default' }"
+                >
+                    <VImg :src="login.image" alt="Profile image" :aspect-ratio="1" />
+                </VAvatar>
+                <span v-if="!editing" id="username" class="rounded-pill pa-1 px-3">{{
+                    login.username
+                }}</span>
+                <VTextField
+                    v-else
+                    v-model="login.username"
+                    label="New username"
+                    variant="outlined"
+                    class="w-100"
+                />
+            </div>
+            <div id="user-description">
+                <span v-if="!editing">
+                    {{ login.description }}
+                </span>
+                <VTextarea
+                    v-else
+                    v-model="login.description"
+                    label="New description"
+                    variant="outlined"
+                    no-resize=""
+                    rows="1"
+                />
+            </div>
         </div>
-        <div class="prof-pfp">
-            <img class="pfp" :src="login.image" :alt="`${[login.username]}'s pfp`" />
-        </div>
-        <div class="username">
-            <h2>{{ login.username }}</h2>
-        </div>
-        <div class="description">
-            <h5>{{ login.description }}</h5>
-            <!--default description, can be blank if they want-->
-        </div>
+        <VBtn id="edit-btn" class="rounded-pill" @click="editing = !editing"> Edit Profile </VBtn>
     </div>
 
-    <!---<input type="button" value="Edit Profile" class="button" @click=""/>-->
-    <VBtn to="/editprofile" class="button"> Edit Profile </VBtn>
-
-    <hr class="solid" />
-    <!-- supposed to be the divider between profile details (username, pfp, etc.) and posts -->
-
-    <div class="post" id="posts">
-        <div
-            class="feed-element"
-            id="left-sidebar"
-            v-if="useMediaQuery('(min-width: 1024px)').value"
-        >
-            This is the left sidebar.
-        </div>
-        <LoaderHeart v-if="loading" />
+    <div id="posts">
+        <Waypoint v-if="loading">
+            <LoaderHeart />
+        </Waypoint>
         <FeedPost
             v-else
             v-for="post in userPosts.filter((p) => !deletedPosts.has(p.id))"
@@ -106,100 +126,73 @@ onMounted(getPosts)
             :image="post.image"
             :reactions="post.reactions"
         />
-        <div
-            class="feed-element"
-            id="right-sidebar"
-            v-if="useMediaQuery('(min-width: 1024px)').value"
-        >
-            <ThemeSwitch />
-        </div>
+        <ThemeSwitch />
     </div>
 </template>
 
 <style scoped>
-.prof-bg {
-    position: absolute;
-    top: 48px;
-    width: 100%;
-    height: 50%;
-}
-
-.bg {
+#header {
+    height: 35vh;
     width: 100vw;
-    height: 75%;
-    object-fit: cover;
-    z-index: 1;
 }
 
-.prof-pfp {
+#bg-image {
     position: relative;
-    top: 295px;
-    left: 5px;
+    top: var(--navbar-height);
+    left: 0;
+    z-index: -1;
 }
 
-.pfp {
-    border-radius: 50%;
-    border: black 5px solid;
-    height: 125px;
-    width: 125px;
-    background-color: lightyellow;
-    z-index: 2;
+#user-panel {
+    display: flex;
+    position: absolute;
+    top: calc(var(--navbar-height) + 3vh);
+    left: 10vw;
+    width: 100vw;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-.username {
-    position: relative;
-    top: 195px;
-    left: 150px;
-    font-size: 25px;
-}
-
-.description {
-    position: relative;
-    top: 198px;
-    left: 150px;
-    font-size: 19px;
-}
-
-.button {
-    position: relative;
-    font-family: var(--source-sans);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--vt-c-black-soft);
-    background-color: var(--color-dark-pink);
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    top: 355px;
-    left: 825px;
-    height: 35px;
-    width: 100px;
-}
-
-.button:hover {
-    background-color: lightpink;
-    color: lightpink;
-}
-
-.solid {
-    height: 5px;
-    background: #6ad4d9;
-    bottom: 200px;
-}
-.post {
+#user-data {
     display: flex;
     flex-flow: column nowrap;
-    padding: 2rem;
-    top: 460px;
-    right: 200px;
+    align-items: center;
+}
+
+#username {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+    background: var(--color-background-soft);
+}
+
+#user-description {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    margin: 12vh 0 0 1rem;
+    width: 50vw;
+}
+
+#edit-btn {
+    position: absolute;
+    top: calc(var(--navbar-height) + 15vh);
+    right: 1vw;
+    transform: translateX(-50%);
+    width: 150px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
 }
 
 #posts {
+    display: flex;
     flex-flow: column-reverse nowrap;
-    flex: 6;
     justify-content: center;
     align-items: center;
-    /*background-color: var(--color-background-mute);*/
+    padding: 2rem 10vw;
+    width: 100%;
     gap: 2rem;
 }
 </style>

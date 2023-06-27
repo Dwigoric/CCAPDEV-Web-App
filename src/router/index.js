@@ -4,7 +4,6 @@ import RegisterView from '../views/RegisterView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import PostView from '../views/PostView.vue'
 import SearchView from '../views/SearchView.vue'
-import ProfileEdit from '../views/ProfileEdit.vue'
 
 // Import stores
 import { useSpecificPostStore } from '../stores/currentPost'
@@ -60,11 +59,6 @@ const router = createRouter({
             path: '/profile',
             name: 'profile',
             component: ProfileView
-        },
-        {
-            path: '/editprofile',
-            name: 'editprofile',
-            component: ProfileEdit
         }
     ]
 })
