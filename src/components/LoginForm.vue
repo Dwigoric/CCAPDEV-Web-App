@@ -32,6 +32,7 @@ const authenticate = async (userLogin) => {
     invalidCredentials.value = false
 
     // Set cookie
+    if (remember.value) userLogin.persist = true
     window.$cookies.set('user', userLogin, remember.value ? '21d' : 0)
 
     // Redirect to the feed page using the router
