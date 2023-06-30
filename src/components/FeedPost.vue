@@ -21,9 +21,6 @@ const postStore = useSpecificPostStore()
 const { deletedPosts } = useDeletedPostsStore()
 const editFlag = ref(false)
 
-const newTitle = ref('')
-const newBody = ref('')
-
 const props = defineProps({
     id: {
         type: Number,
@@ -51,6 +48,9 @@ const props = defineProps({
         default: 0
     }
 })
+
+const newTitle = ref(props.title)
+const newBody = ref(props.body)
 
 function setPost() {
     postStore.setCurrentPost({
