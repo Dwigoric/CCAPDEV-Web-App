@@ -5,7 +5,8 @@ import { ref } from 'vue'
 // Define variables
 const title = ref('')
 const body = ref('')
-const filename = ref([])
+const files = ref([])
+const inputImage = ref(null)
 
 const props = defineProps({
     addPost: {
@@ -15,12 +16,12 @@ const props = defineProps({
 })
 
 // Preprocess input
-const processInput = (ref) => {
-    if (!ref.files.length) {
+const processInput = () => {
+    if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length) {
         props.addPost({ title: title.value, body: body.value, image: null })
     } else {
         // Retrieve image input file
-        const file = ref.files[0]
+        const file = inputImage.value.files[0]
 
         // Read the image file
         const reader = new FileReader()
@@ -39,8 +40,7 @@ const processInput = (ref) => {
     // Reset form
     title.value = ''
     body.value = ''
-    filename.value = []
-    ref.reset()
+    files.value = []
 }
 </script>
 
@@ -62,17 +62,11 @@ const processInput = (ref) => {
                 variant="outlined"
                 clearable="clearable"
                 accept="image/*"
-                v-model="filename"
+                v-model="files"
                 prepend-icon="mdi-camera"
                 ref="inputImage"
             ></VFileInput>
-            <VBtn
-                @click="processInput(this.$refs.inputImage)"
-                :disabled="!title || !body"
-                class="Submit"
-            >
-                Bake!
-            </VBtn>
+            <VBtn @click="processInput" :disabled="!title || !body" class="Submit"> Bake! </VBtn>
         </VForm>
     </VContainer>
 </template>
