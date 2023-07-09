@@ -23,6 +23,9 @@ export const useVoteStore = defineStore('voteCount', () => {
     }
 
     const upvote = (postId) => {
+        // Check if user is logged in
+        if (loggedInStore.id === -1) return
+
         const voteRecord = getVoteRecord(postId)
 
         if (voteRecord) voteRecord.vote = voteRecord.vote === 1 ? 0 : 1
@@ -30,6 +33,9 @@ export const useVoteStore = defineStore('voteCount', () => {
     }
 
     const downvote = (postId) => {
+        // Check if user is logged in
+        if (loggedInStore.id === -1) return
+
         const voteRecord = getVoteRecord(postId)
 
         if (voteRecord) voteRecord.vote = voteRecord.vote === -1 ? 0 : -1
