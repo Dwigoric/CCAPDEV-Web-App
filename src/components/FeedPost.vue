@@ -20,6 +20,7 @@ const { cachedPosts } = useCachedPostsStore()
 const postStore = useSpecificPostStore()
 const { deletedPosts } = useDeletedPostsStore()
 const editFlag = ref(false)
+const form = ref(null)
 
 const props = defineProps({
     id: {
@@ -71,7 +72,10 @@ function editPost() {
     editFlag.value = true
 }
 
-function savePost() {
+async function savePost() {
+    const { valid } = await form.value.validate()
+    if (!valid) return
+
     editFlag.value = false
 
     const post = cachedPosts.find((post) => post.id === props.id)
@@ -108,27 +112,31 @@ function savePost() {
         </div>
         <div class="content">
             <p v-if="!editFlag" class="title" id="title">{{ title }}</p>
-            <VTextField
-                v-else
-                :rules="editTitleRules"
-                v-model="newTitle"
-                placeholder="Enter new title..."
-            />
             <p v-if="!editFlag" class="body" id="body">{{ body }}</p>
-            <VTextarea
-                v-else
-                :rules="editBodyRules"
-                v-model="newBody"
-                placeholder="What's up?"
-                no-resize=""
-            />
+            <VForm @submit.prevent ref="form">
+                <VTextField
+                    v-if="editFlag"
+                    v-model="newTitle"
+                    :rules="editTitleRules"
+                    validate-on="input lazy"
+                    placeholder="Enter new title..."
+                />
+                <VTextarea
+                    v-if="editFlag"
+                    v-model="newBody"
+                    :rules="editBodyRules"
+                    validate-on="input lazy"
+                    placeholder="What's up?"
+                    no-resize=""
+                />
+                <VBtn type="submit" v-if="editFlag" @click="savePost">Save</VBtn>
+            </VForm>
             <img
-                v-if="image && !editFlag"
+                v-if="image"
                 class="post-image"
                 :src="image"
                 :alt="`An image in ${user['username']}'s post`"
             />
-            <VBtn v-if="editFlag" @click="savePost">Save</VBtn>
         </div>
 
         <div class="post-footer">
