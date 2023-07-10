@@ -2,23 +2,39 @@
 // Import packages
 import { ref } from 'vue'
 
+// Import stores
+import { useTempPostsStore } from '../stores/tempPosts'
+import { useLoggedInStore } from '../stores/loggedIn'
+import { useCachedPostsStore } from '../stores/cachedPosts'
+
 // Define variables
+const { tempPosts } = useTempPostsStore()
+const loggedIn = useLoggedInStore()
+const { cachedPosts } = useCachedPostsStore()
 const title = ref('')
 const body = ref('')
 const files = ref([])
 const inputImage = ref(null)
 
-const props = defineProps({
-    addPost: {
-        type: Function,
-        required: true
-    }
-})
+// Define functions
+const addPost = (post) => {
+    tempPosts.push({
+        ...post,
+        id: cachedPosts.length === 0 ? 0 : cachedPosts[cachedPosts.length - 1].id + 1,
+        reactions: 0,
+        user: {
+            id: loggedIn.id,
+            username: loggedIn.username,
+            image: loggedIn.image
+        }
+    })
+    cachedPosts.push(tempPosts[tempPosts.length - 1])
+}
 
 // Preprocess input
 const processInput = () => {
     if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length) {
-        props.addPost({ title: title.value, body: body.value, image: null })
+        addPost({ title: title.value, body: body.value, image: null })
     } else {
         // Retrieve image input file
         const file = inputImage.value.files[0]
@@ -30,7 +46,7 @@ const processInput = () => {
         const _body = body.value
         reader.onload = () => {
             // Add post
-            props.addPost({ title: _title, body: _body, image: reader.result })
+            addPost({ title: _title, body: _body, image: reader.result })
         }
         reader.onerror = (error) => {
             console.log('Error: ', error)

@@ -13,7 +13,6 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 // Import stores
 import { useCachedPostsStore } from '../stores/cachedPosts'
 import { useDeletedPostsStore } from '../stores/deletedPosts'
-import { useTempPostsStore } from '../stores/tempPosts'
 import { useSpecificPostStore } from '../stores/currentPost'
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useVoteStore } from '../stores/votes'
@@ -25,7 +24,6 @@ document.title = 'Compact Donuts | Feed'
 // Define variables
 const { cachedPosts, fetchPosts } = useCachedPostsStore()
 const { deletedPosts } = useDeletedPostsStore()
-const { tempPosts } = useTempPostsStore()
 const postStore = useSpecificPostStore()
 const loggedIn = useLoggedInStore()
 const voteStore = useVoteStore()
@@ -36,20 +34,6 @@ const getPosts = async (waypointState) => {
     }
 
     fetchPosts()
-}
-
-const addPost = (post) => {
-    tempPosts.push({
-        ...post,
-        id: cachedPosts.length === 0 ? 0 : cachedPosts[cachedPosts.length - 1].id + 1,
-        reactions: 0,
-        user: {
-            id: loggedIn.id,
-            username: loggedIn.username,
-            image: loggedIn.image
-        }
-    })
-    cachedPosts.push(tempPosts[tempPosts.length - 1])
 }
 </script>
 
@@ -110,7 +94,7 @@ const addPost = (post) => {
             id="right-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            <NewPost v-if="loggedIn.username && cachedPosts.length > 0" :add-post="addPost" />
+            <NewPost v-if="loggedIn.username && cachedPosts.length > 0" />
             <ThemeSwitch />
         </div>
     </div>
