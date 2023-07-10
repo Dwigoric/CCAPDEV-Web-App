@@ -44,6 +44,7 @@ const addPost = (post) => {
         id: cachedPosts.length === 0 ? 0 : cachedPosts[cachedPosts.length - 1].id + 1,
         reactions: 0,
         user: {
+            id: loggedIn.id,
             username: loggedIn.username,
             image: loggedIn.image
         }
