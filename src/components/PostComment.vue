@@ -15,28 +15,6 @@ const loggedInStore = useLoggedInStore()
 const commentsStore = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
 
-const newReplyBody = ref('')
-const newComment = ref('')
-
-const editFlag = ref(false)
-
-// Define functions
-function addReply(parentCommentId) {
-    if (newReplyBody.value) {
-        commentsStore.addComment({
-            body: newReplyBody.value,
-            parentCommentId,
-            user: {
-                id: loggedInStore.id,
-                username: loggedInStore.username,
-                image: loggedInStore.image
-            }
-        })
-
-        newReplyBody.value = ''
-    }
-}
-
 const props = defineProps({
     id: {
         type: Number,
@@ -60,6 +38,34 @@ const props = defineProps({
     }
 })
 
+const newReplyBody = ref('')
+const newComment = ref(props.body)
+const editFlag = ref(false)
+const form = ref(null)
+
+// Define form rules
+const commentRules = [
+    (v) => !!v || 'Comment is required',
+    (v) => v.length <= 500 || 'Comment must be less than 500 characters'
+]
+
+// Define functions
+function addReply(parentCommentId) {
+    if (newReplyBody.value) {
+        commentsStore.addComment({
+            body: newReplyBody.value,
+            parentCommentId,
+            user: {
+                id: loggedInStore.id,
+                username: loggedInStore.username,
+                image: loggedInStore.image
+            }
+        })
+
+        newReplyBody.value = ''
+    }
+}
+
 function deleteComment() {
     const comment = commentsStore.comments.find((cm) => cm.id === props.id)
     comment.deleted = true
@@ -69,7 +75,10 @@ function editComment() {
     editFlag.value = true
 }
 
-function saveComment() {
+async function saveComment() {
+    const { valid } = await form.value.validate()
+    if (!valid) return
+
     if (newComment.value === '') return
 
     editFlag.value = false
@@ -95,16 +104,18 @@ function saveComment() {
                 </div>
                 <div class="content">
                     <p v-if="!editFlag" class="body">{{ body }}</p>
-                    <VTextarea
-                        v-else
-                        class="new-reply-input"
-                        v-model="newComment"
-                        placeholder="Enter a new comment..."
-                        rows="1"
-                        no-resize=""
-                        append-inner-icon="mdi-send"
-                        @click:append-inner="saveComment"
-                    />
+                    <VForm v-else ref="form">
+                        <VTextarea
+                            class="new-reply-input"
+                            v-model="newComment"
+                            :rules="commentRules"
+                            placeholder="Enter a new comment..."
+                            rows="1"
+                            no-resize=""
+                            append-inner-icon="mdi-send"
+                            @click:append-inner="saveComment"
+                        />
+                    </VForm>
                 </div>
                 <VMenu v-if="loggedInStore.id === user.id">
                     <template v-slot:activator="{ props }">
