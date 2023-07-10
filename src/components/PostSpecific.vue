@@ -1,24 +1,30 @@
 <script setup>
+// Import packages
 import { ref } from 'vue'
 import router from '../router'
 
+// Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCachedPostsStore } from '../stores/cachedPosts'
 import { useDeletedPostsStore } from '../stores/deletedPosts'
 import { useSpecificPostStore } from '../stores/currentPost'
 
+// Define variables
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
 const { deletedPosts } = useDeletedPostsStore()
 const { currentPost, currentPostId } = useSpecificPostStore()
 
-const newTitle = ref('')
-const newBody = ref('')
+const newTitle = ref(currentPost.title)
+const newBody = ref(currentPost.body)
 const editFlag = ref(false)
+const form = ref(null)
 
+// Define form rules
 const editTitleRules = [(v) => !!v || 'Title is required']
 const editBodyRules = [(v) => !!v || 'Body is required']
 
+// Define functions
 function deletePost() {
     deletedPosts.add(currentPostId)
 
@@ -29,7 +35,10 @@ function editPost() {
     editFlag.value = true
 }
 
-function savePost() {
+async function savePost() {
+    const { valid } = await form.value.validate()
+    if (!valid) return
+
     editFlag.value = false
 
     const cachedPost = cachedPosts.find((p) => p.id === currentPostId)
@@ -73,27 +82,31 @@ function savePost() {
         </div>
         <div class="content">
             <p v-if="!editFlag" class="title" id="title">{{ currentPost.title }}</p>
-            <VTextField
-                v-else
-                :rules="editTitleRules"
-                v-model="newTitle"
-                placeholder="Enter new title..."
-            />
             <p v-if="!editFlag" class="body" id="body">{{ currentPost.body }}</p>
-            <VTextarea
-                v-else
-                :rules="editBodyRules"
-                v-model="newBody"
-                placeholder="What's up?"
-                no-resize=""
-            />
+            <VForm @submit.prevent ref="form">
+                <VTextField
+                    v-if="editFlag"
+                    v-model="newTitle"
+                    :rules="editTitleRules"
+                    validate-on="input lazy"
+                    placeholder="Enter new title..."
+                />
+                <VTextarea
+                    v-if="editFlag"
+                    v-model="newBody"
+                    :rules="editBodyRules"
+                    validate-on="input lazy"
+                    placeholder="What's up?"
+                    no-resize=""
+                />
+                <VBtn type="submit" v-if="editFlag" @click="savePost">Save</VBtn>
+            </VForm>
             <img
                 class="post-image"
                 v-if="currentPost.image"
                 :src="currentPost.image"
                 :alt="`An image in ${currentPost.user.username}'s post`"
             />
-            <VBtn v-if="editFlag" @click="savePost">Save</VBtn>
         </div>
     </div>
 </template>
