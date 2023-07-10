@@ -16,7 +16,7 @@ import LoginBox from './LoginBox.vue'
         </div>
     </header>
     <main>
-        <LoginBox button-text="Login" button-text-on-click="Logging in..." />
+        <LoginBox button-text="Login" />
     </main>
 </template>
 

@@ -1,6 +1,6 @@
-<script>
+<script setup>
 // Import packages
-import { ref } from 'vue'
+import { ref, defineProps } from 'vue'
 import router from '../router'
 
 // Import stores
@@ -18,8 +18,25 @@ const isClicked = ref()
 const invalidCredentials = ref(false)
 const invalidCredentialsMessage = ref('Invalid Credentials')
 const showPassword = ref(false)
+const showPasswordConfirmation = ref(false)
 const remember = ref(false)
+const form = ref(null)
 
+// Form rules
+const usernameRules = [
+    (v) => !!v || 'Username is required',
+    (v) => (v && v.length <= 20) || 'Username must be less than 20 characters'
+]
+const passwordRules = [
+    (v) => !!v || 'Password is required',
+    (v) => (v && v.length >= 6) || 'Password must be at least 6 characters'
+]
+const confirmPasswordRules = [
+    ...passwordRules,
+    (v) => v === password.value || 'Passwords do not match'
+]
+
+// Define functions
 const authenticate = async (userLogin) => {
     const loggedInStore = useLoggedInStore()
 
@@ -40,6 +57,9 @@ const authenticate = async (userLogin) => {
 }
 
 const login = async () => {
+    const { valid } = await form.value.validate()
+    if (!valid) return
+
     // Set isClicked to true to disable the button
     isClicked.value = true
 
@@ -93,6 +113,9 @@ const login = async () => {
 }
 
 const registerUser = async () => {
+    const { valid } = await form.value.validate()
+    if (!valid) return
+
     // Set isClicked to true to disable the button
     isClicked.value = true
 
@@ -141,96 +164,71 @@ const registerUser = async () => {
     })
 }
 
-export default {
-    setup() {
-        username.value = ''
-        password.value = ''
-        confirmPassword.value = ''
-        isClicked.value = false
-        invalidCredentials.value = false
-        showPassword.value = false
-        remember.value = false
-
-        return {
-            username,
-            password,
-            confirmPassword,
-            isClicked,
-            login,
-            registerUser,
-            invalidCredentials,
-            invalidCredentialsMessage,
-            showPassword,
-            remember
-        }
+defineProps({
+    buttonText: {
+        type: String,
+        required: true
     },
-
-    props: {
-        buttonText: {
-            type: String,
-            required: true
-        },
-        buttonTextOnClick: {
-            type: String,
-            required: true
-        },
-        showConfirmPassword: {
-            type: Boolean,
-            required: false,
-            default: false
-        }
+    showConfirmPassword: {
+        type: Boolean,
+        required: false,
+        default: false
     }
-}
+})
 </script>
 
 <template>
-    <VForm method="post">
+    <VForm method="post" @submit.prevent ref="form">
         <VTextField
             type="text"
             id="username"
             name="username"
             placeholder="Username"
+            :rules="usernameRules"
+            validate-on="input lazy"
             v-model.lazy="username"
         />
         <VTextField
             :type="showPassword ? 'text' : 'password'"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             id="password"
             name="password"
             placeholder="Password"
+            :rules="passwordRules"
+            validate-on="input lazy"
             v-model.lazy="password"
-            @click:append="showPassword = !showPassword"
+            @click:append-inner="showPassword = !showPassword"
         />
         <VTextField
             v-if="showConfirmPassword"
-            :type="showPassword ? 'text' : 'password'"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showPasswordConfirmation ? 'text' : 'password'"
+            :append-inner-icon="showPasswordConfirmation ? 'mdi-eye' : 'mdi-eye-off'"
             id="confirmPassword"
             name="confirmPassword"
             placeholder="Confirm Password"
+            :rules="confirmPasswordRules"
+            validate-on="input lazy"
             v-model.lazy="confirmPassword"
+            @click:append-inner="showPasswordConfirmation = !showPasswordConfirmation"
         />
         <VCheckbox label="Remember me" v-model="remember" />
         <span v-if="invalidCredentials" id="invalidCredentials">
             {{ invalidCredentialsMessage }}
         </span>
-        <input
-            type="button"
-            :class="{
-                loginButton: true,
-                noButton:
-                    isClicked ||
-                    !username.length ||
-                    !password.length ||
-                    (showConfirmPassword && !confirmPassword.length)
-            }"
+        <VBtn
+            type="submit"
+            rounded="xl"
+            size="x-large"
+            class="ma-3"
+            :loading="isClicked"
             @click="
                 () => {
                     showConfirmPassword ? registerUser() : login()
                 }
             "
-            :value="isClicked ? buttonTextOnClick : buttonText"
-        />
+        >
+            {{ buttonText }}
+        </VBtn>
     </VForm>
 </template>
 

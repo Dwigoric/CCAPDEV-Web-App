@@ -6,10 +6,6 @@ defineProps({
         type: String,
         required: true
     },
-    buttonTextOnClick: {
-        type: String,
-        required: true
-    },
     noRegisterPrompt: {
         type: Boolean,
         required: false,
@@ -29,11 +25,7 @@ defineProps({
             Welcome to
             <span id="title">Compact Donuts</span>
         </div>
-        <LoginForm
-            :button-text="buttonText"
-            :button-text-on-click="buttonTextOnClick"
-            :show-confirm-password="showConfirmPassword"
-        />
+        <LoginForm :button-text="buttonText" :show-confirm-password="showConfirmPassword" />
         <div id="signUpPrompt" v-if="!noRegisterPrompt">
             Don't have an account?
             <RouterLink to="/register">Sign up</RouterLink>

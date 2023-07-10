@@ -11,12 +11,7 @@ document.title = 'Compact Donuts | Register'
     <ThemeSwitch />
     <NavigationBar />
     <main>
-        <LoginBox
-            button-text="Register"
-            button-text-on-click="Registering..."
-            no-register-prompt
-            show-confirm-password
-        />
+        <LoginBox button-text="Register" no-register-prompt show-confirm-password />
     </main>
 </template>
 
