@@ -45,8 +45,8 @@ const getPosts = async (waypointState) => {
             id="left-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            <span id="top-posts">Top Posts</span>
-            <VList lines="two" class="bg-transparent">
+            <span class="sidebar-header">Top Posts</span>
+            <VList lines="two" class="bg-transparent mt-5">
                 <VListItem
                     v-for="post in cachedPosts
                         .filter((p) => !deletedPosts.has(p.id))
@@ -94,6 +94,7 @@ const getPosts = async (waypointState) => {
             id="right-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
+            <span class="sidebar-header">Bake a Post!</span>
             <NewPost v-if="loggedIn.username && cachedPosts.length > 0" />
             <ThemeSwitch />
         </div>
@@ -133,10 +134,9 @@ const getPosts = async (waypointState) => {
     flex: 2 0;
 }
 
-#top-posts {
+.sidebar-header {
     font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 1rem;
     background: linear-gradient(90deg, var(--color-dark-pink) 0%, var(--color-bright-blue) 100%);
     background-clip: text;
     -webkit-background-clip: text;
@@ -152,8 +152,8 @@ const getPosts = async (waypointState) => {
 }
 
 #right-sidebar {
-    flex-flow: row nowrap;
-    justify-content: left;
+    flex-flow: column nowrap;
+    align-items: center;
     flex: 3 0;
     padding: 1rem;
 }
