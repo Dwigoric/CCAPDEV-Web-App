@@ -4,8 +4,7 @@ import { ref } from 'vue'
 import router from '../router'
 
 // Import stores
-import { useLoggedInStore } from '@/stores/loggedIn'
-import { useTempRegisterStore } from '@/stores/tempRegister'
+import { useLoggedInStore } from '../stores/loggedIn'
 
 // Define variables
 const { VITE_API_URL } = import.meta.env
