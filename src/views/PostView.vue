@@ -162,6 +162,7 @@ onUnmounted(specificPostStore.unsetCurrentPost)
                     :post-id="specificPostStore.currentPostId"
                     :body="comment.body"
                     :user="comment.user"
+                    :depth="0"
                     :onclick="
                         (parentId) => {
                             currentCommentStore.setCurrentComment(parentId)
@@ -178,8 +179,9 @@ onUnmounted(specificPostStore.unsetCurrentPost)
 <style scoped>
 #comments {
     display: flex;
+    flex: 1 1 auto;
     flex-flow: column-reverse nowrap;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: center;
     flex-basis: 100%;
     background-color: var(--color-background-soft);

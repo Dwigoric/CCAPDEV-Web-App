@@ -165,18 +165,16 @@ async function saveComment() {
             >
             </PostComment>
         </div>
-        <div></div>
     </div>
 </template>
 
 <style scoped>
 .comment {
     display: flex;
+    flex: 1 0 auto;
     flex-flow: column nowrap;
-    align-items: flex-start;
+    align-self: stretch;
     justify-content: flex-start;
-    flex-grow: 1;
-    width: calc(100% - 3px);
     height: 100%;
     padding: 0.5rem 0 0 0.5rem;
     margin-left: 13px;
