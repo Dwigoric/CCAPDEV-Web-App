@@ -6,8 +6,10 @@ import router from '../router'
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 
+// Import constants
+import { API_URL } from '../constants'
+
 // Define variables
-const { VITE_API_URL } = import.meta.env
 const DEFAULT_BG_IMAGE = 'https://ik.imagekit.io/ikmedia/backlit.jpg'
 
 const username = ref('')
@@ -63,7 +65,7 @@ const login = async () => {
     isClicked.value = true
 
     // Call the API to login
-    const result = await fetch(`${VITE_API_URL}/login`, {
+    const result = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -100,7 +102,7 @@ const registerUser = async () => {
     params.set('key', 'username')
     params.set('value', username.value)
 
-    const result = await fetch(`${VITE_API_URL}/register`, {
+    const result = await fetch(`${API_URL}/register`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
