@@ -3,12 +3,13 @@
 import { ref } from 'vue'
 
 // Import stores
-import { useTempPostsStore } from '../stores/tempPosts'
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCachedPostsStore } from '../stores/cachedPosts'
 
+// Import constants
+import { API_URL } from '../constants'
+
 // Define variables
-const { tempPosts } = useTempPostsStore()
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
 const title = ref('')
@@ -17,24 +18,28 @@ const files = ref([])
 const inputImage = ref(null)
 
 // Define functions
-const addPost = (post) => {
-    tempPosts.push({
-        ...post,
-        id: cachedPosts.length === 0 ? 0 : cachedPosts[cachedPosts.length - 1].id + 1,
-        reactions: 0,
-        user: {
-            id: loggedIn.id,
-            username: loggedIn.username,
-            image: loggedIn.image
-        }
-    })
-    cachedPosts.push(tempPosts[tempPosts.length - 1])
+const addPost = async (post) => {
+    const result = await fetch(`${API_URL}/posts`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(post)
+    }).then((res) => res.json())
+
+    if (result.error) {
+        console.error(result.message)
+        return
+    }
+
+    // Add post to cached posts
+    cachedPosts.push(result.post)
 }
 
 // Preprocess input
 const processInput = () => {
     if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length) {
-        addPost({ title: title.value, body: body.value, image: null })
+        addPost({ userId: loggedIn.id, title: title.value, body: body.value, image: null })
     } else {
         // Retrieve image input file
         const file = inputImage.value.files[0]
