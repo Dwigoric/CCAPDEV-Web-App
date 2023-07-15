@@ -65,7 +65,7 @@ const login = async () => {
     isClicked.value = true
 
     // Call the API to login
-    const result = await fetch(`${API_URL}/login`, {
+    const result = await fetch(`${API_URL}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -102,7 +102,7 @@ const registerUser = async () => {
     params.set('key', 'username')
     params.set('value', username.value)
 
-    const result = await fetch(`${API_URL}/register`, {
+    const result = await fetch(`${API_URL}/users/register`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
