@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { ref, defineProps } from 'vue'
+import { ref } from 'vue'
 import router from '../router'
 
 // Import stores
@@ -8,7 +8,7 @@ import { useLoggedInStore } from '@/stores/loggedIn'
 import { useTempRegisterStore } from '@/stores/tempRegister'
 
 // Define variables
-const USER_API = 'https://dummyjson.com/users/'
+const { VITE_API_URL } = import.meta.env
 const DEFAULT_BG_IMAGE = 'https://ik.imagekit.io/ikmedia/backlit.jpg'
 
 const username = ref('')
@@ -16,7 +16,7 @@ const password = ref('')
 const confirmPassword = ref('')
 const isClicked = ref()
 const invalidCredentials = ref(false)
-const invalidCredentialsMessage = ref('Invalid Credentials')
+const invalidCredentialsMessage = ref('Invalid credentials')
 const showPassword = ref(false)
 const showPasswordConfirmation = ref(false)
 const remember = ref(false)
@@ -83,32 +83,29 @@ const login = async () => {
         }
     }
 
-    // Create URL Search Params
-    const params = new URLSearchParams()
-    params.set('key', 'username')
-    params.set('value', username.value)
-
-    // Fetch the user if they exist
-    const { users } = await fetch(`${USER_API}/filter?${params}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+    // Call the API to login
+    const result = await fetch(`${VITE_API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
     })
         .then((res) => res.json())
-        .catch((err) => console.error(err))
+        .catch(console.error)
 
-    // TODO: Change this to a more secure method once we have a backend
-    // Check if the user exists
-    if (!users.length || users[0].password !== password.value) {
+    if (result.error) {
         isClicked.value = false
         invalidCredentials.value = true
-        invalidCredentialsMessage.value = 'Invalid credentials'
+        invalidCredentialsMessage.value = result.message
         return
     }
 
     await authenticate({
-        id: users[0].id,
-        username: users[0].username,
-        image: users[0].image
+        id: result.user.id,
+        username: result.user.username,
+        image: result.user.image
     })
 }
 
@@ -118,14 +115,6 @@ const registerUser = async () => {
 
     // Set isClicked to true to disable the button
     isClicked.value = true
-
-    // Check if the passwords match
-    if (password.value !== confirmPassword.value) {
-        isClicked.value = false
-        invalidCredentials.value = true
-        invalidCredentialsMessage.value = 'Passwords do not match'
-        return
-    }
 
     // Check if the username is taken
     const params = new URLSearchParams()
