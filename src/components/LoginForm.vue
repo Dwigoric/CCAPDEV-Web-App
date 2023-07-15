@@ -63,26 +63,6 @@ const login = async () => {
     // Set isClicked to true to disable the button
     isClicked.value = true
 
-    // Check if user is in temporary register store
-    const tempRegisterStore = useTempRegisterStore()
-    const tempUser = tempRegisterStore.tempUsers.find((user) => user.username === username.value)
-    if (tempUser) {
-        if (tempUser.password === password.value) {
-            await authenticate({
-                id: tempUser.id,
-                username: tempUser.username,
-                image: tempUser.image,
-                bgImage: tempUser.bgImage
-            })
-            return
-        } else {
-            isClicked.value = false
-            invalidCredentials.value = true
-            invalidCredentialsMessage.value = 'Invalid credentials'
-            return
-        }
-    }
-
     // Call the API to login
     const result = await fetch(`${VITE_API_URL}/login`, {
         method: 'POST',
@@ -121,33 +101,29 @@ const registerUser = async () => {
     params.set('key', 'username')
     params.set('value', username.value)
 
-    const { users } = await fetch(`${USER_API}/filter?${params}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+    const result = await fetch(`${VITE_API_URL}/register`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
     })
         .then((res) => res.json())
-        .catch((err) => console.error(err))
+        .catch(console.error)
 
-    if (users.length) {
+    if (result.error) {
         isClicked.value = false
         invalidCredentials.value = true
-        invalidCredentialsMessage.value = 'Username is already taken'
+        invalidCredentialsMessage.value = result.message
         return
     }
 
     // TODO: Change this to a more secure method once we have a backend
     // Add user to the database
 
-    const tempRegisterStore = useTempRegisterStore()
-    tempRegisterStore.tempUsers.push({
-        id: 100 + tempRegisterStore.tempUsers.length + 1,
-        username: username.value,
-        password: password.value,
-        image: `https://robohash.org/${username.value}.png`
-    })
-
     await authenticate({
-        id: 100 + tempRegisterStore.tempUsers.length + 1,
+        id: result.user.id,
         username: username.value,
         image: `https://robohash.org/${username.value}.png`
     })
