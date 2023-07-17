@@ -23,7 +23,6 @@ async function fetchPosts() {
         const { posts, loadedAll } = await fetch(`${API_URL}/posts?${postParams}`).then((res) =>
             res.json()
         )
-        console.log(loadedAll)
         cachedPosts.unshift(...posts.reverse())
         loadedAllPosts.value = loadedAll
     } catch (err) {
