@@ -59,6 +59,12 @@ const router = createRouter({
             path: '/profile',
             name: 'profile',
             component: ProfileView
+        },
+        {
+            // Catch-all 404
+            path: '/:pathMatch(.*)*',
+            name: 'not-found',
+            component: () => import('../views/NotFoundView.vue')
         }
     ]
 })
