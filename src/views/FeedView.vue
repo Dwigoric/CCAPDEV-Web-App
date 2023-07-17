@@ -22,7 +22,8 @@ import router from '../router'
 document.title = 'Compact Donuts | Feed'
 
 // Define variables
-const { cachedPosts, fetchPosts } = useCachedPostsStore()
+const cachedPostsStore = useCachedPostsStore()
+const { cachedPosts, fetchPosts } = cachedPostsStore
 const { deletedPosts } = useDeletedPostsStore()
 const postStore = useSpecificPostStore()
 const loggedIn = useLoggedInStore()
@@ -45,7 +46,7 @@ const getPosts = async (waypointState) => {
             id="left-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            <span class="sidebar-header">Top Posts</span>
+            <span v-if="cachedPosts.length > 0" class="sidebar-header">Top Posts</span>
             <VList lines="two" class="bg-transparent mt-5">
                 <VListItem
                     v-for="post in cachedPosts
@@ -74,7 +75,7 @@ const getPosts = async (waypointState) => {
             </VList>
         </div>
         <div class="feed-element" id="posts">
-            <Waypoint @change="getPosts" v-if="!cachedPosts.length || cachedPosts[0].id !== 1">
+            <Waypoint @change="getPosts" v-if="!cachedPostsStore.loadedAllPosts">
                 <LoaderHeart />
             </Waypoint>
             <span v-else> You're all caught up! </span>
@@ -94,8 +95,8 @@ const getPosts = async (waypointState) => {
             id="right-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            <span class="sidebar-header">Bake a Post!</span>
-            <NewPost v-if="loggedIn.username && cachedPosts.length > 0" />
+            <span v-if="loggedIn.username" class="sidebar-header">Bake a Post!</span>
+            <NewPost v-if="loggedIn.username" />
             <ThemeSwitch />
         </div>
     </div>
