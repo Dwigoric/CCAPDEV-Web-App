@@ -51,7 +51,7 @@ const processInput = () => {
         const _body = body.value
         reader.onload = () => {
             // Add post
-            addPost({ title: _title, body: _body, image: reader.result })
+            addPost({ userId: loggedIn.id, title: _title, body: _body, image: reader.result })
         }
         reader.onerror = (error) => {
             console.log('Error: ', error)
