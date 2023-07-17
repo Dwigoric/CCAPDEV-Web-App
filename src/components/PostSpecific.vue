@@ -2,6 +2,7 @@
 // Import packages
 import { ref } from 'vue'
 import router from '../router'
+import moment from 'moment'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -28,6 +29,11 @@ const props = defineProps({
         image: {
             type: String,
             required: false
+        },
+        edited: {
+            type: Number,
+            required: false,
+            default: null
         },
         user: {
             type: Object,
@@ -76,17 +82,19 @@ function editPost() {
 }
 
 async function saveCurrentPost() {
-    // TODO: Save post to API
     const { valid } = await form.value.validate()
     if (!valid) return
 
     editFlag.value = false
 
-    const cachedPost = cachedPosts.find((p) => p.id === props.id)
-    cachedPost.title = newTitle.value
-    cachedPost.body = newBody.value
+    const cachedPost = cachedPosts.find((p) => p.id === props.post.id)
+    if (cachedPost) {
+        cachedPost.title = newTitle.value
+        cachedPost.body = newBody.value
+        cachedPost.edited = Date.now()
+    }
 
-    props.savePost(props.id, newTitle.value, newBody.value)
+    props.savePost(newTitle.value, newBody.value)
 }
 </script>
 
@@ -115,6 +123,10 @@ async function saveCurrentPost() {
                     </VListItem>
                 </VList>
             </VMenu>
+            <div v-if="post.edited">
+                <VIcon size="x-small"> mdi-pencil </VIcon>
+                <span class="edit-span">edited {{ moment(post.edited).fromNow() }}</span>
+            </div>
         </div>
         <div class="content">
             <p v-if="!editFlag" class="title" id="title">{{ post.title }}</p>
@@ -192,6 +204,12 @@ async function saveCurrentPost() {
     font-size: 1rem;
     border-radius: 5px;
     background-color: var(--color-bright-blue);
+}
+
+.edit-span {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    margin-left: 10px;
 }
 
 .title {

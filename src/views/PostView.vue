@@ -41,6 +41,7 @@ const currentPost = reactive({
     body: '',
     image: '',
     reactions: 0,
+    edited: null,
     user: {
         id: '',
         username: '',
@@ -72,6 +73,7 @@ async function fetchPost() {
         currentPost.user.id = post.user.id
         currentPost.user.username = post.user.username
         currentPost.user.image = post.user.image
+        currentPost.edited = post.edited
     } catch (err) {
         console.error(err)
     }
@@ -124,16 +126,16 @@ function addComment() {
     newCommentBody.value = ''
 }
 
-async function savePost() {
+async function savePost(newTitle, newBody) {
     try {
         const result = await fetch(`${API_URL}/posts/${currentPost.id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                title: currentPost.title,
-                body: currentPost.body
+                title: newTitle,
+                body: newBody
             })
         }).then((res) => res.json())
 
