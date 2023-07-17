@@ -16,9 +16,12 @@ const title = ref('')
 const body = ref('')
 const files = ref([])
 const inputImage = ref(null)
+const processing = ref(false)
 
 // Define functions
 const addPost = async (post) => {
+    processing.value = true
+
     const result = await fetch(`${API_URL}/posts`, {
         method: 'PUT',
         headers: {
@@ -29,9 +32,11 @@ const addPost = async (post) => {
 
     if (result.error) {
         console.error(result.message)
+        processing.value = false
         return
     }
 
+    processing.value = false
     // Add post to cached posts
     cachedPosts.push(result.post)
 }
@@ -87,7 +92,14 @@ const processInput = () => {
                 prepend-icon="mdi-camera"
                 ref="inputImage"
             ></VFileInput>
-            <VBtn @click="processInput" :disabled="!title || !body" class="Submit"> Bake! </VBtn>
+            <VBtn
+                @click="processInput"
+                :disabled="!title || !body"
+                :loading="processing"
+                class="Submit"
+            >
+                Bake!
+            </VBtn>
         </VForm>
     </VContainer>
 </template>
