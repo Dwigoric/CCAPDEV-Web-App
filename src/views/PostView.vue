@@ -2,6 +2,7 @@
 // Import packages
 import { ref, reactive, onMounted } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
+import router from '../router'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -147,7 +148,21 @@ async function savePost(newTitle, newBody) {
     }
 }
 
-function deletePost() {}
+async function deletePost() {
+    try {
+        const result = await fetch(`${API_URL}/posts/${currentPost.id}`, {
+            method: 'DELETE'
+        }).then((res) => res.json())
+
+        if (result.error) {
+            console.error(result.error)
+        }
+    } catch (err) {
+        console.error(err)
+    }
+
+    return router.push({ name: 'feed' })
+}
 
 // Define lifecycle hooks
 onMounted(fetchPost)

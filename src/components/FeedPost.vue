@@ -7,7 +7,6 @@ import moment from 'moment'
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { useDeletedPostsStore } from '../stores/deletedPosts'
 
 // Import constants
 import { API_URL } from '../constants'
@@ -20,7 +19,6 @@ const editBodyRules = [(v) => !!v || 'Body is required']
 const voteStore = useVoteStore()
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
-const { deletedPosts } = useDeletedPostsStore()
 const editFlag = ref(false)
 const form = ref(null)
 
@@ -60,9 +58,21 @@ const props = defineProps({
 const newTitle = ref(props.title)
 const newBody = ref(props.body)
 
-function deletePost() {
-    // TODO: Delete post from API
-    deletedPosts.add(props.id)
+async function deletePost() {
+    try {
+        const response = await fetch(`${API_URL}/posts/${props.id}`, {
+            method: 'DELETE'
+        }).then((res) => res.json())
+
+        if (response.error) {
+            console.error(response.error)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+
+    const postIndex = cachedPosts.findIndex((post) => post.id === props.id)
+    cachedPosts.splice(postIndex, 1)
 }
 
 function editPost() {

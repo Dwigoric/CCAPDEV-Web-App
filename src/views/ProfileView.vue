@@ -11,13 +11,11 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { useDeletedPostsStore } from '../stores/deletedPosts'
 
 // Define variables
 const API_URL = 'https://dummyjson.com'
 
 const login = useLoggedInStore()
-const { deletedPosts } = useDeletedPostsStore()
 
 const userPosts = reactive([])
 const loading = ref(true)

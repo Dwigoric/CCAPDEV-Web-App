@@ -7,7 +7,6 @@ import moment from 'moment'
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { useDeletedPostsStore } from '../stores/deletedPosts'
 
 // Define props
 const props = defineProps({
@@ -57,7 +56,6 @@ const props = defineProps({
 // Define variables
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
-const { deletedPosts } = useDeletedPostsStore()
 
 const newTitle = ref(props.post.title)
 const newBody = ref(props.post.body)
@@ -71,8 +69,7 @@ const editBodyRules = [(v) => !!v || 'Body is required']
 // Define functions
 
 function deleteCurrentPost() {
-    // TODO: Delete post from API
-    deletedPosts.add(props.id)
+    props.deletePost(props.post.id)
 
     router.back()
 }
