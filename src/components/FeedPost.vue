@@ -4,7 +4,6 @@ import { ref } from 'vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
-import { useSpecificPostStore } from '../stores/currentPost'
 import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
 import { useDeletedPostsStore } from '../stores/deletedPosts'
@@ -17,7 +16,6 @@ const editBodyRules = [(v) => !!v || 'Body is required']
 const voteStore = useVoteStore()
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
-const postStore = useSpecificPostStore()
 const { deletedPosts } = useDeletedPostsStore()
 const editFlag = ref(false)
 const form = ref(null)
@@ -53,18 +51,8 @@ const props = defineProps({
 const newTitle = ref(props.title)
 const newBody = ref(props.body)
 
-function setPost() {
-    postStore.setCurrentPost({
-        id: props.id,
-        user: props.user,
-        title: props.title,
-        body: props.body,
-        image: props.image,
-        reactions: props.reactions
-    })
-}
-
 function deletePost() {
+    // TODO: Delete post from API
     deletedPosts.add(props.id)
 }
 
@@ -73,6 +61,7 @@ function editPost() {
 }
 
 async function savePost() {
+    // TODO: Save post to API
     const { valid } = await form.value.validate()
     if (!valid) return
 
@@ -174,8 +163,7 @@ async function savePost() {
                 </VBtn>
             </VHover>
             <VBtn
-                to="/post"
-                @click="setPost"
+                :to="`/post/${id}`"
                 class="comment-icon ma-1 ml-2"
                 density="compact"
                 variant="text"

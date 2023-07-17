@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 
 // Import components
@@ -12,126 +12,175 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
-import { useSpecificPostStore } from '../stores/currentPost'
-import { useCommentsStore } from '../stores/comments'
+// import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
 import { useVoteStore } from '../stores/votes'
 
-// Define variables
-const API_URL = 'https://dummyjson.com'
+// Import constants
+import { API_URL } from '../constants'
 
+// Define props
+const props = defineProps({
+    id: {
+        type: String,
+        required: true
+    }
+})
+
+// Define variables
 const loggedInStore = useLoggedInStore()
-const specificPostStore = useSpecificPostStore()
-const commentsStore = useCommentsStore()
+// const commentsStore = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
 const voteStore = useVoteStore()
 
 document.title = 'Compact Donuts | Post'
 
+const currentPost = reactive({
+    id: props.id,
+    title: '',
+    body: '',
+    image: '',
+    reactions: 0,
+    user: {
+        id: '',
+        username: '',
+        image: ''
+    }
+})
 const newCommentBody = ref('')
 const newReplyBody = ref('')
 const comments = reactive([])
-const isLoading = ref(true)
+const isLoadingPost = ref(true)
+const isLoadingComments = ref(true)
 
 // Define functions
-async function fetchComments() {
-    if (specificPostStore.currentPostId <= 150) {
-        const response = await fetch(`${API_URL}/comments/post/${specificPostStore.currentPostId}`)
-        const data = await response.json()
-
-        // Define search query for user
-        const userParams = new URLSearchParams()
-        userParams.set('limit', '0')
-        userParams.set('select', 'id,username,image')
-
-        const userResponse = await fetch(`${API_URL}/users?${userParams}`)
-        const userData = await userResponse.json()
-
-        comments.push(
-            ...data.comments.map((comment) => ({
-                ...comment,
-                parentCommentId: comment.parentCommentId || null,
-                user: userData.users.find((user) => user.id === comment.user.id)
-            }))
+async function fetchPost() {
+    try {
+        const { post, error } = await fetch(`${API_URL}/posts/${props.id}`).then((res) =>
+            res.json()
         )
+
+        if (error) {
+            isLoadingPost.value = false
+            return
+        }
+
+        currentPost.title = post.title
+        currentPost.body = post.body
+        currentPost.image = post.image
+        currentPost.reactions = post.reactions
+        currentPost.user.id = post.user.id
+        currentPost.user.username = post.user.username
+        currentPost.user.image = post.user.image
+    } catch (err) {
+        console.error(err)
     }
 
-    comments.push(
-        ...commentsStore.comments.filter(
-            (comment) => comment.postId === specificPostStore.currentPostId
-        )
-    )
+    isLoadingPost.value = false
+}
 
-    isLoading.value = false
+async function fetchComments() {
+    // TODO: Fetch comments from API
+    // const response = await fetch(`${API_URL}/comments/post/${specificPostStore.currentPostId}`)
+    // const data = await response.json()
+    //
+    // // Define search query for user
+    // const userParams = new URLSearchParams()
+    // userParams.set('limit', '0')
+    // userParams.set('select', 'id,username,image')
+    //
+    // const userResponse = await fetch(`${API_URL}/users?${userParams}`)
+    // const userData = await userResponse.json()
+    //
+    // comments.push(
+    //     ...data.comments.map((comment) => ({
+    //         ...comment,
+    //         parentCommentId: comment.parentCommentId || null,
+    //         user: userData.users.find((user) => user.id === comment.user.id)
+    //     }))
+    // )
+
+    isLoadingComments.value = false
 }
 
 function addComment() {
     if (newCommentBody.value === '') return
 
-    commentsStore.addComment({
-        id: 340 + commentsStore.comments.length + 1,
-        postId: specificPostStore.currentPostId,
-        body: newCommentBody.value,
-        parentCommentId: null,
-        user: {
-            id: loggedInStore.id,
-            username: loggedInStore.username,
-            image: loggedInStore.image
-        }
-    })
+    // TODO: Add comment to API
+    // commentsStore.addComment({
+    //     id: 340 + commentsStore.comments.length + 1,
+    //     postId: specificPostStore.currentPostId,
+    //     body: newCommentBody.value,
+    //     parentCommentId: null,
+    //     user: {
+    //         id: loggedInStore.id,
+    //         username: loggedInStore.username,
+    //         image: loggedInStore.image
+    //     }
+    // })
 
-    comments.push(commentsStore.comments[commentsStore.comments.length - 1])
+    // comments.push(commentsStore.comments[commentsStore.comments.length - 1])
+
     newCommentBody.value = ''
 }
 
-// Define lifecycle hooks
-onMounted(fetchComments)
+function savePost() {}
 
-onUnmounted(specificPostStore.unsetCurrentPost)
+function deletePost() {}
+
+// Define lifecycle hooks
+onMounted(fetchPost)
+onMounted(fetchComments)
 </script>
 
 <template>
     <ThemeSwitch v-if="useMediaQuery('(min-width: 1024px)').value" />
     <NavigationBar />
     <div id="view">
-        <div id="post-details">
-            <PostSpecific />
+        <div v-if="isLoadingPost" class="preload">
+            <LoaderHeart />
+        </div>
+        <div v-else-if="currentPost.title === ''" class="preload">
+            <img src="@/assets/donut_love.svg" alt="404" id="logo" />
+            <h1>Post not found</h1>
+            <p>The post you are looking for does not exist.</p>
+            <RouterLink to="/feed">
+                <span> Back to feed </span>
+            </RouterLink>
+        </div>
+        <div id="post-details" v-else>
+            <PostSpecific :post="currentPost" :save-post="savePost" :delete-post="deletePost" />
             <div id="vote">
                 <VHover v-slot="{ isHovering, props }">
                     <VBtn
                         class="ma-1 upvote"
                         v-bind="props"
                         :color="
-                            isHovering ||
-                            voteStore.getVoteCount(specificPostStore.currentPostId) > 0
+                            isHovering || voteStore.getVoteCount(id) > 0
                                 ? 'deep-orange-darken-1'
                                 : 'blue-grey-lighten-1'
                         "
                         density="compact"
                         variant="text"
                         icon="mdi-arrow-up-circle-outline"
-                        @click="voteStore.upvote(specificPostStore.currentPostId)"
+                        @click="voteStore.upvote(id)"
                     >
                     </VBtn>
                 </VHover>
-                <span>{{
-                    specificPostStore.currentPost.reactions +
-                    voteStore.getTotalVotes(specificPostStore.currentPostId)
-                }}</span>
+                <span>{{ currentPost.reactions + voteStore.getTotalVotes(currentPost.id) }}</span>
                 <VHover v-slot="{ isHovering, props }">
                     <VBtn
                         class="ma-1 downvote"
                         v-bind="props"
                         :color="
-                            isHovering ||
-                            voteStore.getVoteCount(specificPostStore.currentPostId) < 0
+                            isHovering || voteStore.getVoteCount(id) < 0
                                 ? 'blue-darken-3'
                                 : 'blue-grey-lighten-1'
                         "
                         density="compact"
                         variant="text"
                         icon="mdi-arrow-down-circle-outline"
-                        @click="voteStore.downvote(specificPostStore.currentPostId)"
+                        @click="voteStore.downvote(id)"
                     >
                     </VBtn>
                 </VHover>
@@ -149,7 +198,7 @@ onUnmounted(specificPostStore.unsetCurrentPost)
                 />
             </div>
             <div id="comments">
-                <div id="loader-wrapper" v-if="isLoading">
+                <div id="loader-wrapper" v-if="isLoadingComments">
                     <LoaderHeart />
                 </div>
                 <PostComment
@@ -159,7 +208,7 @@ onUnmounted(specificPostStore.unsetCurrentPost)
                     )"
                     :key="comment.id"
                     :id="comment.id"
-                    :post-id="specificPostStore.currentPostId"
+                    :post-id="id"
                     :body="comment.body"
                     :user="comment.user"
                     :depth="0"
@@ -177,6 +226,19 @@ onUnmounted(specificPostStore.unsetCurrentPost)
 </template>
 
 <style scoped>
+.preload {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+#logo {
+    width: 30rem;
+    height: 30rem;
+}
+
 #comments {
     display: flex;
     flex: 1 1 auto;

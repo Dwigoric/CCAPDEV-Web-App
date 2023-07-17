@@ -17,11 +17,11 @@ const currentCommentStore = useCurrentCommentStore()
 
 const props = defineProps({
     id: {
-        type: Number,
+        type: String,
         required: true
     },
     postId: {
-        type: Number,
+        type: String,
         required: true
     },
     user: {

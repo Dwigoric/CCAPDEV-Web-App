@@ -13,7 +13,6 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 // Import stores
 import { useCachedPostsStore } from '../stores/cachedPosts'
 import { useDeletedPostsStore } from '../stores/deletedPosts'
-import { useSpecificPostStore } from '../stores/currentPost'
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useVoteStore } from '../stores/votes'
 import router from '../router'
@@ -25,7 +24,6 @@ document.title = 'Compact Donuts | Feed'
 const cachedPostsStore = useCachedPostsStore()
 const { cachedPosts, fetchPosts } = cachedPostsStore
 const { deletedPosts } = useDeletedPostsStore()
-const postStore = useSpecificPostStore()
 const loggedIn = useLoggedInStore()
 const voteStore = useVoteStore()
 
@@ -64,12 +62,7 @@ const getPosts = async (waypointState) => {
                     }`"
                     :subtitle="post.title"
                     :prepend-avatar="post.user.image"
-                    @click="
-                        () => {
-                            postStore.setCurrentPost(post)
-                            router.push({ name: 'post' })
-                        }
-                    "
+                    @click="() => router.push({ name: 'post', params: { id: post.id } })"
                 >
                 </VListItem>
             </VList>

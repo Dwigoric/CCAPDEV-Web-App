@@ -6,7 +6,6 @@ import PostView from '../views/PostView.vue'
 import SearchView from '../views/SearchView.vue'
 
 // Import stores
-import { useSpecificPostStore } from '../stores/currentPost'
 import { useLoggedInStore } from '../stores/loggedIn'
 
 const router = createRouter({
@@ -41,14 +40,10 @@ const router = createRouter({
             }
         },
         {
-            path: '/post',
+            path: '/post/:id',
             name: 'post',
             component: PostView,
-            beforeEnter: (to, from, next) => {
-                const postStore = useSpecificPostStore()
-                if (postStore.currentPostId === null) next({ name: 'feed' })
-                else next()
-            }
+            props: true
         },
         {
             path: '/search',
