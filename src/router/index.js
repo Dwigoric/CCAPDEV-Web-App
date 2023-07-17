@@ -48,7 +48,8 @@ const router = createRouter({
         {
             path: '/search',
             name: 'search',
-            component: SearchView
+            component: SearchView,
+            props: (route) => ({ query: route.query.q })
         },
         {
             path: '/profile',

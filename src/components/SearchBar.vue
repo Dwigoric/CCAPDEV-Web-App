@@ -15,7 +15,7 @@ const processSearch = () => {
     searchStore.searchPosts.splice(0, searchStore.searchPosts.length)
     searchStore.search(query.value)
     searchStore.fetching = true
-    router.push({ name: 'search' })
+    router.push({ name: 'search', query: { q: query.value } })
 }
 </script>
 
