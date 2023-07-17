@@ -124,7 +124,26 @@ function addComment() {
     newCommentBody.value = ''
 }
 
-function savePost() {}
+async function savePost() {
+    try {
+        const result = await fetch(`${API_URL}/posts/${currentPost.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: currentPost.title,
+                body: currentPost.body
+            })
+        }).then((res) => res.json())
+
+        if (result.error) {
+            console.error(result.error)
+        }
+    } catch (err) {
+        console.error(err)
+    }
+}
 
 function deletePost() {}
 
