@@ -131,11 +131,12 @@ const getPosts = async (waypointState) => {
 #left-sidebar {
     flex-flow: column nowrap;
     justify-content: flex-start;
-    align-items: center;
+    align-items: stretch;
     flex: 2 0;
 }
 
 .sidebar-header {
+    align-self: center;
     font-size: 1.5rem;
     font-weight: 600;
     background: linear-gradient(90deg, var(--color-dark-pink) 0%, var(--color-bright-blue) 100%);
