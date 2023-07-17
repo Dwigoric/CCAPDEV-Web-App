@@ -81,6 +81,7 @@ const getPosts = async (waypointState) => {
                 :user="post.user"
                 :image="post.image"
                 :reactions="post.reactions"
+                :edited="post.edited"
             />
         </div>
         <div

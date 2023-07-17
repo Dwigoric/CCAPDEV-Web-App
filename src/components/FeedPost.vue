@@ -1,12 +1,16 @@
 <script setup>
 // Import packages
 import { ref } from 'vue'
+import moment from 'moment'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
 import { useDeletedPostsStore } from '../stores/deletedPosts'
+
+// Import constants
+import { API_URL } from '../constants'
 
 // Define form rules
 const editTitleRules = [(v) => !!v || 'Title is required']
@@ -45,6 +49,11 @@ const props = defineProps({
         type: Number,
         required: false,
         default: 0
+    },
+    edited: {
+        type: Date,
+        required: false,
+        default: false
     }
 })
 
@@ -61,7 +70,6 @@ function editPost() {
 }
 
 async function savePost() {
-    // TODO: Save post to API
     const { valid } = await form.value.validate()
     if (!valid) return
 
@@ -70,6 +78,26 @@ async function savePost() {
     const post = cachedPosts.find((post) => post.id === props.id)
     post.title = newTitle.value
     post.body = newBody.value
+    post.edited = Date.now()
+
+    try {
+        const response = await fetch(`${API_URL}/posts/${props.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: newTitle.value,
+                body: newBody.value
+            })
+        }).then((res) => res.json())
+
+        if (response.error) {
+            console.error(response.error)
+        }
+    } catch (error) {
+        console.error(error)
+    }
 }
 </script>
 
@@ -98,6 +126,10 @@ async function savePost() {
                     </VListItem>
                 </VList>
             </VMenu>
+            <div v-if="edited">
+                <VIcon size="x-small"> mdi-pencil </VIcon>
+                <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
+            </div>
         </div>
         <div class="content">
             <p v-if="!editFlag" class="title" id="title">{{ title }}</p>
@@ -208,7 +240,7 @@ async function savePost() {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    width: 100px;
+    width: 100%;
     gap: 1rem;
     margin-bottom: 10px;
 }
@@ -225,6 +257,12 @@ async function savePost() {
     padding: 0.2rem;
     border-radius: 5px;
     background-color: var(--color-bright-blue);
+}
+
+.edit-span {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    margin-left: 10px;
 }
 
 .content {
