@@ -10,12 +10,12 @@ import ThemeSwitch from '../components/ThemeSwitch.vue'
 import PostSpecific from '../components/PostSpecific.vue'
 import PostComment from '../components/PostComment.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
+import PostVote from '../components/PostVote.vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 // import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
-import { useVoteStore } from '../stores/votes'
 
 // Import constants
 import { API_URL } from '../constants'
@@ -32,7 +32,6 @@ const props = defineProps({
 const loggedInStore = useLoggedInStore()
 // const commentsStore = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
-const voteStore = useVoteStore()
 
 document.title = 'Compact Donuts | Post'
 
@@ -186,41 +185,7 @@ onMounted(fetchComments)
         </div>
         <div id="post-details" v-else>
             <PostSpecific :post="currentPost" :save-post="savePost" :delete-post="deletePost" />
-            <div id="vote">
-                <VHover v-slot="{ isHovering, props }">
-                    <VBtn
-                        class="ma-1 upvote"
-                        v-bind="props"
-                        :color="
-                            isHovering || voteStore.getVoteCount(id) > 0
-                                ? 'deep-orange-darken-1'
-                                : 'blue-grey-lighten-1'
-                        "
-                        density="compact"
-                        variant="text"
-                        icon="mdi-arrow-up-circle-outline"
-                        @click="voteStore.upvote(id)"
-                    >
-                    </VBtn>
-                </VHover>
-                <span>{{ currentPost.reactions + voteStore.getTotalVotes(currentPost.id) }}</span>
-                <VHover v-slot="{ isHovering, props }">
-                    <VBtn
-                        class="ma-1 downvote"
-                        v-bind="props"
-                        :color="
-                            isHovering || voteStore.getVoteCount(id) < 0
-                                ? 'blue-darken-3'
-                                : 'blue-grey-lighten-1'
-                        "
-                        density="compact"
-                        variant="text"
-                        icon="mdi-arrow-down-circle-outline"
-                        @click="voteStore.downvote(id)"
-                    >
-                    </VBtn>
-                </VHover>
-            </div>
+            <PostVote :id="id" :reactions="currentPost.reactions" />
             <div id="new-comment" v-if="loggedInStore.username">
                 <VTextarea
                     placeholder="Add a comment..."
@@ -335,11 +300,5 @@ onMounted(fetchComments)
     font-size: 1rem;
     color: var(--color-text);
     resize: none;
-}
-
-#vote {
-    display: flex;
-    align-items: center;
-    margin: 10px;
 }
 </style>

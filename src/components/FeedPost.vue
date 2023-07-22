@@ -5,18 +5,17 @@ import moment from 'moment'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
-import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
 
 // Import constants
 import { API_URL } from '../constants'
+import PostVote from './PostVote.vue'
 
 // Define form rules
 const editTitleRules = [(v) => !!v || 'Title is required']
 const editBodyRules = [(v) => !!v || 'Body is required']
 
 // Define variables
-const voteStore = useVoteStore()
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
 const editFlag = ref(false)
@@ -24,7 +23,7 @@ const form = ref(null)
 
 const props = defineProps({
     id: {
-        type: Number,
+        type: String,
         required: true
     },
     user: {
@@ -169,41 +168,8 @@ async function savePost() {
                 :alt="`An image in ${user['username']}'s post`"
             />
         </div>
-
         <div class="post-footer">
-            <VHover v-slot="{ isHovering, props }">
-                <VBtn
-                    class="ma-1 upvote"
-                    v-bind="props"
-                    :color="
-                        isHovering || voteStore.getVoteCount(id) > 0
-                            ? 'deep-orange-darken-1'
-                            : 'blue-grey-lighten-1'
-                    "
-                    density="compact"
-                    variant="text"
-                    icon="mdi-arrow-up-circle-outline"
-                    @click="voteStore.upvote(id)"
-                >
-                </VBtn>
-            </VHover>
-            <span>{{ reactions + voteStore.getTotalVotes(id) }}</span>
-            <VHover v-slot="{ isHovering, props }">
-                <VBtn
-                    class="ma-1 downvote"
-                    v-bind="props"
-                    :color="
-                        isHovering || voteStore.getVoteCount(id) < 0
-                            ? 'blue-darken-3'
-                            : 'blue-grey-lighten-1'
-                    "
-                    density="compact"
-                    variant="text"
-                    icon="mdi-arrow-down-circle-outline"
-                    @click="voteStore.downvote(id)"
-                >
-                </VBtn>
-            </VHover>
+            <PostVote :id="id" :reactions="reactions" />
             <VBtn
                 :to="`/post/${id}`"
                 class="comment-icon ma-1 ml-2"
