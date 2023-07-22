@@ -50,7 +50,7 @@ const dayMessage = () => {
                 <span v-if="useMediaQuery('(min-width: 1024px)').value">!</span>
             </span>
             <div v-if="loggedInStore.image">
-                <RouterLink to="/profile" id="profile-picture-link">
+                <RouterLink :to="`/profile/${loggedInStore.username}`" id="profile-picture-link">
                     <VAvatar class="mx-2">
                         <img id="user-image" :src="loggedInStore.image" alt="User" />
                     </VAvatar>

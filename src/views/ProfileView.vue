@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -10,10 +10,26 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
-import { useCachedPostsStore } from '../stores/cachedPosts'
+
+// Import constants
+import { API_URL } from '../constants'
 
 // Define variables
-const API_URL = 'https://dummyjson.com'
+document.title = 'Compact Donuts | Profile'
+
+const props = defineProps({
+    username: {
+        type: String,
+        required: true
+    }
+})
+
+const currentUser = reactive({
+    id: '',
+    username: '',
+    description: '',
+    image: ''
+})
 
 const login = useLoggedInStore()
 
@@ -22,42 +38,30 @@ const loading = ref(true)
 const editing = ref(false)
 
 // Define functions
-async function fetchPosts() {
-    // Get list of users
-    const userParams = new URLSearchParams()
-    userParams.set('select', 'id,username,image')
-
-    const user = await fetch(`${API_URL}/users/${login.id}?${userParams}`)
-        .then((res) => res.json())
-        .catch(console.error)
-
-    // Process posts
-    const postParams = new URLSearchParams()
-    postParams.set('limit', '0')
-
-    const response = await fetch(`${API_URL}/posts/user/${login.id}?${postParams}`)
-    const { posts } = await response.json()
-    userPosts.push(
-        ...posts.map((post) => ({
-            ...post,
-            user
-        }))
+async function fetchUser() {
+    const { user } = await fetch(`${API_URL}/users/username/${props.username}`).then((res) =>
+        res.json()
     )
 
+    currentUser.id = user.id
+    currentUser.username = user.username
+    currentUser.description = user.description
+    currentUser.image = user.image
+
+    return fetchPosts()
+}
+
+async function fetchPosts() {
+    // Process posts
+    const { posts } = await fetch(`${API_URL}/posts/user/${currentUser.id}`).then((res) =>
+        res.json()
+    )
+    userPosts.push(...posts)
+
     loading.value = false
 }
 
-async function getPosts() {
-    if (login.id <= 100) return fetchPosts()
-
-    const { cachedPosts } = useCachedPostsStore()
-
-    userPosts.push(...cachedPosts.filter((post) => post.user.id === login.id))
-
-    loading.value = false
-}
-
-getPosts()
+onMounted(fetchUser)
 </script>
 
 <template>
@@ -79,14 +83,14 @@ getPosts()
                     variant="tonal"
                     :style="{ cursor: editing ? 'pointer' : 'default' }"
                 >
-                    <VImg :src="login.image" alt="Profile image" :aspect-ratio="1" />
+                    <VImg :src="currentUser.image" alt="Profile image" :aspect-ratio="1" />
                 </VAvatar>
                 <span v-if="!editing" id="username" class="rounded-pill pa-1 px-3">{{
-                    login.username
+                    currentUser.username
                 }}</span>
                 <VTextField
                     v-else
-                    v-model="login.username"
+                    v-model="currentUser.username"
                     label="New username"
                     variant="outlined"
                     class="w-100"
@@ -94,11 +98,11 @@ getPosts()
             </div>
             <div id="user-description">
                 <span v-if="!editing">
-                    {{ login.description }}
+                    {{ currentUser.description }}
                 </span>
                 <VTextarea
                     v-else
-                    v-model="login.description"
+                    v-model="currentUser.description"
                     label="New description"
                     variant="outlined"
                     no-resize=""
@@ -106,7 +110,14 @@ getPosts()
                 />
             </div>
         </div>
-        <VBtn id="edit-btn" class="rounded-pill" @click="editing = !editing"> Edit Profile </VBtn>
+        <VBtn
+            v-if="login.username === username"
+            id="edit-btn"
+            class="rounded-pill"
+            @click="editing = !editing"
+        >
+            Edit Profile
+        </VBtn>
     </div>
 
     <div id="posts">
@@ -115,7 +126,7 @@ getPosts()
         </Waypoint>
         <FeedPost
             v-else
-            v-for="post in userPosts.filter((p) => !deletedPosts.has(p.id))"
+            v-for="post in userPosts"
             :key="post.id"
             :id="post.id"
             :title="post.title"

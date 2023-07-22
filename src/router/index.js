@@ -52,9 +52,10 @@ const router = createRouter({
             props: (route) => ({ query: route.query.q })
         },
         {
-            path: '/profile',
+            path: '/profile/:username',
             name: 'profile',
-            component: ProfileView
+            component: ProfileView,
+            props: true
         },
         {
             // Catch-all 404
