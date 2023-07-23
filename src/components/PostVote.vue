@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -22,7 +22,6 @@ const props = defineProps({
         required: true
     }
 })
-
 // Define functions
 async function callAPI() {
     try {
@@ -69,6 +68,23 @@ function downvote() {
 
     callAPI()
 }
+
+async function callVoteNum() {
+    const params = new URLSearchParams()
+    params.set('userId', userId)
+
+    const { error, message, reactions } = await fetch(
+        `${API_URL}/votes/${props.id}?${params}`
+    ).then((res) => res.json())
+
+    vote.value = reactions
+
+    if (error) {
+        console.error(message)
+    }
+}
+
+onMounted(callVoteNum)
 </script>
 
 <template>
@@ -84,7 +100,7 @@ function downvote() {
         >
         </VBtn>
     </VHover>
-    <span>{{ reactions }}</span>
+    <span>{{ reactions + vote }}</span>
     <VHover v-slot="{ isHovering, props }">
         <VBtn
             class="ma-1 downvote"
