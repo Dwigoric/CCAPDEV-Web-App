@@ -1,11 +1,15 @@
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 
+import { API_URL } from '../constants'
+
 const comments = reactive([])
+const loadedAllComments = ref(false)
 
 export const useCommentsStore = defineStore('comments', () => {
     return {
         comments,
+        loadedAllComments,
         addComment
     }
 })
