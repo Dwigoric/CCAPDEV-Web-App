@@ -10,7 +10,9 @@ import { API_URL } from '../constants'
 // Define variables
 const { id: userId } = useLoggedInStore()
 
+console.log(callVoteNum())
 const vote = ref(0)
+console.log(vote)
 
 const props = defineProps({
     id: {
@@ -22,12 +24,11 @@ const props = defineProps({
         required: true
     }
 })
-
 // Define functions
 async function callAPI() {
     try {
         const { error, message } = await fetch(`${API_URL}/votes/${props.id}`, {
-            method: 'POST',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -68,6 +69,28 @@ function downvote() {
     }
 
     callAPI()
+}
+
+async function callVoteNum () {
+    var voteStatus = 0
+    try {
+        const { error, message, reactions } = await fetch(`${API_URL}/votes/${props.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                postId: props.id,
+                userId
+            })
+        }).then((res) => res.json()).then(data => vote.value = data.reactions)
+        
+        if (error) {
+            console.error(message)
+        }
+    } catch (error) {
+        console.error(error)
+    }
 }
 </script>
 
