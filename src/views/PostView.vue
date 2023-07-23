@@ -14,7 +14,6 @@ import PostVote from '../components/PostVote.vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
-import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
 
 // Import constants
@@ -30,11 +29,8 @@ const props = defineProps({
 
 // Define variables
 const loggedInStore = useLoggedInStore()
-const commentsStore = useCommentsStore()
-//const { comments, loadedAllComments } = commentsStore
 const currentCommentStore = useCurrentCommentStore()
 const loggedIn = useLoggedInStore()
-
 
 document.title = 'Compact Donuts | Post'
 
@@ -56,8 +52,6 @@ const comments = reactive([])
 const newReplyBody = ref('')
 const isLoadingPost = ref(true)
 const isLoadingComments = ref(true)
-const processing = ref(false)
-
 
 // Define functions
 async function fetchPost() {
@@ -87,49 +81,45 @@ async function fetchPost() {
 }
 
 async function fetchComments() {
-  try {
-    const response = await fetch(`${API_URL}/comments/${props.id}`);
-    const data = await response.json();
-    comments.splice(0, comments.length, ...data.comments); // Replace the comments with the fetched comments
-  } catch (error) {
-    console.error(`Error occurred while fetching comments for post with ID ${postId}:`, error);
-    comments.splice(0, comments.length); // Clear the comments array in case of an error or no comments found
-  }
+    try {
+        const { comments: fetchedComments } = await fetch(`${API_URL}/comments/${props.id}`).then(
+            (res) => res.json()
+        )
+        comments.splice(0, comments.length, ...fetchedComments) // Replace the comments with the fetched comments
+    } catch (error) {
+        console.error(`Error occurred while fetching comments for post with ID ${props.id}:`, error)
+        comments.splice(0, comments.length) // Clear the comments array in case of an error or no comments found
+    }
+
+    isLoadingComments.value = false
 }
 
 const addComment = async (comment) => {
-    processing.value = true
+    // Add comment to comments
+    comments.push(comment)
 
     const result = await fetch(`${API_URL}/comments/${props.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            postId: props.id, 
-            body: newCommentBody.value,  
-            parentCommentId: '', 
-            userId: loggedIn.id
-        })
+        body: JSON.stringify(comment)
     }).then((res) => res.json())
 
-    if (result.error) {
-        console.error(result.message)
-        processing.value = false
-        return
-    }
-
-    processing.value = false
-    // Add comment to comments
-    comments.push(result.comment)
+    if (result.error) console.error(result.message)
 }
 
 // Preprocess input
 const processComment = () => {
-    addComment({ postId: props.id, body: newCommentBody.value,  parentCommentId: null, userId: loggedIn.id })
-
     // Reset form
     newCommentBody.value = ''
+
+    addComment({
+        postId: props.id,
+        body: newCommentBody.value,
+        parentCommentId: null,
+        userId: loggedIn.id
+    })
 }
 
 async function savePost(newTitle, newBody) {
