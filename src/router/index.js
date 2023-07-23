@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import ProfileView from '../views/ProfileView.vue'
-import PostView from '../views/PostView.vue'
 import SearchView from '../views/SearchView.vue'
 
 // Import stores
@@ -42,7 +41,7 @@ const router = createRouter({
         {
             path: '/post/:id',
             name: 'post',
-            component: PostView,
+            component: () => import('../views/PostView.vue'),
             props: true
         },
         {

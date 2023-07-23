@@ -256,6 +256,7 @@ async function savePost() {
 
 .body {
     width: 100%;
+    white-space: pre-wrap;
 }
 
 .post-image {

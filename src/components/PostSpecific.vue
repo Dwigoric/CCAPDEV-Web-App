@@ -219,6 +219,7 @@ async function saveCurrentPost() {
 .body {
     text-align: justify;
     font-size: 1rem;
+    white-space: pre-wrap;
 }
 
 .post-image {
