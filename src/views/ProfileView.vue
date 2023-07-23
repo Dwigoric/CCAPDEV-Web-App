@@ -14,6 +14,7 @@ import { useLoggedInStore } from '../stores/loggedIn'
 // Import constants
 import { API_URL } from '../constants'
 
+
 // Define variables
 document.title = 'Compact Donuts | Profile'
 
@@ -31,11 +32,23 @@ const currentUser = reactive({
     image: ''
 })
 
+
 const login = useLoggedInStore()
 
 const userPosts = reactive([])
 const loading = ref(true)
 const editing = ref(false)
+const cDescription = ref('')
+const cUsername = ref('')
+const modName = ref(false)
+const modDesc = ref(false)
+const modFile = ref([])
+
+const dialog = ref(false)
+
+
+
+
 
 // Define functions
 async function fetchUser() {
@@ -62,6 +75,68 @@ async function fetchPosts() {
 }
 
 onMounted(fetchUser)
+
+const processInput = () => {
+    if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length) {
+        addPic({image: null })
+    } else {
+        // Retrieve image input file
+        const file = inputImage.value.files[0]
+
+        // Read the image file
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => {
+            // Add post
+            login.image = modFile.value
+        }
+        reader.onerror = (error) => {
+            console.log('Error: ', error)
+        }
+    }
+
+    // Reset form
+    title.value = ''
+    body.value = ''
+    files.value = []
+}
+
+function saveChanges(){
+    if(cUsername.value === '' && cDescription.value === '') return
+
+    modName.value = false
+    if(cUsername.value == '')
+    {
+        login.username = login.username
+        currentUser.username = login.username
+    }
+    else
+    {
+        login.username = cUsername.value
+        currentUser.username = login.username
+    }
+    modDesc.value = false
+    login.description = cDescription.value
+    currentUser.description = login.description
+    dialog = false
+}
+
+function sendtoDB(){
+    fetch(`${API_URL}/users/${currentUser.id}`,{
+    method: 'PATCH',
+    body: JSON.stringify({
+        username: cUsername,
+        description: cDescription,
+        image: modFile
+    }),
+    headers: {'Content-Type': 'application/json'},
+    })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
+}
+
+
+
 </script>
 
 <template>
@@ -83,41 +158,124 @@ onMounted(fetchUser)
                     variant="tonal"
                     :style="{ cursor: editing ? 'pointer' : 'default' }"
                 >
+
                     <VImg :src="currentUser.image" alt="Profile image" :aspect-ratio="1" />
                 </VAvatar>
-                <span v-if="!editing" id="username" class="rounded-pill pa-1 px-3">{{
+                
+                
+                   <!--
+                    v-if="!editing" 
+                    <VFileInput
+                        v-else 
+                        v-model="currentUser.image"
+                        label="Insert image"
+                        clearable="clearable"
+                        accept="image/*"
+                        prepend-icon="mdi-camera"
+                        ref="inputImage"
+                    ></VFileInput>
+                
+                <VBtn
+                    >
+                        Edit Picture
+                </VBtn>
+                -->
+
+                <span id="username" class="rounded-pill pa-1 px-3">{{
                     currentUser.username
                 }}</span>
-                <VTextField
-                    v-else
-                    v-model="currentUser.username"
-                    label="New username"
-                    variant="outlined"
-                    class="w-100"
-                />
+                
             </div>
             <div id="user-description">
-                <span v-if="!editing">
+                <span>
                     {{ currentUser.description }}
                 </span>
-                <VTextarea
-                    v-else
-                    v-model="currentUser.description"
-                    label="New description"
-                    variant="outlined"
-                    no-resize=""
-                    rows="1"
-                />
             </div>
         </div>
-        <VBtn
-            v-if="login.username === username"
-            id="edit-btn"
-            class="rounded-pill"
-            @click="editing = !editing"
+
+            
+            <v-row justify="center">
+    <v-dialog
+      v-model="dialog"
+      persistent
+      width="1024"
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn
+          class="rounded-pill"
+          id="edit-btn"
+          v-bind="props"
+          @click="dialog = true"
         >
-            Edit Profile
-        </VBtn>
+          Edit Profile
+        </v-btn>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">Edit User Information</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col
+                cols="12"
+              >
+                <span class="label1">
+                    New Username
+                </span>
+                <VTextField
+                  label="A user can go by many names, but they still keep their own identity."
+                  v-model="cUsername"
+                >
+                </VTextField>
+                <small class="note">
+                    Username should be at least 1 character long. Otherwise, the empty string will not be saved
+                </small>
+              </v-col>
+              <v-col cols="12">
+                <span class="label2">
+                    New Description
+                </span>
+                <VTextField
+                  label="Don't forget to bake it with love!"
+                  v-model="cDescription"
+                ></VTextField>
+              </v-col>
+              <v-col cols="12">
+                <span class="label2">
+                    New Profile Picture
+                </span>
+                <v-file-input
+                  label="Change profile picture"
+                  v-model="modFile"
+                ></v-file-input>
+              </v-col>
+              <v-col cols="12">
+                <VBtn
+                    @click="sendtoDB"
+                    class="Submit"
+                >
+                    Save Changes
+              </VBtn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <VBtn
+            color="red-darken-1"
+            variant="text"
+            @click= "dialog = false"
+          >
+            Save and Close
+          </VBtn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-row>
+
+ 
     </div>
 
     <div id="posts">
@@ -204,4 +362,5 @@ onMounted(fetchUser)
     width: 100%;
     gap: 2rem;
 }
+
 </style>
