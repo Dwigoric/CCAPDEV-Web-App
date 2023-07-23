@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+import router from '../router'
 
 // Import components
 import PostComment from './PostComment.vue'
@@ -9,6 +10,9 @@ import { useLoggedInStore } from '../stores/loggedIn'
 import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
 import { VTextarea } from 'vuetify/lib/components/index.mjs'
+
+// Import constants
+import { API_URL } from '../constants'
 
 // Define variables
 const loggedInStore = useLoggedInStore()
@@ -42,6 +46,7 @@ const newReplyBody = ref('')
 const newComment = ref(props.body)
 const editFlag = ref(false)
 const form = ref(null)
+const comments = reactive([])
 
 // Define form rules
 const commentRules = [
@@ -50,25 +55,51 @@ const commentRules = [
 ]
 
 // Define functions
-function addReply(parentCommentId) {
-    if (newReplyBody.value) {
-        commentsStore.addComment({
-            body: newReplyBody.value,
-            parentCommentId,
-            user: {
-                id: loggedInStore.id,
-                username: loggedInStore.username,
-                image: loggedInStore.image
-            }
-        })
+const addComment = async (comment) => {
+    // Add comment to comments
+    comments.push(comment)
 
-        newReplyBody.value = ''
-    }
+    const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(comment)
+    }).then((res) => res.json())
+
+    if (result.error) console.error(result.message)
 }
 
-function deleteComment() {
-    const comment = commentsStore.comments.find((cm) => cm.id === props.id)
-    comment.deleted = true
+function addReply(pCommentId) {
+    addComment({
+        postId: props.id,
+        body: newReplyBody.value,
+        parentCommentId: pCommentId,
+        user: {
+            id: loggedInStore.id,
+            username: loggedInStore.username,
+            image: loggedInStore.image
+        }
+    })
+
+    // Reset form
+    newReplyBody.value = ''
+}
+
+async function deleteComment() {
+    try {
+        const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}`, {
+            method: 'DELETE'
+        }).then((res) => res.json())
+
+        if (result.error) {
+            console.error(result.error)
+        }
+    } catch (err) {
+        console.error(err)
+    }
+
+    return router.push({ name: 'post' })
 }
 
 function editComment() {
@@ -81,9 +112,26 @@ async function saveComment() {
 
     if (newComment.value === '') return
 
-    editFlag.value = false
-    const comment = commentsStore.comments.find((cm) => cm.id === props.id)
-    comment.body = newComment.value
+    try {
+        const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                body: newComment.value
+            })
+        }).then((res) => res.json())
+
+        if (result.error) {
+            console.error(result.error)
+        }
+    } catch (err) {
+        console.error(err)
+    }
+    //editFlag.value = false
+    //const comment = commentsStore.comments.find((cm) => cm.id === props.id)
+    //comment.body = newComment.value
 }
 </script>
 
