@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -10,9 +10,7 @@ import { API_URL } from '../constants'
 // Define variables
 const { id: userId } = useLoggedInStore()
 
-console.log(callVoteNum())
 const vote = ref(0)
-console.log(vote)
 
 const props = defineProps({
     id: {
@@ -28,7 +26,7 @@ const props = defineProps({
 async function callAPI() {
     try {
         const { error, message } = await fetch(`${API_URL}/votes/${props.id}`, {
-            method: 'PATCH',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -71,27 +69,22 @@ function downvote() {
     callAPI()
 }
 
-async function callVoteNum () {
-    var voteStatus = 0
-    try {
-        const { error, message, reactions } = await fetch(`${API_URL}/votes/${props.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                postId: props.id,
-                userId
-            })
-        }).then((res) => res.json()).then(data => vote.value = data.reactions)
-        
-        if (error) {
-            console.error(message)
-        }
-    } catch (error) {
-        console.error(error)
+async function callVoteNum() {
+    const params = new URLSearchParams()
+    params.set('userId', userId)
+
+    const { error, message, reactions } = await fetch(
+        `${API_URL}/votes/${props.id}?${params}`
+    ).then((res) => res.json())
+
+    vote.value = reactions
+
+    if (error) {
+        console.error(message)
     }
 }
+
+onMounted(callVoteNum)
 </script>
 
 <template>
@@ -107,7 +100,7 @@ async function callVoteNum () {
         >
         </VBtn>
     </VHover>
-    <span>{{ reactions }}</span>
+    <span>{{ reactions + vote }}</span>
     <VHover v-slot="{ isHovering, props }">
         <VBtn
             class="ma-1 downvote"
