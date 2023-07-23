@@ -111,15 +111,19 @@ const addComment = async (comment) => {
 
 // Preprocess input
 const processComment = () => {
-    // Reset form
-    newCommentBody.value = ''
-
     addComment({
         postId: props.id,
         body: newCommentBody.value,
         parentCommentId: null,
-        userId: loggedIn.id
+        user: {
+            id: loggedIn.id,
+            username: loggedIn.username,
+            image: loggedIn.image
+        }
     })
+
+    // Reset form
+    newCommentBody.value = ''
 }
 
 async function savePost(newTitle, newBody) {
