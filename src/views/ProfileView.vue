@@ -42,7 +42,9 @@ const cDescription = ref('')
 const cUsername = ref('')
 const modName = ref(false)
 const modDesc = ref(false)
-const modFile = ref([])
+const inputImage = ref(null)
+const modFile = ref(false)
+const filename = ref([])
 
 const dialog = ref(false)
 
@@ -61,6 +63,8 @@ async function fetchUser() {
     currentUser.description = user.description
     currentUser.image = user.image
 
+    //user initially was the object
+
     return fetchPosts()
 }
 
@@ -76,19 +80,21 @@ async function fetchPosts() {
 
 onMounted(fetchUser)
 
-const processInput = () => {
-    if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length) {
-        addPic({image: null })
+
+
+const processInput = (ref) => {
+    if (!ref.files.length){
+        login.image = login.image
     } else {
         // Retrieve image input file
-        const file = inputImage.value.files[0]
+        const file = ref.files[0]
 
         // Read the image file
         const reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = () => {
-            // Add post
-            login.image = modFile.value
+            // Change image
+            login.image = reader.result
         }
         reader.onerror = (error) => {
             console.log('Error: ', error)
@@ -96,9 +102,8 @@ const processInput = () => {
     }
 
     // Reset form
-    title.value = ''
-    body.value = ''
-    files.value = []
+    filename.value = []
+    ref.reset()
 }
 
 function saveChanges(){
@@ -122,17 +127,37 @@ function saveChanges(){
 }
 
 function sendtoDB(){
-    fetch(`${API_URL}/users/${currentUser.id}`,{
+
+    if (cUsername.value == '')
+    {
+        cUsername = login.username
+    }
+
+    //processInput(this/$ref.inputImage)
+
+    fetch(`${API_URL}/users/${login.id}`,{
     method: 'PATCH',
+    headers: {'Content-type': 'application/json'},
     body: JSON.stringify({
-        username: cUsername,
-        description: cDescription,
-        image: modFile
+        username: cUsername.value,
+        image: modFile.value,
+        description: cDescription.value,
     }),
-    headers: {'Content-Type': 'application/json'},
-    })
+    }
+    )
     .then((response) => response.json())
     .then((json) => console.log(json));
+
+    login.username = cUsername.value
+    //currentUser.username = login.username
+    login.image = modFile.value
+    //currentUser.image = login.image
+    //currentUser.description = login.description
+    user.id = login.id
+    user.username = login.username
+
+    router.replace({ name: 'profile', vparams:{ username: login.username } })
+
 }
 
 
@@ -194,88 +219,86 @@ function sendtoDB(){
         </div>
 
             
-            <v-row justify="center">
-    <v-dialog
-      v-model="dialog"
-      persistent
-      width="1024"
-    >
-      <template v-slot:activator="{ props }">
-        <v-btn
-          class="rounded-pill"
-          id="edit-btn"
-          v-bind="props"
-          @click="dialog = true"
-        >
-          Edit Profile
-        </v-btn>
-      </template>
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">Edit User Information</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-              >
-                <span class="label1">
-                    New Username
-                </span>
-                <VTextField
-                  label="A user can go by many names, but they still keep their own identity."
-                  v-model="cUsername"
+        <v-row justify="center">
+            <v-dialog
+            v-model="dialog"
+            persistent
+            width="1024"
+            >
+            <template v-slot:activator="{ props }">
+                <v-btn
+                class="rounded-pill"
+                id="edit-btn"
+                v-bind="props"
+                @click="dialog = true"
                 >
-                </VTextField>
-                <small class="note">
-                    Username should be at least 1 character long. Otherwise, the empty string will not be saved
-                </small>
-              </v-col>
-              <v-col cols="12">
-                <span class="label2">
-                    New Description
-                </span>
-                <VTextField
-                  label="Don't forget to bake it with love!"
-                  v-model="cDescription"
-                ></VTextField>
-              </v-col>
-              <v-col cols="12">
-                <span class="label2">
-                    New Profile Picture
-                </span>
-                <v-file-input
-                  label="Change profile picture"
-                  v-model="modFile"
-                ></v-file-input>
-              </v-col>
-              <v-col cols="12">
-                <VBtn
-                    @click="sendtoDB"
-                    class="Submit"
-                >
-                    Save Changes
-              </VBtn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <VBtn
-            color="red-darken-1"
-            variant="text"
-            @click= "dialog = false"
-          >
-            Save and Close
-          </VBtn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
-
- 
+                    Edit Profile
+                </v-btn>
+            </template>
+            <v-card>
+                <v-card-title>
+                    <span class="text-h5">Edit User Information</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col
+                            cols="12"
+                            >
+                                <span class="label1">
+                                    New Username
+                                </span>
+                                <VTextField
+                                    label="A user can go by many names, but they still keep their own identity."
+                                    v-model="cUsername"
+                                >
+                                </VTextField>
+                                <small class="note">
+                                    Username should be at least 1 character long. Otherwise, the empty string will not be saved
+                                </small>
+                            </v-col>
+                            <v-col cols="12">
+                                <span class="label2">
+                                    New Description
+                                </span>
+                                <VTextField
+                                    label="Don't forget to bake it with love!"
+                                    v-model="cDescription"
+                                ></VTextField>
+                            </v-col>
+                            <v-col cols="12">
+                                <span class="label2">
+                                    New Profile Picture
+                                </span>
+                                <v-file-input
+                                    label="Change profile picture"
+                                    v-model="filename"
+                                ></v-file-input>
+                            </v-col>
+                            <v-col cols="12">
+                                <VBtn
+                                @click="sendtoDB"
+                                class="Submit"
+                                >
+                                    Save Changes
+                                </VBtn>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <VBtn
+                    color="red-darken-1"
+                    variant="text"
+                    @click= "dialog = false"
+                    >
+                        Save and Close
+                    </VBtn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
+        </v-row>
     </div>
 
     <div id="posts">
