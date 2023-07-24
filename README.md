@@ -3,11 +3,15 @@
 This is the forum for the Compact Donuts project.
 This is for partial fulfillment of the requirements for the course CCAPDEV.
 
-# Existing Users
+## Customize API endpoint
+The API endpoint is set to `https://compact-donuts.azurewebsites.net` by default.
+You can change this by setting the `VITE_API_URL` environment variable.
 
-You can find the placeholder users in the
-[users.json](users.json) or [users.txt](users.txt) 
-files. You can use these to log into the website.
+You can do this by cloning the `example.env` file and renaming it to `.env`.
+Then, change the value of `VITE_API_URL` to your desired API endpoint.
+
+Alternatively, you can also set the `VITE_API_URL` environment variable
+directly in your terminal before running the `npm run dev` command.
 
 ## Recommended IDE Setup
 

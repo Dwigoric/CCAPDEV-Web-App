@@ -2,21 +2,68 @@
 // Import packages
 import { ref } from 'vue'
 import router from '../router'
+import moment from 'moment'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { useDeletedPostsStore } from '../stores/deletedPosts'
-import { useSpecificPostStore } from '../stores/currentPost'
+
+// Define props
+const props = defineProps({
+    post: {
+        type: Object,
+        required: true,
+        id: {
+            type: String,
+            required: true
+        },
+        title: {
+            type: String,
+            required: true
+        },
+        body: {
+            type: String,
+            required: true
+        },
+        image: {
+            type: String,
+            required: false
+        },
+        edited: {
+            type: Number,
+            required: false,
+            default: null
+        },
+        deleted: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        user: {
+            type: Object,
+            required: true,
+            image: {
+                type: String,
+                required: false
+            }
+        }
+    },
+    savePost: {
+        type: Function,
+        required: true
+    },
+    deletePost: {
+        type: Function,
+        required: true
+    }
+})
 
 // Define variables
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
-const { deletedPosts } = useDeletedPostsStore()
-const { currentPost, currentPostId } = useSpecificPostStore()
 
-const newTitle = ref(currentPost.title)
-const newBody = ref(currentPost.body)
+const newTitle = ref(props.post.title)
+const newBody = ref(props.post.body)
 const editFlag = ref(false)
 const form = ref(null)
 
@@ -25,41 +72,54 @@ const editTitleRules = [(v) => !!v || 'Title is required']
 const editBodyRules = [(v) => !!v || 'Body is required']
 
 // Define functions
-function deletePost() {
-    deletedPosts.add(currentPostId)
 
-    router.back()
+function deleteCurrentPost() {
+    props.deletePost(props.post.id)
+
+    cachedPosts.splice(
+        cachedPosts.findIndex((p) => p.id === props.post.id),
+        1
+    )
+
+    router.push({ name: 'feed' })
 }
 
 function editPost() {
     editFlag.value = true
 }
 
-async function savePost() {
+async function saveCurrentPost() {
     const { valid } = await form.value.validate()
     if (!valid) return
 
     editFlag.value = false
 
-    const cachedPost = cachedPosts.find((p) => p.id === currentPostId)
-    cachedPost.title = newTitle.value
-    cachedPost.body = newBody.value
+    const cachedPost = cachedPosts.find((p) => p.id === props.post.id)
+    if (cachedPost) {
+        cachedPost.title = newTitle.value
+        cachedPost.body = newBody.value
+        cachedPost.edited = Date.now()
+    }
 
-    currentPost.title = newTitle.value
-    currentPost.body = newBody.value
+    props.savePost(newTitle.value, newBody.value)
 }
 </script>
 
 <template>
     <div class="post">
         <div class="user">
-            <img
-                class="user-image"
-                :src="currentPost.user.image"
-                :alt="`${currentPost.user.username}'s image`"
-            />
-            <span class="user-name">{{ currentPost.user.username }}</span>
-            <VMenu v-if="loggedIn.id === currentPost.user.id">
+            <RouterLink :to="`/profile/${post.user.username}`">
+                <VAvatar class="user-image">
+                    <VImg
+                        v-if="!post.deleted"
+                        :src="post.user.image"
+                        :alt="`${post.user.username}'s image`"
+                    />
+                    <VIcon v-else>mdi-account-remove</VIcon>
+                </VAvatar>
+            </RouterLink>
+            <span class="user-name">{{ post.user.username }}</span>
+            <VMenu v-if="loggedIn.id === post.user.id">
                 <template v-slot:activator="{ props }">
                     <VBtn
                         v-bind="props"
@@ -67,6 +127,7 @@ async function savePost() {
                         density="compact"
                         variant="text"
                         icon="mdi-dots-vertical"
+                        class="ml-5"
                     >
                     </VBtn>
                 </template>
@@ -74,15 +135,19 @@ async function savePost() {
                     <VListItem @click="editPost">
                         <VListItemTitle>Edit</VListItemTitle>
                     </VListItem>
-                    <VListItem @click="deletePost">
+                    <VListItem @click="deleteCurrentPost">
                         <VListItemTitle>Delete</VListItemTitle>
                     </VListItem>
                 </VList>
             </VMenu>
+            <div v-if="post.edited" class="ml-5">
+                <VIcon size="x-small"> mdi-pencil </VIcon>
+                <span class="edit-span">edited {{ moment(post.edited).fromNow() }}</span>
+            </div>
         </div>
         <div class="content">
-            <p v-if="!editFlag" class="title" id="title">{{ currentPost.title }}</p>
-            <p v-if="!editFlag" class="body" id="body">{{ currentPost.body }}</p>
+            <p v-if="!editFlag" class="title" id="title">{{ post.title }}</p>
+            <p v-if="!editFlag" class="body" id="body">{{ post.body }}</p>
             <VForm @submit.prevent ref="form">
                 <VTextField
                     v-if="editFlag"
@@ -99,13 +164,13 @@ async function savePost() {
                     placeholder="What's up?"
                     no-resize=""
                 />
-                <VBtn type="submit" v-if="editFlag" @click="savePost">Save</VBtn>
+                <VBtn type="submit" v-if="editFlag" @click="saveCurrentPost">Save</VBtn>
             </VForm>
             <img
                 class="post-image"
-                v-if="currentPost.image"
-                :src="currentPost.image"
-                :alt="`An image in ${currentPost.user.username}'s post`"
+                v-if="post.image"
+                :src="post.image"
+                :alt="`An image in ${props.post.user.username}'s post`"
             />
         </div>
     </div>
@@ -150,12 +215,17 @@ async function savePost() {
 }
 
 .user-name {
-    margin-top: 10px;
     margin-left: 10px;
     padding: 0.2rem;
     font-size: 1rem;
     border-radius: 5px;
     background-color: var(--color-bright-blue);
+}
+
+.edit-span {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    margin-left: 10px;
 }
 
 .title {
@@ -168,6 +238,7 @@ async function savePost() {
 .body {
     text-align: justify;
     font-size: 1rem;
+    white-space: pre-wrap;
 }
 
 .post-image {

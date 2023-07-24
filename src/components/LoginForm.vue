@@ -1,22 +1,21 @@
 <script setup>
 // Import packages
-import { ref, defineProps } from 'vue'
+import { ref } from 'vue'
 import router from '../router'
 
 // Import stores
-import { useLoggedInStore } from '@/stores/loggedIn'
-import { useTempRegisterStore } from '@/stores/tempRegister'
+import { useLoggedInStore } from '../stores/loggedIn'
+
+// Import constants
+import { API_URL } from '../constants'
 
 // Define variables
-const USER_API = 'https://dummyjson.com/users/'
-const DEFAULT_BG_IMAGE = 'https://ik.imagekit.io/ikmedia/backlit.jpg'
-
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const isClicked = ref()
 const invalidCredentials = ref(false)
-const invalidCredentialsMessage = ref('Invalid Credentials')
+const invalidCredentialsMessage = ref('Invalid credentials')
 const showPassword = ref(false)
 const showPasswordConfirmation = ref(false)
 const remember = ref(false)
@@ -44,13 +43,15 @@ const authenticate = async (userLogin) => {
     loggedInStore.id = userLogin.id
     loggedInStore.username = userLogin.username
     loggedInStore.image = userLogin.image
-    loggedInStore.bgImage = userLogin.bgImage || DEFAULT_BG_IMAGE
 
     invalidCredentials.value = false
 
     // Set cookie
-    if (remember.value) userLogin.persist = true
-    window.$cookies.set('user', userLogin, remember.value ? '21d' : 0)
+    window.$cookies.set(
+        'user',
+        { id: userLogin.id, persist: Boolean(remember.value) },
+        remember.value ? '21d' : 0
+    )
 
     // Redirect to the feed page using the router
     return router.push({ name: 'feed' })
@@ -63,52 +64,29 @@ const login = async () => {
     // Set isClicked to true to disable the button
     isClicked.value = true
 
-    // Check if user is in temporary register store
-    const tempRegisterStore = useTempRegisterStore()
-    const tempUser = tempRegisterStore.tempUsers.find((user) => user.username === username.value)
-    if (tempUser) {
-        if (tempUser.password === password.value) {
-            await authenticate({
-                id: tempUser.id,
-                username: tempUser.username,
-                image: tempUser.image,
-                bgImage: tempUser.bgImage
-            })
-            return
-        } else {
-            isClicked.value = false
-            invalidCredentials.value = true
-            invalidCredentialsMessage.value = 'Invalid credentials'
-            return
-        }
-    }
-
-    // Create URL Search Params
-    const params = new URLSearchParams()
-    params.set('key', 'username')
-    params.set('value', username.value)
-
-    // Fetch the user if they exist
-    const { users } = await fetch(`${USER_API}/filter?${params}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+    // Call the API to login
+    const result = await fetch(`${API_URL}/users/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
     })
         .then((res) => res.json())
-        .catch((err) => console.error(err))
+        .catch(console.error)
 
-    // TODO: Change this to a more secure method once we have a backend
-    // Check if the user exists
-    if (!users.length || users[0].password !== password.value) {
+    if (result.error) {
         isClicked.value = false
         invalidCredentials.value = true
-        invalidCredentialsMessage.value = 'Invalid credentials'
+        invalidCredentialsMessage.value = result.message
         return
     }
 
     await authenticate({
-        id: users[0].id,
-        username: users[0].username,
-        image: users[0].image
+        id: result.user.id,
+        username: result.user.username,
+        image: result.user.image
     })
 }
 
@@ -119,46 +97,34 @@ const registerUser = async () => {
     // Set isClicked to true to disable the button
     isClicked.value = true
 
-    // Check if the passwords match
-    if (password.value !== confirmPassword.value) {
-        isClicked.value = false
-        invalidCredentials.value = true
-        invalidCredentialsMessage.value = 'Passwords do not match'
-        return
-    }
-
     // Check if the username is taken
     const params = new URLSearchParams()
     params.set('key', 'username')
     params.set('value', username.value)
 
-    const { users } = await fetch(`${USER_API}/filter?${params}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+    const result = await fetch(`${API_URL}/users/register`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
     })
         .then((res) => res.json())
-        .catch((err) => console.error(err))
+        .catch(console.error)
 
-    if (users.length) {
+    if (result.error) {
         isClicked.value = false
         invalidCredentials.value = true
-        invalidCredentialsMessage.value = 'Username is already taken'
+        invalidCredentialsMessage.value = result.message
         return
     }
 
     // TODO: Change this to a more secure method once we have a backend
     // Add user to the database
 
-    const tempRegisterStore = useTempRegisterStore()
-    tempRegisterStore.tempUsers.push({
-        id: 100 + tempRegisterStore.tempUsers.length + 1,
-        username: username.value,
-        password: password.value,
-        image: `https://robohash.org/${username.value}.png`
-    })
-
     await authenticate({
-        id: 100 + tempRegisterStore.tempUsers.length + 1,
+        id: result.user.id,
         username: username.value,
         image: `https://robohash.org/${username.value}.png`
     })
@@ -239,29 +205,6 @@ defineProps({
     align-items: center;
     justify-content: center;
     width: 100%;
-}
-
-.loginButton {
-    font-family: var(--source-sans);
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--vt-c-black-soft);
-    background-color: var(--color-dark-pink);
-    border: none;
-    border-radius: 20px;
-    padding: 15px 25px;
-    margin: 8px 0;
-    cursor: pointer;
-}
-
-.loginButton:hover {
-    background-color: var(--color-bright-pink);
-}
-
-.noButton {
-    background-color: var(--vt-c-black-soft);
-    color: var(--vt-c-white-soft);
-    pointer-events: none;
 }
 
 .v-input {

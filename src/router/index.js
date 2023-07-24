@@ -2,11 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import ProfileView from '../views/ProfileView.vue'
-import PostView from '../views/PostView.vue'
 import SearchView from '../views/SearchView.vue'
 
 // Import stores
-import { useSpecificPostStore } from '../stores/currentPost'
 import { useLoggedInStore } from '../stores/loggedIn'
 
 const router = createRouter({
@@ -41,24 +39,28 @@ const router = createRouter({
             }
         },
         {
-            path: '/post',
+            path: '/post/:id',
             name: 'post',
-            component: PostView,
-            beforeEnter: (to, from, next) => {
-                const postStore = useSpecificPostStore()
-                if (postStore.currentPostId === null) next({ name: 'feed' })
-                else next()
-            }
+            component: () => import('../views/PostView.vue'),
+            props: true
         },
         {
             path: '/search',
             name: 'search',
-            component: SearchView
+            component: SearchView,
+            props: (route) => ({ query: route.query.q })
         },
         {
-            path: '/profile',
+            path: '/profile/:username',
             name: 'profile',
-            component: ProfileView
+            component: ProfileView,
+            props: true
+        },
+        {
+            // Catch-all 404
+            path: '/:pathMatch(.*)*',
+            name: 'not-found',
+            component: () => import('../views/NotFoundView.vue')
         }
     ]
 })

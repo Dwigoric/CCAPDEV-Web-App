@@ -1,9 +1,9 @@
+// Import packages
 import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 
-import { useTempPostsStore } from './tempPosts'
-
-const API_URL = 'https://dummyjson.com'
+// Import constants
+import { API_URL } from '../constants'
 
 const searchPosts = reactive([])
 const fetching = ref(false)
@@ -17,43 +17,25 @@ export const useSearchStore = defineStore('search', () => {
 })
 
 async function search(query) {
-    // Define search query for user
-    const userParams = new URLSearchParams()
-    userParams.set('limit', '0')
-    userParams.set('select', 'id,username,image')
-
-    const { users } = await fetch(`${API_URL}/users?${userParams}`)
-        .then((res) => res.json())
-        .catch(console.error)
-
     // Define search query for post search
     const searchParams = new URLSearchParams()
     searchParams.set('q', encodeURIComponent(query))
-    searchParams.set('limit', '0')
+    // TODO: Add pagination
 
     // Fetch posts
-    const response = await fetch(`${API_URL}/posts/search?${searchParams}`)
+    const { posts, error, message } = await fetch(`${API_URL}/posts/search?${searchParams}`).then(
+        (res) => res.json()
+    )
 
-    const posts = (await response.json()).posts.map((post) => {
-        const user = users.find((user) => user.id === post['userId'])
-        return {
-            ...post,
-            user
-        }
-    })
+    // Handle error
+    if (error) {
+        console.error(message)
+        fetching.value = false
+        return
+    }
 
     // Set posts
     searchPosts.splice(0, searchPosts.length, ...posts)
-
-    // Append temporary posts
-    const { tempPosts } = useTempPostsStore()
-    searchPosts.push(
-        ...tempPosts.filter(
-            (post) =>
-                post.title.toLowerCase().includes(query.toLowerCase()) ||
-                post.body.toLowerCase().includes(query.toLowerCase())
-        )
-    )
 
     // Set fetching to false
     fetching.value = false

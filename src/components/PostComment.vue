@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import moment from 'moment'
 
 // Import components
 import PostComment from './PostComment.vue'
@@ -10,18 +11,21 @@ import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
 import { VTextarea } from 'vuetify/lib/components/index.mjs'
 
+// Import constants
+import { API_URL } from '../constants'
+
 // Define variables
 const loggedInStore = useLoggedInStore()
-const commentsStore = useCommentsStore()
+const { comments, addComment } = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
 
 const props = defineProps({
     id: {
-        type: Number,
+        type: String,
         required: true
     },
     postId: {
-        type: Number,
+        type: String,
         required: true
     },
     user: {
@@ -31,6 +35,10 @@ const props = defineProps({
     body: {
         type: String,
         required: true
+    },
+    edited: {
+        type: Number,
+        required: false
     },
     onclick: {
         type: Function,
@@ -50,25 +58,36 @@ const commentRules = [
 ]
 
 // Define functions
-function addReply(parentCommentId) {
-    if (newReplyBody.value) {
-        commentsStore.addComment({
-            body: newReplyBody.value,
-            parentCommentId,
-            user: {
-                id: loggedInStore.id,
-                username: loggedInStore.username,
-                image: loggedInStore.image
-            }
-        })
+function addReply(pCommentId) {
+    addComment({
+        postId: props.postId,
+        body: newReplyBody.value,
+        parentCommentId: pCommentId,
+        user: loggedInStore.id
+    })
 
-        newReplyBody.value = ''
-    }
+    // Reset form
+    newReplyBody.value = ''
 }
 
-function deleteComment() {
-    const comment = commentsStore.comments.find((cm) => cm.id === props.id)
-    comment.deleted = true
+async function deleteComment() {
+    try {
+        const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}`, {
+            method: 'DELETE'
+        }).then((res) => res.json())
+
+        if (result.error) {
+            console.error(result.error)
+            return
+        }
+
+        const comment = comments.find((cm) => cm.id === props.id)
+        comment.deleted = true
+        comment.body = '[deleted]'
+        comment.user = null
+    } catch (err) {
+        console.error(err)
+    }
 }
 
 function editComment() {
@@ -81,19 +100,34 @@ async function saveComment() {
 
     if (newComment.value === '') return
 
+    try {
+        const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                body: newComment.value
+            })
+        }).then((res) => res.json())
+
+        if (result.error) {
+            console.error(result.message)
+        }
+    } catch (err) {
+        console.error(err)
+    }
     editFlag.value = false
-    const comment = commentsStore.comments.find((cm) => cm.id === props.id)
+    const comment = comments.find((cm) => cm.id === props.id)
     comment.body = newComment.value
+    comment.edited = Date.now()
 }
 </script>
 
 <template>
     <div class="comment">
         <div class="main-comment" @click="onclick(id)">
-            <div
-                class="existing-comment"
-                v-if="!commentsStore.comments.some((cm) => cm.id === id && cm.deleted)"
-            >
+            <div class="existing-comment" v-if="!comments.some((cm) => cm.id === id && cm.deleted)">
                 <div class="user">
                     <img
                         class="user-image"
@@ -137,6 +171,10 @@ async function saveComment() {
                         </VListItem>
                     </VList>
                 </VMenu>
+                <div v-if="edited" class="ml-9">
+                    <VIcon size="x-small"> mdi-pencil </VIcon>
+                    <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
+                </div>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
         </div>
@@ -153,30 +191,27 @@ async function saveComment() {
         />
         <div class="replies">
             <PostComment
-                v-for="reply in commentsStore.comments.filter(
-                    (comment) => comment.parentCommentId === id
-                )"
+                v-for="reply in comments.filter((comment) => comment.parentCommentId === id)"
                 :key="reply.id"
                 :id="reply.id"
                 :post-id="postId"
                 :user="reply.user"
                 :body="reply.body"
+                :edited="reply.edited"
                 :onclick="onclick"
             >
             </PostComment>
         </div>
-        <div></div>
     </div>
 </template>
 
 <style scoped>
 .comment {
     display: flex;
+    flex: 1 0 auto;
     flex-flow: column nowrap;
-    align-items: flex-start;
+    align-self: stretch;
     justify-content: flex-start;
-    flex-grow: 1;
-    width: calc(100% - 3px);
     height: 100%;
     padding: 0.5rem 0 0 0.5rem;
     margin-left: 13px;
@@ -211,6 +246,12 @@ async function saveComment() {
 
 .deleted-comment {
     padding-left: 0.5rem;
+}
+
+.edit-span {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    margin-left: 10px;
 }
 
 .user {

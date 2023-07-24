@@ -1,30 +1,29 @@
 <script setup>
 // Import packages
 import { ref } from 'vue'
+import moment from 'moment'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
-import { useSpecificPostStore } from '../stores/currentPost'
-import { useVoteStore } from '../stores/votes'
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { useDeletedPostsStore } from '../stores/deletedPosts'
+
+// Import constants
+import { API_URL } from '../constants'
+import PostVote from './PostVote.vue'
 
 // Define form rules
 const editTitleRules = [(v) => !!v || 'Title is required']
 const editBodyRules = [(v) => !!v || 'Body is required']
 
 // Define variables
-const voteStore = useVoteStore()
 const loggedIn = useLoggedInStore()
 const { cachedPosts } = useCachedPostsStore()
-const postStore = useSpecificPostStore()
-const { deletedPosts } = useDeletedPostsStore()
 const editFlag = ref(false)
 const form = ref(null)
 
 const props = defineProps({
     id: {
-        type: Number,
+        type: String,
         required: true
     },
     user: {
@@ -47,25 +46,32 @@ const props = defineProps({
         type: Number,
         required: false,
         default: 0
+    },
+    edited: {
+        type: Date,
+        required: false,
+        default: false
     }
 })
 
 const newTitle = ref(props.title)
 const newBody = ref(props.body)
 
-function setPost() {
-    postStore.setCurrentPost({
-        id: props.id,
-        user: props.user,
-        title: props.title,
-        body: props.body,
-        image: props.image,
-        reactions: props.reactions
-    })
-}
+async function deletePost() {
+    try {
+        const response = await fetch(`${API_URL}/posts/${props.id}`, {
+            method: 'DELETE'
+        }).then((res) => res.json())
 
-function deletePost() {
-    deletedPosts.add(props.id)
+        if (response.error) {
+            console.error(response.error)
+        }
+    } catch (error) {
+        console.error(error)
+    }
+
+    const postIndex = cachedPosts.findIndex((post) => post.id === props.id)
+    cachedPosts.splice(postIndex, 1)
 }
 
 function editPost() {
@@ -81,13 +87,37 @@ async function savePost() {
     const post = cachedPosts.find((post) => post.id === props.id)
     post.title = newTitle.value
     post.body = newBody.value
+    post.edited = Date.now()
+
+    try {
+        const response = await fetch(`${API_URL}/posts/${props.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: newTitle.value,
+                body: newBody.value
+            })
+        }).then((res) => res.json())
+
+        if (response.error) {
+            console.error(response.error)
+        }
+    } catch (error) {
+        console.error(error)
+    }
 }
 </script>
 
 <template>
     <div class="post" id="post_id">
         <div class="user">
-            <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
+            <RouterLink :to="`/profile/${user['username']}`">
+                <VAvatar class="user-image">
+                    <VImg :src="user['image']" :alt="`${user['username']}'s image`" />
+                </VAvatar>
+            </RouterLink>
             <span class="user-name">{{ user['username'] }}</span>
             <VMenu v-if="loggedIn.id === user.id">
                 <template v-slot:activator="{ props }">
@@ -109,10 +139,16 @@ async function savePost() {
                     </VListItem>
                 </VList>
             </VMenu>
+            <div v-if="edited">
+                <VIcon size="x-small"> mdi-pencil </VIcon>
+                <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
+            </div>
         </div>
         <div class="content">
-            <p v-if="!editFlag" class="title" id="title">{{ title }}</p>
-            <p v-if="!editFlag" class="body" id="body">{{ body }}</p>
+            <RouterLink class="post-content" :to="`/post/${id}`" v-if="!editFlag">
+                <p class="title" id="title">{{ title }}</p>
+                <p class="body" id="body">{{ body }}</p>
+            </RouterLink>
             <VForm @submit.prevent ref="form">
                 <VTextField
                     v-if="editFlag"
@@ -138,51 +174,8 @@ async function savePost() {
                 :alt="`An image in ${user['username']}'s post`"
             />
         </div>
-
         <div class="post-footer">
-            <VHover v-slot="{ isHovering, props }">
-                <VBtn
-                    class="ma-1 upvote"
-                    v-bind="props"
-                    :color="
-                        isHovering || voteStore.getVoteCount(id) > 0
-                            ? 'deep-orange-darken-1'
-                            : 'blue-grey-lighten-1'
-                    "
-                    density="compact"
-                    variant="text"
-                    icon="mdi-arrow-up-circle-outline"
-                    @click="voteStore.upvote(id)"
-                >
-                </VBtn>
-            </VHover>
-            <span>{{ reactions + voteStore.getTotalVotes(id) }}</span>
-            <VHover v-slot="{ isHovering, props }">
-                <VBtn
-                    class="ma-1 downvote"
-                    v-bind="props"
-                    :color="
-                        isHovering || voteStore.getVoteCount(id) < 0
-                            ? 'blue-darken-3'
-                            : 'blue-grey-lighten-1'
-                    "
-                    density="compact"
-                    variant="text"
-                    icon="mdi-arrow-down-circle-outline"
-                    @click="voteStore.downvote(id)"
-                >
-                </VBtn>
-            </VHover>
-            <VBtn
-                to="/post"
-                @click="setPost"
-                class="comment-icon ma-1 ml-2"
-                density="compact"
-                variant="text"
-                color="teal-darken-2"
-                icon="mdi-comment-text-multiple-outline"
-            >
-            </VBtn>
+            <PostVote :id="id" style="z-index: 2; position: absolute" />
         </div>
     </div>
 </template>
@@ -194,7 +187,6 @@ async function savePost() {
     align-items: flex-start;
     justify-content: left;
     width: 100%;
-    height: 100%;
     padding: 2rem;
     background-color: var(--color-pale-blue);
     border-radius: 10px;
@@ -220,7 +212,7 @@ async function savePost() {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    width: 100px;
+    width: 100%;
     gap: 1rem;
     margin-bottom: 10px;
 }
@@ -239,9 +231,20 @@ async function savePost() {
     background-color: var(--color-bright-blue);
 }
 
+.edit-span {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    margin-left: 10px;
+}
+
 .content {
     width: 100%;
     margin-bottom: 2.5rem;
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+.post-content {
     text-decoration: none;
     color: var(--color-text);
 }
@@ -254,6 +257,7 @@ async function savePost() {
 
 .body {
     width: 100%;
+    white-space: pre-wrap;
 }
 
 .post-image {
@@ -279,8 +283,7 @@ async function savePost() {
     bottom: 2rem;
 }
 
-.content,
-.comment-icon {
+.content {
     color: var(--color-text);
     text-decoration: none;
 }

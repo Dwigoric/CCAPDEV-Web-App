@@ -12,8 +12,6 @@ import LoaderHeart from '../components/LoaderHeart.vue'
 
 // Import stores
 import { useCachedPostsStore } from '../stores/cachedPosts'
-import { useDeletedPostsStore } from '../stores/deletedPosts'
-import { useSpecificPostStore } from '../stores/currentPost'
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useVoteStore } from '../stores/votes'
 import router from '../router'
@@ -22,11 +20,10 @@ import router from '../router'
 document.title = 'Compact Donuts | Feed'
 
 // Define variables
-const { cachedPosts, fetchPosts } = useCachedPostsStore()
-const { deletedPosts } = useDeletedPostsStore()
-const postStore = useSpecificPostStore()
+const cachedPostsStore = useCachedPostsStore()
+const { cachedPosts, fetchPosts } = cachedPostsStore
 const loggedIn = useLoggedInStore()
-const voteStore = useVoteStore()
+const { votes } = useVoteStore()
 
 const getPosts = async (waypointState) => {
     if (waypointState.going !== 'IN') {
@@ -45,41 +42,26 @@ const getPosts = async (waypointState) => {
             id="left-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            <span id="top-posts">Top Posts</span>
-            <VList lines="two" class="bg-transparent">
+            <span v-if="cachedPosts.length > 0" class="sidebar-header">Top Posts</span>
+            <VList lines="two" class="bg-transparent mt-5">
                 <VListItem
-                    v-for="post in cachedPosts
-                        .filter((p) => !deletedPosts.has(p.id))
-                        .slice()
-                        .sort(
-                            (a, b) =>
-                                b.reactions +
-                                voteStore.getTotalVotes(b.id) -
-                                (a.reactions + voteStore.getTotalVotes(a.id))
-                        )"
+                    v-for="post in cachedPosts.slice().sort((a, b) => votes[b.id] - votes[a.id])"
                     :key="post.id"
-                    :title="`${post.user.username} • ${
-                        post.reactions + voteStore.getTotalVotes(post.id)
-                    }`"
+                    :title="`${post.user.username} • ${votes[post.id]}`"
                     :subtitle="post.title"
                     :prepend-avatar="post.user.image"
-                    @click="
-                        () => {
-                            postStore.setCurrentPost(post)
-                            router.push({ name: 'post' })
-                        }
-                    "
+                    @click="() => router.push({ name: 'post', params: { id: post.id } })"
                 >
                 </VListItem>
             </VList>
         </div>
         <div class="feed-element" id="posts">
-            <Waypoint @change="getPosts" v-if="!cachedPosts.length || cachedPosts[0].id !== 1">
+            <Waypoint @change="getPosts" v-if="!cachedPostsStore.loadedAllPosts">
                 <LoaderHeart />
             </Waypoint>
             <span v-else> You're all caught up! </span>
             <FeedPost
-                v-for="post in cachedPosts.filter((p) => !deletedPosts.has(p.id))"
+                v-for="post in cachedPosts"
                 :key="post.id"
                 :id="post.id"
                 :title="post.title"
@@ -87,6 +69,7 @@ const getPosts = async (waypointState) => {
                 :user="post.user"
                 :image="post.image"
                 :reactions="post.reactions"
+                :edited="post.edited"
             />
         </div>
         <div
@@ -94,7 +77,8 @@ const getPosts = async (waypointState) => {
             id="right-sidebar"
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
-            <NewPost v-if="loggedIn.username && cachedPosts.length > 0" />
+            <span v-if="loggedIn.username" class="sidebar-header">Bake a Post!</span>
+            <NewPost v-if="loggedIn.username" />
             <ThemeSwitch />
         </div>
     </div>
@@ -129,14 +113,14 @@ const getPosts = async (waypointState) => {
 #left-sidebar {
     flex-flow: column nowrap;
     justify-content: flex-start;
-    align-items: center;
+    align-items: stretch;
     flex: 2 0;
 }
 
-#top-posts {
+.sidebar-header {
+    align-self: center;
     font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 1rem;
     background: linear-gradient(90deg, var(--color-dark-pink) 0%, var(--color-bright-blue) 100%);
     background-clip: text;
     -webkit-background-clip: text;
@@ -152,8 +136,8 @@ const getPosts = async (waypointState) => {
 }
 
 #right-sidebar {
-    flex-flow: row nowrap;
-    justify-content: left;
+    flex-flow: column nowrap;
+    align-items: center;
     flex: 3 0;
     padding: 1rem;
 }

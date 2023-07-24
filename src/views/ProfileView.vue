@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -8,107 +8,211 @@ import ThemeSwitch from '../components/ThemeSwitch.vue'
 import FeedPost from '../components/FeedPost.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
 
+//Import router
+import router from '../router/index.js'
+
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
-import { useCachedPostsStore } from '../stores/cachedPosts'
-import { useDeletedPostsStore } from '../stores/deletedPosts'
+
+// Import constants
+import { API_URL } from '../constants'
 
 // Define variables
-const API_URL = 'https://dummyjson.com'
+document.title = 'Compact Donuts | Profile'
 
+const props = defineProps({
+    username: {
+        type: String,
+        required: true
+    }
+})
+
+const currentUser = reactive({
+    id: '',
+    username: '',
+    description: '',
+    image: ''
+})
+
+// Define variables
 const login = useLoggedInStore()
-const { deletedPosts } = useDeletedPostsStore()
 
+const inputImage = ref(null)
+const dialog = ref(false)
+const files = ref([])
 const userPosts = reactive([])
 const loading = ref(true)
-const editing = ref(false)
+
+const newUsername = ref('')
+const newDescription = ref('')
 
 // Define functions
-async function fetchPosts() {
-    // Get list of users
-    const userParams = new URLSearchParams()
-    userParams.set('select', 'id,username,image')
-
-    const user = await fetch(`${API_URL}/users/${login.id}?${userParams}`)
-        .then((res) => res.json())
-        .catch(console.error)
-
-    // Process posts
-    const postParams = new URLSearchParams()
-    postParams.set('limit', '0')
-
-    const response = await fetch(`${API_URL}/posts/user/${login.id}?${postParams}`)
-    const { posts } = await response.json()
-    userPosts.push(
-        ...posts.map((post) => ({
-            ...post,
-            user
-        }))
+async function fetchUser() {
+    const { user } = await fetch(`${API_URL}/users/username/${props.username}`).then((res) =>
+        res.json()
     )
 
+    currentUser.id = user.id
+    currentUser.username = user.username
+    currentUser.description = user.description
+    currentUser.image = user.image
+
+    //user initially was the object
+
+    return fetchPosts()
+}
+
+async function fetchPosts() {
+    // Process posts
+    const { posts } = await fetch(`${API_URL}/posts/user/${currentUser.id}`).then((res) =>
+        res.json()
+    )
+    userPosts.push(...posts)
+
     loading.value = false
 }
 
-async function getPosts() {
-    if (login.id <= 100) return fetchPosts()
+async function saveChanges(file) {
+    let willUpdate = false
 
-    const { cachedPosts } = useCachedPostsStore()
+    const payload = new FormData()
+    if (newUsername.value.length > 0) {
+        payload.append('username', newUsername.value)
+        willUpdate = true
+    }
+    if (newDescription.value.length > 0) {
+        payload.append('description', newDescription.value)
+        willUpdate = true
+    }
+    if (file) {
+        payload.append('avatar', file)
+        willUpdate = true
+    }
 
-    userPosts.push(...cachedPosts.filter((post) => post.user.id === login.id))
+    if (!willUpdate) return
 
-    loading.value = false
+    const { user, error, message } = await fetch(`${API_URL}/users/${login.id}`, {
+        method: 'PATCH',
+        body: payload
+    }).then((response) => response.json())
+
+    if (error) {
+        console.error(message)
+        return
+    }
+
+    login.username = user.username
+    login.description = user.description
+    login.image = file ? user.image : login.image
+    for (const post of userPosts) {
+        post['user'].username = user.username
+        post['user'].image = file ? user.image : post['user'].image
+    }
+
+    currentUser.username = login.username
+    currentUser.description = login.description
+    currentUser.image = login.image
+
+    return router.replace({ name: 'profile', params: { username: login.username } })
 }
 
-getPosts()
+const processInput = () => {
+    if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length) {
+        saveChanges(null)
+    } else {
+        // Retrieve image input file
+        const file = inputImage.value.files[0]
+        saveChanges(file)
+    }
+
+    // Close dialog
+    dialog.value = false
+
+    // Reset form
+    newUsername.value = ''
+    newDescription.value = ''
+    files.value = []
+}
+
+// Define lifecycle hooks
+onMounted(fetchUser)
 </script>
 
 <template>
     <NavigationBar />
     <div id="header">
-        <VImg
-            src="https://ik.imagekit.io/ikmedia/backlit.jpg"
-            alt="Background image"
-            id="bg-image"
-            height="150"
-            :aspect-ratio="1"
-            cover=""
-        />
         <div id="user-panel">
             <div id="user-data">
-                <VAvatar
-                    size="150"
-                    class="mb-3"
-                    variant="tonal"
-                    :style="{ cursor: editing ? 'pointer' : 'default' }"
-                >
-                    <VImg :src="login.image" alt="Profile image" :aspect-ratio="1" />
+                <VAvatar size="150" class="mb-3" variant="tonal">
+                    <VImg :src="currentUser.image" alt="Profile image" :aspect-ratio="1" />
                 </VAvatar>
-                <span v-if="!editing" id="username" class="rounded-pill pa-1 px-3">{{
-                    login.username
-                }}</span>
-                <VTextField
-                    v-else
-                    v-model="login.username"
-                    label="New username"
-                    variant="outlined"
-                    class="w-100"
-                />
+                <span id="username" class="rounded-pill pa-1 px-3">{{ currentUser.username }}</span>
             </div>
             <div id="user-description">
-                <span v-if="!editing">
-                    {{ login.description }}
+                <span>
+                    {{ currentUser.description || 'This user has not written a description yet.' }}
                 </span>
-                <VTextarea
-                    v-else
-                    v-model="login.description"
-                    label="New description"
-                    variant="outlined"
-                    no-resize=""
-                    rows="1"
-                />
             </div>
         </div>
-        <VBtn id="edit-btn" class="rounded-pill" @click="editing = !editing"> Edit Profile </VBtn>
+
+        <v-row justify="center" v-if="currentUser.id === login.id">
+            <v-dialog v-model="dialog" persistent="persistent" width="1024">
+                <template v-slot:activator="{ props }">
+                    <v-btn class="rounded-pill" id="edit-btn" v-bind="props" @click="dialog = true">
+                        Edit Profile
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-card-title>
+                        <span class="text-h5">Edit User Information</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12">
+                                    <span class="label1"> New Username </span>
+                                    <VTextField
+                                        label="A user can go by many names, but they still keep their own identity."
+                                        v-model="newUsername"
+                                    >
+                                    </VTextField>
+                                    <small class="note">
+                                        Username should be at least 1 character long. Otherwise, the
+                                        empty string will not be saved
+                                    </small>
+                                </v-col>
+                                <v-col cols="12">
+                                    <span class="label2"> New Description </span>
+                                    <VTextField
+                                        label="Don't forget to bake it with love!"
+                                        v-model="newDescription"
+                                    ></VTextField>
+                                </v-col>
+                                <v-col cols="12">
+                                    <span class="label2"> New Profile Picture </span>
+                                    <v-file-input
+                                        label="Change profile picture"
+                                        v-model="files"
+                                        accept="image*/"
+                                        clearable="clearable"
+                                        ref="inputImage"
+                                    ></v-file-input>
+                                </v-col>
+                                <v-col cols="12">
+                                    <VBtn @click="processInput" class="Submit"> Save Changes </VBtn>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <VBtn color="red-darken-1" variant="text" @click="dialog = false">
+                            Close
+                        </VBtn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
     </div>
 
     <div id="posts">
@@ -117,7 +221,7 @@ getPosts()
         </Waypoint>
         <FeedPost
             v-else
-            v-for="post in userPosts.filter((p) => !deletedPosts.has(p.id))"
+            v-for="post in userPosts"
             :key="post.id"
             :id="post.id"
             :title="post.title"
@@ -134,13 +238,11 @@ getPosts()
 #header {
     height: 35vh;
     width: 100vw;
-}
-
-#bg-image {
-    position: relative;
-    top: var(--navbar-height);
-    left: 0;
-    z-index: -1;
+    background-color: linear-gradient(
+        to right,
+        var(--color-pale-green) 0%,
+        var(--color-dark-pink) 100%
+    );
 }
 
 #user-panel {
