@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import router from '../router'
+import moment from 'moment'
 
 // Import components
 import PostComment from './PostComment.vue'
@@ -35,6 +36,10 @@ const props = defineProps({
     body: {
         type: String,
         required: true
+    },
+    edited: {
+        type: Number,
+        required: false
     },
     onclick: {
         type: Function,
@@ -120,6 +125,7 @@ async function saveComment() {
     editFlag.value = false
     const comment = comments.find((cm) => cm.id === props.id)
     comment.body = newComment.value
+    comment.edited = Date.now()
 }
 </script>
 
@@ -170,6 +176,10 @@ async function saveComment() {
                         </VListItem>
                     </VList>
                 </VMenu>
+                <div v-if="edited" class="ml-9">
+                    <VIcon size="x-small"> mdi-pencil </VIcon>
+                    <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
+                </div>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
         </div>
@@ -240,6 +250,12 @@ async function saveComment() {
 
 .deleted-comment {
     padding-left: 0.5rem;
+}
+
+.edit-span {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    margin-left: 10px;
 }
 
 .user {
