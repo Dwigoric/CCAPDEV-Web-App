@@ -3,12 +3,14 @@ import { onMounted, ref } from 'vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
+import { useVoteStore } from '../stores/votes'
 
 // Import constants
 import { API_URL } from '../constants'
 
 // Define variables
 const { id: userId } = useLoggedInStore()
+const { votes } = useVoteStore()
 
 const vote = ref(0)
 const reactions = ref(0)
@@ -88,6 +90,9 @@ async function callVoteNum() {
 
     reactions.value = postReactions
     vote.value = userVote
+
+    // Store vote in store
+    votes[props.id] = postReactions
 
     if (error) {
         console.error(message)
