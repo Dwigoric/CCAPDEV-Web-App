@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import router from '../router'
 import moment from 'moment'
 
 // Import components
@@ -61,7 +60,7 @@ const commentRules = [
 // Define functions
 function addReply(pCommentId) {
     addComment({
-        postId: props.id,
+        postId: props.postId,
         body: newReplyBody.value,
         parentCommentId: pCommentId,
         user: {
@@ -83,17 +82,17 @@ async function deleteComment() {
 
         if (result.error) {
             console.error(result.error)
-        } else {
-            const index = comments.findIndex(comment => comment.id === props.id)
-            if (index !== -1) {
-                comments.splice(index, 1)
-            }
+            return
         }
+
+        const comment = comments.find((cm) => cm.id === props.id)
+        comment.deleted = true
+        comment.body = '[deleted]'
+        comment.user = null
     } catch (err) {
         console.error(err)
     }
 }
-
 
 function editComment() {
     editFlag.value = true
