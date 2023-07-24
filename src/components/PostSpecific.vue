@@ -34,6 +34,11 @@ const props = defineProps({
             required: false,
             default: null
         },
+        deleted: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         user: {
             type: Object,
             required: true,
@@ -98,7 +103,14 @@ async function saveCurrentPost() {
 <template>
     <div class="post">
         <div class="user">
-            <img class="user-image" :src="post.user.image" :alt="`${post.user.username}'s image`" />
+            <VAvatar class="user-image">
+                <VImg
+                    v-if="!post.deleted"
+                    :src="post.user.image"
+                    :alt="`${post.user.username}'s image`"
+                />
+                <VIcon v-else>mdi-account-remove</VIcon>
+            </VAvatar>
             <span class="user-name">{{ post.user.username }}</span>
             <VMenu v-if="loggedIn.id === post.user.id">
                 <template v-slot:activator="{ props }">

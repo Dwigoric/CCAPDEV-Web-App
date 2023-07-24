@@ -157,7 +157,8 @@ onUnmounted(clearComments)
         </div>
         <div v-else-if="currentPost.title === ''" class="preload">
             <img src="@/assets/donut_love.svg" alt="404" id="logo" />
-            <h1>Post not found</h1>
+            <h1>404</h1>
+            <h2>Post not found</h2>
             <p>The post you are looking for does not exist.</p>
             <RouterLink to="/feed">
                 <span> Back to feed </span>

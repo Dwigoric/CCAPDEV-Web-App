@@ -113,7 +113,9 @@ async function savePost() {
 <template>
     <div class="post" id="post_id">
         <div class="user">
-            <img class="user-image" :src="user['image']" :alt="`${user['username']}'s image`" />
+            <VAvatar class="user-image">
+                <VImg :src="user['image']" :alt="`${user['username']}'s image`" />
+            </VAvatar>
             <span class="user-name">{{ user['username'] }}</span>
             <VMenu v-if="loggedIn.id === user.id">
                 <template v-slot:activator="{ props }">
