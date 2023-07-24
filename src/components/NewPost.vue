@@ -22,12 +22,20 @@ const processing = ref(false)
 const addPost = async (post) => {
     processing.value = true
 
+    const payload = new FormData()
+    payload.append('userId', post.userId)
+    payload.append('title', post.title)
+    payload.append('body', post.body)
+    if (post.image) {
+        payload.append('image', post.image)
+    }
+
     const result = await fetch(`${API_URL}/posts`, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            Accept: 'application/json'
         },
-        body: JSON.stringify(post)
+        body: payload
     }).then((res) => res.json())
 
     if (result.error) {
@@ -48,19 +56,7 @@ const processInput = () => {
     } else {
         // Retrieve image input file
         const file = inputImage.value.files[0]
-
-        // Read the image file
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        const _title = title.value
-        const _body = body.value
-        reader.onload = () => {
-            // Add post
-            addPost({ userId: loggedIn.id, title: _title, body: _body, image: reader.result })
-        }
-        reader.onerror = (error) => {
-            console.log('Error: ', error)
-        }
+        addPost({ userId: loggedIn.id, title: title.value, body: body.value, image: file })
     }
 
     // Reset form
