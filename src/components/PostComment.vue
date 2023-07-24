@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import router from '../router'
 
 // Import components
@@ -16,7 +16,7 @@ import { API_URL } from '../constants'
 
 // Define variables
 const loggedInStore = useLoggedInStore()
-const commentsStore = useCommentsStore()
+const { comments, addComment } = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
 
 const props = defineProps({
@@ -46,7 +46,6 @@ const newReplyBody = ref('')
 const newComment = ref(props.body)
 const editFlag = ref(false)
 const form = ref(null)
-const comments = reactive([])
 
 // Define form rules
 const commentRules = [
@@ -55,21 +54,6 @@ const commentRules = [
 ]
 
 // Define functions
-const addComment = async (comment) => {
-    // Add comment to comments
-    comments.push(comment)
-
-    const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}/`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(comment)
-    }).then((res) => res.json())
-
-    if (result.error) console.error(result.message)
-}
-
 function addReply(pCommentId) {
     addComment({
         postId: props.id,
@@ -124,24 +108,21 @@ async function saveComment() {
         }).then((res) => res.json())
 
         if (result.error) {
-            console.error(result.error)
+            console.error(result.message)
         }
     } catch (err) {
         console.error(err)
     }
-    //editFlag.value = false
-    //const comment = commentsStore.comments.find((cm) => cm.id === props.id)
-    //comment.body = newComment.value
+    editFlag.value = false
+    const comment = comments.find((cm) => cm.id === props.id)
+    comment.body = newComment.value
 }
 </script>
 
 <template>
     <div class="comment">
         <div class="main-comment" @click="onclick(id)">
-            <div
-                class="existing-comment"
-                v-if="!commentsStore.comments.some((cm) => cm.id === id && cm.deleted)"
-            >
+            <div class="existing-comment" v-if="!comments.some((cm) => cm.id === id && cm.deleted)">
                 <div class="user">
                     <img
                         class="user-image"
@@ -201,9 +182,7 @@ async function saveComment() {
         />
         <div class="replies">
             <PostComment
-                v-for="reply in commentsStore.comments.filter(
-                    (comment) => comment.parentCommentId === id
-                )"
+                v-for="reply in comments.filter((comment) => comment.parentCommentId === id)"
                 :key="reply.id"
                 :id="reply.id"
                 :post-id="postId"

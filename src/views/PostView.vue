@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import router from '../router'
 
@@ -14,6 +14,7 @@ import PostVote from '../components/PostVote.vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
+import { useCommentsStore } from '../stores/comments'
 import { useCurrentCommentStore } from '../stores/currentComment'
 
 // Import constants
@@ -29,6 +30,7 @@ const props = defineProps({
 
 // Define variables
 const loggedInStore = useLoggedInStore()
+const { comments, addComment, clearComments } = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
 const loggedIn = useLoggedInStore()
 
@@ -48,7 +50,6 @@ const currentPost = reactive({
     }
 })
 const newCommentBody = ref('')
-const comments = reactive([])
 const newReplyBody = ref('')
 const isLoadingPost = ref(true)
 const isLoadingComments = ref(true)
@@ -65,14 +66,7 @@ async function fetchPost() {
             return
         }
 
-        currentPost.title = post.title
-        currentPost.body = post.body
-        currentPost.image = post.image
-        currentPost.reactions = post.reactions
-        currentPost.user.id = post.user.id
-        currentPost.user.username = post.user.username
-        currentPost.user.image = post.user.image
-        currentPost.edited = post.edited
+        Object.assign(currentPost, post)
     } catch (err) {
         console.error(err)
     }
@@ -92,21 +86,6 @@ async function fetchComments() {
     }
 
     isLoadingComments.value = false
-}
-
-const addComment = async (comment) => {
-    // Add comment to comments
-    comments.push(comment)
-
-    const result = await fetch(`${API_URL}/comments/${props.id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(comment)
-    }).then((res) => res.json())
-
-    if (result.error) console.error(result.message)
 }
 
 // Preprocess input
@@ -166,6 +145,7 @@ async function deletePost() {
 // Define lifecycle hooks
 onMounted(fetchPost)
 onMounted(fetchComments)
+onUnmounted(clearComments)
 </script>
 
 <template>
