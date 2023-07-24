@@ -94,11 +94,7 @@ const processComment = () => {
         postId: props.id,
         body: newCommentBody.value,
         parentCommentId: null,
-        user: {
-            id: loggedIn.id,
-            username: loggedIn.username,
-            image: loggedIn.image
-        }
+        user: loggedIn.id
     })
 
     // Reset form

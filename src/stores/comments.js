@@ -10,24 +10,24 @@ export const useCommentsStore = defineStore('comments', () => {
         comments,
         async addComment(comment) {
             try {
-                const { generatedId, error, message } = await fetch(
-                    `${API_URL}/comments/${comment.postId}`,
-                    {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(comment)
-                    }
-                ).then((res) => res.json())
+                const {
+                    comment: newComment,
+                    error,
+                    message
+                } = await fetch(`${API_URL}/comments/${comment.postId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(comment)
+                }).then((res) => res.json())
 
                 if (error) {
                     console.error(message)
                     return
                 }
 
-                comment.id = generatedId
-                comments.push(comment)
+                comments.push(newComment)
             } catch (err) {
                 console.error(err)
             }
