@@ -1,26 +1,39 @@
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { defineStore } from 'pinia'
 
 import { API_URL } from '../constants'
 
 const comments = reactive([])
-const loadedAllComments = ref(false)
 
 export const useCommentsStore = defineStore('comments', () => {
     return {
         comments,
-        loadedAllComments,
-        addComment
+        async addComment(comment) {
+            try {
+                const { generatedId, error, message } = await fetch(
+                    `${API_URL}/comments/${comment.postId}`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(comment)
+                    }
+                ).then((res) => res.json())
+
+                if (error) {
+                    console.error(message)
+                    return
+                }
+
+                comment.id = generatedId
+                comments.push(comment)
+            } catch (err) {
+                console.error(err)
+            }
+        },
+        clearComments() {
+            comments.splice(0, comments.length)
+        }
     }
 })
-
-function addComment({ postId, body, parentCommentId, user }) {
-    comments.push({
-        id: 340 + comments.length + 1,
-        postId,
-        body,
-        parentCommentId,
-        user,
-        deleted: false
-    })
-}

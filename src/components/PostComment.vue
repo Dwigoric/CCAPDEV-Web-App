@@ -1,6 +1,6 @@
 <script setup>
-import { ref, reactive } from 'vue'
-import router from '../router'
+import { ref } from 'vue'
+import moment from 'moment'
 
 // Import components
 import PostComment from './PostComment.vue'
@@ -16,7 +16,7 @@ import { API_URL } from '../constants'
 
 // Define variables
 const loggedInStore = useLoggedInStore()
-const commentsStore = useCommentsStore()
+const { comments, addComment } = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
 
 const props = defineProps({
@@ -36,6 +36,10 @@ const props = defineProps({
         type: String,
         required: true
     },
+    edited: {
+        type: Number,
+        required: false
+    },
     onclick: {
         type: Function,
         required: false
@@ -46,7 +50,6 @@ const newReplyBody = ref('')
 const newComment = ref(props.body)
 const editFlag = ref(false)
 const form = ref(null)
-const comments = reactive([])
 
 // Define form rules
 const commentRules = [
@@ -55,24 +58,9 @@ const commentRules = [
 ]
 
 // Define functions
-const addComment = async (comment) => {
-    // Add comment to comments
-    comments.push(comment)
-
-    const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}/`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(comment)
-    }).then((res) => res.json())
-
-    if (result.error) console.error(result.message)
-}
-
 function addReply(pCommentId) {
     addComment({
-        postId: props.id,
+        postId: props.postId,
         body: newReplyBody.value,
         parentCommentId: pCommentId,
         user: {
@@ -94,12 +82,16 @@ async function deleteComment() {
 
         if (result.error) {
             console.error(result.error)
+            return
         }
+
+        const comment = comments.find((cm) => cm.id === props.id)
+        comment.deleted = true
+        comment.body = '[deleted]'
+        comment.user = null
     } catch (err) {
         console.error(err)
     }
-
-    return router.push({ name: 'post' })
 }
 
 function editComment() {
@@ -124,24 +116,22 @@ async function saveComment() {
         }).then((res) => res.json())
 
         if (result.error) {
-            console.error(result.error)
+            console.error(result.message)
         }
     } catch (err) {
         console.error(err)
     }
-    //editFlag.value = false
-    //const comment = commentsStore.comments.find((cm) => cm.id === props.id)
-    //comment.body = newComment.value
+    editFlag.value = false
+    const comment = comments.find((cm) => cm.id === props.id)
+    comment.body = newComment.value
+    comment.edited = Date.now()
 }
 </script>
 
 <template>
     <div class="comment">
         <div class="main-comment" @click="onclick(id)">
-            <div
-                class="existing-comment"
-                v-if="!commentsStore.comments.some((cm) => cm.id === id && cm.deleted)"
-            >
+            <div class="existing-comment" v-if="!comments.some((cm) => cm.id === id && cm.deleted)">
                 <div class="user">
                     <img
                         class="user-image"
@@ -185,6 +175,10 @@ async function saveComment() {
                         </VListItem>
                     </VList>
                 </VMenu>
+                <div v-if="edited" class="ml-9">
+                    <VIcon size="x-small"> mdi-pencil </VIcon>
+                    <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
+                </div>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
         </div>
@@ -201,9 +195,7 @@ async function saveComment() {
         />
         <div class="replies">
             <PostComment
-                v-for="reply in commentsStore.comments.filter(
-                    (comment) => comment.parentCommentId === id
-                )"
+                v-for="reply in comments.filter((comment) => comment.parentCommentId === id)"
                 :key="reply.id"
                 :id="reply.id"
                 :post-id="postId"
@@ -257,6 +249,12 @@ async function saveComment() {
 
 .deleted-comment {
     padding-left: 0.5rem;
+}
+
+.edit-span {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    margin-left: 10px;
 }
 
 .user {
