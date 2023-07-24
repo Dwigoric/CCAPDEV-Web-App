@@ -102,6 +102,10 @@ const processComment = () => {
 }
 
 async function savePost(newTitle, newBody) {
+    currentPost.title = newTitle
+    currentPost.body = newBody
+    currentPost.edited = Date.now()
+
     try {
         const result = await fetch(`${API_URL}/posts/${currentPost.id}`, {
             method: 'PATCH',
