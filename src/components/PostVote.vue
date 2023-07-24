@@ -11,14 +11,11 @@ import { API_URL } from '../constants'
 const { id: userId } = useLoggedInStore()
 
 const vote = ref(0)
+const reactions = ref(0)
 
 const props = defineProps({
     id: {
         type: String,
-        required: true
-    },
-    reactions: {
-        type: Number,
         required: true
     }
 })
@@ -31,7 +28,6 @@ async function callAPI() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                postId: props.id,
                 userId,
                 vote: vote.value
             })
@@ -50,8 +46,13 @@ function upvote() {
 
     if (vote.value > 0) {
         vote.value = 0
+        reactions.value -= 1
+    } else if (vote.value < 0) {
+        vote.value = 1
+        reactions.value += 2
     } else {
         vote.value = 1
+        reactions.value += 1
     }
 
     callAPI()
@@ -62,8 +63,13 @@ function downvote() {
 
     if (vote.value < 0) {
         vote.value = 0
+        reactions.value += 1
+    } else if (vote.value > 0) {
+        vote.value = -1
+        reactions.value -= 2
     } else {
         vote.value = -1
+        reactions.value -= 1
     }
 
     callAPI()
@@ -73,11 +79,15 @@ async function callVoteNum() {
     const params = new URLSearchParams()
     params.set('userId', userId)
 
-    const { error, message, reactions } = await fetch(
-        `${API_URL}/votes/${props.id}?${params}`
-    ).then((res) => res.json())
+    const {
+        error,
+        message,
+        reactions: postReactions,
+        userVote
+    } = await fetch(`${API_URL}/votes/${props.id}?${params}`).then((res) => res.json())
 
-    vote.value = reactions
+    reactions.value = postReactions
+    vote.value = userVote
 
     if (error) {
         console.error(message)
@@ -100,7 +110,7 @@ onMounted(callVoteNum)
         >
         </VBtn>
     </VHover>
-    <span>{{ reactions + vote }}</span>
+    <span>{{ reactions }}</span>
     <VHover v-slot="{ isHovering, props }">
         <VBtn
             class="ma-1 downvote"

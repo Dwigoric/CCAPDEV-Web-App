@@ -169,7 +169,7 @@ async function savePost() {
             />
         </div>
         <div class="post-footer">
-            <PostVote :id="id" :reactions="reactions" />
+            <PostVote :id="id" />
             <VBtn
                 :to="`/post/${id}`"
                 class="comment-icon ma-1 ml-2"
