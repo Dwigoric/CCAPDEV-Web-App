@@ -125,6 +125,7 @@ async function saveCurrentPost() {
                         density="compact"
                         variant="text"
                         icon="mdi-dots-vertical"
+                        class="ml-5"
                     >
                     </VBtn>
                 </template>
@@ -137,7 +138,7 @@ async function saveCurrentPost() {
                     </VListItem>
                 </VList>
             </VMenu>
-            <div v-if="post.edited">
+            <div v-if="post.edited" class="ml-5">
                 <VIcon size="x-small"> mdi-pencil </VIcon>
                 <span class="edit-span">edited {{ moment(post.edited).fromNow() }}</span>
             </div>
@@ -212,7 +213,6 @@ async function saveCurrentPost() {
 }
 
 .user-name {
-    margin-top: 10px;
     margin-left: 10px;
     padding: 0.2rem;
     font-size: 1rem;
