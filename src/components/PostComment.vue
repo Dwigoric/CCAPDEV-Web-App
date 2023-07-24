@@ -78,13 +78,17 @@ async function deleteComment() {
 
         if (result.error) {
             console.error(result.error)
+        } else {
+            const index = comments.findIndex(comment => comment.id === props.id)
+            if (index !== -1) {
+                comments.splice(index, 1)
+            }
         }
     } catch (err) {
         console.error(err)
     }
-
-    return router.push({ name: 'post' })
 }
+
 
 function editComment() {
     editFlag.value = true
