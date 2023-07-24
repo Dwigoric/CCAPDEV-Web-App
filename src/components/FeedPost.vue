@@ -109,15 +109,15 @@ async function savePost() {
         console.error(error)
     }
 }
+
 function goToPost() {
-      // Perform the navigation to the post route based on 'this.id'
-      router.push(`/post/${props.id}`);
-    }
+    // Perform the navigation to the post route based on 'this.id'
+    router.push(`/post/${props.id}`)
+}
 </script>
 
 <template>
     <div class="post" id="post_id">
-        <div @click="goToPost">
         <div class="user">
             <VAvatar class="user-image">
                 <VImg :src="user['image']" :alt="`${user['username']}'s image`" />
@@ -148,7 +148,7 @@ function goToPost() {
                 <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
             </div>
         </div>
-        <div class="content">
+        <div class="content" @click="goToPost">
             <p v-if="!editFlag" class="title" id="title">{{ title }}</p>
             <p v-if="!editFlag" class="body" id="body">{{ body }}</p>
             <VForm @submit.prevent ref="form">
@@ -176,20 +176,8 @@ function goToPost() {
                 :alt="`An image in ${user['username']}'s post`"
             />
         </div>
-    </div>
         <div class="post-footer">
-            <PostVote :id="id" />
-            <!--
-            <VBtn
-                :to="`/post/${id}`"
-                class="comment-icon ma-1 ml-2"
-                density="compact"
-                variant="text"
-                color="teal-darken-2"
-                icon="mdi-comment-text-multiple-outline"
-            >
-            </VBtn>
-            -->
+            <PostVote :id="id" style="z-index: 2; position: absolute" />
         </div>
     </div>
 </template>
@@ -257,6 +245,7 @@ function goToPost() {
     margin-bottom: 2.5rem;
     text-decoration: none;
     color: var(--color-text);
+    cursor: pointer;
 }
 
 .title {
