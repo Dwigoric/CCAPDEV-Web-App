@@ -63,11 +63,7 @@ function addReply(pCommentId) {
         postId: props.postId,
         body: newReplyBody.value,
         parentCommentId: pCommentId,
-        user: {
-            id: loggedInStore.id,
-            username: loggedInStore.username,
-            image: loggedInStore.image
-        }
+        user: loggedInStore.id
     })
 
     // Reset form

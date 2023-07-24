@@ -94,11 +94,7 @@ const processComment = () => {
         postId: props.id,
         body: newCommentBody.value,
         parentCommentId: null,
-        user: {
-            id: loggedIn.id,
-            username: loggedIn.username,
-            image: loggedIn.image
-        }
+        user: loggedIn.id
     })
 
     // Reset form
@@ -106,6 +102,10 @@ const processComment = () => {
 }
 
 async function savePost(newTitle, newBody) {
+    currentPost.title = newTitle
+    currentPost.body = newBody
+    currentPost.edited = Date.now()
+
     try {
         const result = await fetch(`${API_URL}/posts/${currentPost.id}`, {
             method: 'PATCH',
