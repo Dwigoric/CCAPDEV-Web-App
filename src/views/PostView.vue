@@ -193,6 +193,7 @@ onUnmounted(clearComments)
                     :body="comment.body"
                     :user="comment.user"
                     :depth="0"
+                    :edited="comment.edited"
                     :onclick="
                         (parentId) => {
                             currentCommentStore.setCurrentComment(parentId)
