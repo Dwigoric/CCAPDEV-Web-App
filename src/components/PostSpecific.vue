@@ -76,7 +76,12 @@ const editBodyRules = [(v) => !!v || 'Body is required']
 function deleteCurrentPost() {
     props.deletePost(props.post.id)
 
-    router.back()
+    cachedPosts.splice(
+        cachedPosts.findIndex((p) => p.id === props.post.id),
+        1
+    )
+
+    router.push({ name: 'feed' })
 }
 
 function editPost() {
