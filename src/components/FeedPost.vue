@@ -112,7 +112,7 @@ async function savePost() {
 
 function goToPost() {
     // Perform the navigation to the post route based on 'this.id'
-    router.push(`/post/${props.id}`)
+    if (!editFlag.value) router.push(`/post/${props.id}`)
 }
 </script>
 
