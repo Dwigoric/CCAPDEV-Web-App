@@ -2,7 +2,6 @@
 // Import packages
 import { ref } from 'vue'
 import moment from 'moment'
-import router from '../router'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -109,11 +108,6 @@ async function savePost() {
         console.error(error)
     }
 }
-
-function goToPost() {
-    // Perform the navigation to the post route based on 'this.id'
-    if (!editFlag.value) router.push(`/post/${props.id}`)
-}
 </script>
 
 <template>
@@ -150,9 +144,11 @@ function goToPost() {
                 <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
             </div>
         </div>
-        <div class="content" @click="goToPost">
-            <p v-if="!editFlag" class="title" id="title">{{ title }}</p>
-            <p v-if="!editFlag" class="body" id="body">{{ body }}</p>
+        <div class="content">
+            <RouterLink class="post-content" :to="`/post/${id}`" v-if="!editFlag">
+                <p class="title" id="title">{{ title }}</p>
+                <p class="body" id="body">{{ body }}</p>
+            </RouterLink>
             <VForm @submit.prevent ref="form">
                 <VTextField
                     v-if="editFlag"
@@ -246,7 +242,11 @@ function goToPost() {
     margin-bottom: 2.5rem;
     text-decoration: none;
     color: var(--color-text);
-    cursor: pointer;
+}
+
+.post-content {
+    text-decoration: none;
+    color: var(--color-text);
 }
 
 .title {
