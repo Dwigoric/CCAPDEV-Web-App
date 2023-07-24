@@ -57,6 +57,8 @@ function upvote() {
         reactions.value += 1
     }
 
+    votes[props.id] = reactions.value
+
     callAPI()
 }
 
@@ -73,6 +75,8 @@ function downvote() {
         vote.value = -1
         reactions.value -= 1
     }
+
+    votes[props.id] = reactions.value
 
     callAPI()
 }
