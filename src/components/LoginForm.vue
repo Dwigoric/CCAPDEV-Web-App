@@ -10,8 +10,6 @@ import { useLoggedInStore } from '../stores/loggedIn'
 import { API_URL } from '../constants'
 
 // Define variables
-const DEFAULT_BG_IMAGE = 'https://ik.imagekit.io/ikmedia/backlit.jpg'
-
 const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
@@ -45,7 +43,6 @@ const authenticate = async (userLogin) => {
     loggedInStore.id = userLogin.id
     loggedInStore.username = userLogin.username
     loggedInStore.image = userLogin.image
-    loggedInStore.bgImage = userLogin.bgImage || DEFAULT_BG_IMAGE
 
     invalidCredentials.value = false
 
@@ -205,29 +202,6 @@ defineProps({
     align-items: center;
     justify-content: center;
     width: 100%;
-}
-
-.loginButton {
-    font-family: var(--source-sans);
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--vt-c-black-soft);
-    background-color: var(--color-dark-pink);
-    border: none;
-    border-radius: 20px;
-    padding: 15px 25px;
-    margin: 8px 0;
-    cursor: pointer;
-}
-
-.loginButton:hover {
-    background-color: var(--color-bright-pink);
-}
-
-.noButton {
-    background-color: var(--vt-c-black-soft);
-    color: var(--vt-c-white-soft);
-    pointer-events: none;
 }
 
 .v-input {

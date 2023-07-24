@@ -9,14 +9,13 @@ import FeedPost from '../components/FeedPost.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
 
 //Import router
-import Router from '../router/index.js'
+import router from '../router/index.js'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 
 // Import constants
 import { API_URL } from '../constants'
-
 
 // Define variables
 document.title = 'Compact Donuts | Profile'
@@ -35,26 +34,17 @@ const currentUser = reactive({
     image: ''
 })
 
-
+// Define variables
 const login = useLoggedInStore()
 
+const inputImage = ref(null)
+const dialog = ref(false)
+const files = ref([])
 const userPosts = reactive([])
 const loading = ref(true)
-const editing = ref(false)
-const cDescription = ref('')
-const cUsername = ref('')
-const modName = ref([false])
-const modDesc = ref(false)
-const inputImage = ref(null)
-const modFile = ref([])
-const filename = ref([])
-const prevName = ref(false)
 
-const dialog = ref(false)
-
-
-
-
+const newUsername = ref('')
+const newDescription = ref('')
 
 // Define functions
 async function fetchUser() {
@@ -82,242 +72,130 @@ async function fetchPosts() {
     loading.value = false
 }
 
-onMounted(fetchUser)
+async function saveChanges(file) {
+    const payload = new FormData()
+    payload.append('username', newUsername.value || currentUser.username)
+    payload.append('description', newDescription.value)
+    if (file) {
+        payload.append('avatar', file)
+    }
 
+    const { user, error, message } = await fetch(`${API_URL}/users/${login.id}`, {
+        method: 'PATCH',
+        body: payload
+    }).then((response) => response.json())
 
+    if (error) {
+        console.error(message)
+        return
+    }
 
-const processInput = (ref) => {
-    if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length){
-        modFile.value = login.image
+    login.username = user.username
+    login.description = user.description
+    login.image = file ? user.image : login.image
+
+    currentUser.username = login.username
+    currentUser.description = login.description
+    currentUser.image = login.image
+
+    return router.replace({ name: 'profile', params: { username: login.username } })
+}
+
+const processInput = () => {
+    if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length) {
+        saveChanges(null)
     } else {
         // Retrieve image input file
         const file = inputImage.value.files[0]
-
-        // Read the image file
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-            // Change image
-            modFile.value = reader.result
-        }
-        reader.onerror = (error) => {
-            console.log('Error: ', error)
-        }
+        saveChanges(file)
     }
+
+    // Close dialog
+    dialog.value = false
 
     // Reset form
-    filename.value = []
+    newUsername.value = ''
+    newDescription.value = ''
+    files.value = []
 }
 
-function saveChanges(){
-    if(cUsername.value === '' && cDescription.value === '') return
-
-    modName.value = false
-    if(cUsername.value == '')
-    {
-        login.username = login.username
-        currentUser.username = login.username
-    }
-    else
-    {
-        login.username = cUsername.value
-        currentUser.username = login.username
-    }
-    modDesc.value = false
-    login.description = cDescription.value
-    currentUser.description = login.description
-    dialog = false
-}
-
-function sendtoDB(){
-
-    if (cUsername.value == '')
-    {
-        cUsername.value = login.username
-    }
-
-    if (cDescription.value == '')
-    {
-        cDescription.value = login.description
-    }
-
-    if (filename.value == '')
-    {
-        modFile.value = `https://robohash.org/${login.username}`
-    } 
-
-    //processInput(this/$ref.inputImage)
-    
-
-    fetch(`${API_URL}/users/${login.id}`,{
-    method: 'PATCH',
-    headers: {'Content-type': 'application/json'},
-    body: JSON.stringify({
-        username: cUsername.value,
-        image: modFile.value,
-        description: cDescription.value,
-    }),
-    }
-    )
-    .then((response) => response.json())
-    .then((json) => console.log(json));
-
-    login.username = cUsername.value
-    //currentUser.username = login.username
-    login.image = modFile.value
-    //currentUser.image = login.image
-    //currentUser.description = login.description
-
-    Router.push({ name: 'profile', vparams:{ username: login.username } })
-
-}
-
-
-
+// Define lifecycle hooks
+onMounted(fetchUser)
 </script>
 
 <template>
     <NavigationBar />
     <div id="header">
-        <VImg
-            src="https://ik.imagekit.io/ikmedia/backlit.jpg"
-            alt="Background image"
-            id="bg-image"
-            height="150"
-            :aspect-ratio="1"
-            cover=""
-        />
         <div id="user-panel">
             <div id="user-data">
-                <VAvatar
-                    size="150"
-                    class="mb-3"
-                    variant="tonal"
-                    :style="{ cursor: editing ? 'pointer' : 'default' }"
-                >
-
+                <VAvatar size="150" class="mb-3" variant="tonal">
                     <VImg :src="currentUser.image" alt="Profile image" :aspect-ratio="1" />
                 </VAvatar>
-                
-                
-                   <!--
-                    v-if="!editing" 
-                    <VFileInput
-                        v-else 
-                        v-model="currentUser.image"
-                        label="Insert image"
-                        clearable="clearable"
-                        accept="image/*"
-                        prepend-icon="mdi-camera"
-                        ref="inputImage"
-                    ></VFileInput>
-                
-                <VBtn
-                    >
-                        Edit Picture
-                </VBtn>
-                -->
-
-                <span id="username" class="rounded-pill pa-1 px-3">{{
-                    currentUser.username
-                }}</span>
-                
+                <span id="username" class="rounded-pill pa-1 px-3">{{ currentUser.username }}</span>
             </div>
             <div id="user-description">
                 <span>
-                    {{ currentUser.description }}
+                    {{ currentUser.description || 'This user has not written a description yet.' }}
                 </span>
             </div>
         </div>
 
-            
-        <v-row justify="center">
-            <v-dialog
-            v-model="dialog"
-            persistent
-            width="1024"
-            >
-            <template v-slot:activator="{ props }">
-                <v-btn
-                class="rounded-pill"
-                id="edit-btn"
-                v-bind="props"
-                @click="dialog = true"
-                >
-                    Edit Profile
-                </v-btn>
-            </template>
-            <v-card>
-                <v-card-title>
-                    <span class="text-h5">Edit User Information</span>
-                </v-card-title>
-                <v-card-text>
-                    <v-container>
-                        <v-row>
-                            <v-col
-                            cols="12"
-                            >
-                                <span class="label1">
-                                    New Username
-                                </span>
-                                <VTextField
-                                    label="A user can go by many names, but they still keep their own identity."
-                                    v-model="cUsername"
-                                >
-                                </VTextField>
-                                <small class="note">
-                                    Username should be at least 1 character long. Otherwise, the empty string will not be saved
-                                </small>
-                            </v-col>
-                            <v-col cols="12">
-                                <span class="label2">
-                                    New Description
-                                </span>
-                                <VTextField
-                                    label="Don't forget to bake it with love!"
-                                    v-model="cDescription"
-                                ></VTextField>
-                            </v-col>
-                            <v-col cols="12">
-                                <span class="label2">
-                                    New Profile Picture
-                                </span>
-                                <v-file-input
-                                    label="Change profile picture"
-                                    v-model="filename"
-                                    accept="image*/"
-                                    clearable="clearable"
-                                    ref="inputImage"
-                                ></v-file-input>
-                                <VBtn
-                                @click="processInput"
-                                class="Submit"
-                                >
-                                    Submit Picture
-                                </VBtn>
-                            </v-col>
-                            <v-col cols="12">
-                                <VBtn
-                                @click="sendtoDB"
-                                class="Submit"
-                                >
-                                    Save Changes
-                                </VBtn>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <VBtn
-                    color="red-darken-1"
-                    variant="text"
-                    @click= "dialog = false"
-                    >
-                        Save and Close
-                    </VBtn>
-                </v-card-actions>
-            </v-card>
+        <v-row justify="center" v-if="currentUser.id === login.id">
+            <v-dialog v-model="dialog" persistent="persistent" width="1024">
+                <template v-slot:activator="{ props }">
+                    <v-btn class="rounded-pill" id="edit-btn" v-bind="props" @click="dialog = true">
+                        Edit Profile
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-card-title>
+                        <span class="text-h5">Edit User Information</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12">
+                                    <span class="label1"> New Username </span>
+                                    <VTextField
+                                        label="A user can go by many names, but they still keep their own identity."
+                                        v-model="newUsername"
+                                    >
+                                    </VTextField>
+                                    <small class="note">
+                                        Username should be at least 1 character long. Otherwise, the
+                                        empty string will not be saved
+                                    </small>
+                                </v-col>
+                                <v-col cols="12">
+                                    <span class="label2"> New Description </span>
+                                    <VTextField
+                                        label="Don't forget to bake it with love!"
+                                        v-model="newDescription"
+                                    ></VTextField>
+                                </v-col>
+                                <v-col cols="12">
+                                    <span class="label2"> New Profile Picture </span>
+                                    <v-file-input
+                                        label="Change profile picture"
+                                        v-model="files"
+                                        accept="image*/"
+                                        clearable="clearable"
+                                        ref="inputImage"
+                                    ></v-file-input>
+                                </v-col>
+                                <v-col cols="12">
+                                    <VBtn @click="processInput" class="Submit"> Save Changes </VBtn>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <VBtn color="red-darken-1" variant="text" @click="dialog = false">
+                            Close
+                        </VBtn>
+                    </v-card-actions>
+                </v-card>
             </v-dialog>
         </v-row>
     </div>
@@ -345,13 +223,11 @@ function sendtoDB(){
 #header {
     height: 35vh;
     width: 100vw;
-}
-
-#bg-image {
-    position: relative;
-    top: var(--navbar-height);
-    left: 0;
-    z-index: -1;
+    background-color: linear-gradient(
+        to right,
+        var(--color-pale-green) 0%,
+        var(--color-dark-pink) 100%
+    );
 }
 
 #user-panel {
@@ -406,5 +282,4 @@ function sendtoDB(){
     width: 100%;
     gap: 2rem;
 }
-
 </style>

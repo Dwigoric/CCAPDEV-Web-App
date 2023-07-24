@@ -19,7 +19,6 @@ if (userCookie) {
     loggedInStore.id = userCookie.id
     loggedInStore.username = userCookie.username
     loggedInStore.image = userCookie.image
-    loggedInStore.bgImage = userCookie.bgImage
 
     if (userCookie.persist) $cookies.set('user', userCookie, '21d')
 }
