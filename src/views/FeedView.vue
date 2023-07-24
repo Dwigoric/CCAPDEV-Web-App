@@ -23,7 +23,7 @@ document.title = 'Compact Donuts | Feed'
 const cachedPostsStore = useCachedPostsStore()
 const { cachedPosts, fetchPosts } = cachedPostsStore
 const loggedIn = useLoggedInStore()
-const voteStore = useVoteStore()
+const { votes } = useVoteStore()
 
 const getPosts = async (waypointState) => {
     if (waypointState.going !== 'IN') {
@@ -45,18 +45,9 @@ const getPosts = async (waypointState) => {
             <span v-if="cachedPosts.length > 0" class="sidebar-header">Top Posts</span>
             <VList lines="two" class="bg-transparent mt-5">
                 <VListItem
-                    v-for="post in cachedPosts
-                        .slice()
-                        .sort(
-                            (a, b) =>
-                                b.reactions +
-                                voteStore.getTotalVotes(b.id) -
-                                (a.reactions + voteStore.getTotalVotes(a.id))
-                        )"
+                    v-for="post in cachedPosts.slice().sort((a, b) => votes[b.id] - votes[a.id])"
                     :key="post.id"
-                    :title="`${post.user.username} • ${
-                        post.reactions + voteStore.getTotalVotes(post.id)
-                    }`"
+                    :title="`${post.user.username} • ${votes[post.id]}`"
                     :subtitle="post.title"
                     :prepend-avatar="post.user.image"
                     @click="() => router.push({ name: 'post', params: { id: post.id } })"
