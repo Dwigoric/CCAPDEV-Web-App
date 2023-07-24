@@ -282,8 +282,7 @@ function goToPost() {
     bottom: 2rem;
 }
 
-.content,
-.comment-icon {
+.content {
     color: var(--color-text);
     text-decoration: none;
 }
