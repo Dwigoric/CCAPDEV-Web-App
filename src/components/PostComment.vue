@@ -197,6 +197,7 @@ async function saveComment() {
                 :post-id="postId"
                 :user="reply.user"
                 :body="reply.body"
+                :edited="reply.edited"
                 :onclick="onclick"
             >
             </PostComment>
