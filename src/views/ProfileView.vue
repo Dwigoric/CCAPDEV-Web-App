@@ -104,6 +104,10 @@ async function saveChanges(file) {
     login.username = user.username
     login.description = user.description
     login.image = file ? user.image : login.image
+    for (const post of userPosts) {
+        post['user'].username = user.username
+        post['user'].image = file ? user.image : post['user'].image
+    }
 
     currentUser.username = login.username
     currentUser.description = login.description
