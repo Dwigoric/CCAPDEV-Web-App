@@ -2,6 +2,7 @@
 // Import packages
 import { ref } from 'vue'
 import moment from 'moment'
+import router from '../router'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -108,10 +109,15 @@ async function savePost() {
         console.error(error)
     }
 }
+function goToPost() {
+      // Perform the navigation to the post route based on 'this.id'
+      router.push(`/post/${props.id}`);
+    }
 </script>
 
 <template>
     <div class="post" id="post_id">
+        <div @click="goToPost">
         <div class="user">
             <VAvatar class="user-image">
                 <VImg :src="user['image']" :alt="`${user['username']}'s image`" />
@@ -170,8 +176,10 @@ async function savePost() {
                 :alt="`An image in ${user['username']}'s post`"
             />
         </div>
+    </div>
         <div class="post-footer">
             <PostVote :id="id" />
+            <!--
             <VBtn
                 :to="`/post/${id}`"
                 class="comment-icon ma-1 ml-2"
@@ -181,6 +189,7 @@ async function savePost() {
                 icon="mdi-comment-text-multiple-outline"
             >
             </VBtn>
+            -->
         </div>
     </div>
 </template>
