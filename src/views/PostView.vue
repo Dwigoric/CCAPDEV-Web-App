@@ -185,7 +185,7 @@ onMounted(fetchComments)
         </div>
         <div id="post-details" v-else>
             <PostSpecific :post="currentPost" :save-post="savePost" :delete-post="deletePost" />
-            <PostVote :id="id" :reactions="currentPost.reactions" />
+            <PostVote :id="id" />
             <div id="new-comment" v-if="loggedInStore.username">
                 <VTextarea
                     placeholder="Add a comment..."
