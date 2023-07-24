@@ -73,12 +73,23 @@ async function fetchPosts() {
 }
 
 async function saveChanges(file) {
+    let willUpdate = false
+
     const payload = new FormData()
-    payload.append('username', newUsername.value || currentUser.username)
-    payload.append('description', newDescription.value)
+    if (newUsername.value.length > 0) {
+        payload.append('username', newUsername.value)
+        willUpdate = true
+    }
+    if (newDescription.value.length > 0) {
+        payload.append('description', newDescription.value)
+        willUpdate = true
+    }
     if (file) {
         payload.append('avatar', file)
+        willUpdate = true
     }
+
+    if (!willUpdate) return
 
     const { user, error, message } = await fetch(`${API_URL}/users/${login.id}`, {
         method: 'PATCH',
