@@ -8,6 +8,9 @@ import ThemeSwitch from '../components/ThemeSwitch.vue'
 import FeedPost from '../components/FeedPost.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
 
+//Import router
+import Router from '../router/index.js'
+
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 
@@ -40,11 +43,12 @@ const loading = ref(true)
 const editing = ref(false)
 const cDescription = ref('')
 const cUsername = ref('')
-const modName = ref(false)
+const modName = ref([false])
 const modDesc = ref(false)
 const inputImage = ref(null)
-const modFile = ref(false)
+const modFile = ref([])
 const filename = ref([])
+const prevName = ref(false)
 
 const dialog = ref(false)
 
@@ -83,18 +87,18 @@ onMounted(fetchUser)
 
 
 const processInput = (ref) => {
-    if (!ref.files.length){
-        login.image = login.image
+    if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length){
+        modFile.value = login.image
     } else {
         // Retrieve image input file
-        const file = ref.files[0]
+        const file = inputImage.value.files[0]
 
         // Read the image file
         const reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = () => {
             // Change image
-            login.image = reader.result
+            modFile.value = reader.result
         }
         reader.onerror = (error) => {
             console.log('Error: ', error)
@@ -103,7 +107,6 @@ const processInput = (ref) => {
 
     // Reset form
     filename.value = []
-    ref.reset()
 }
 
 function saveChanges(){
@@ -130,10 +133,21 @@ function sendtoDB(){
 
     if (cUsername.value == '')
     {
-        cUsername = login.username
+        cUsername.value = login.username
     }
 
+    if (cDescription.value == '')
+    {
+        cDescription.value = login.description
+    }
+
+    if (filename.value == '')
+    {
+        modFile.value = `https://robohash.org/${login.username}`
+    } 
+
     //processInput(this/$ref.inputImage)
+    
 
     fetch(`${API_URL}/users/${login.id}`,{
     method: 'PATCH',
@@ -153,10 +167,8 @@ function sendtoDB(){
     login.image = modFile.value
     //currentUser.image = login.image
     //currentUser.description = login.description
-    user.id = login.id
-    user.username = login.username
 
-    router.replace({ name: 'profile', vparams:{ username: login.username } })
+    Router.push({ name: 'profile', vparams:{ username: login.username } })
 
 }
 
@@ -273,7 +285,16 @@ function sendtoDB(){
                                 <v-file-input
                                     label="Change profile picture"
                                     v-model="filename"
+                                    accept="image*/"
+                                    clearable="clearable"
+                                    ref="inputImage"
                                 ></v-file-input>
+                                <VBtn
+                                @click="processInput"
+                                class="Submit"
+                                >
+                                    Submit Picture
+                                </VBtn>
                             </v-col>
                             <v-col cols="12">
                                 <VBtn
