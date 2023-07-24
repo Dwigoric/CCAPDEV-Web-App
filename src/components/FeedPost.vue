@@ -119,9 +119,11 @@ function goToPost() {
 <template>
     <div class="post" id="post_id">
         <div class="user">
-            <VAvatar class="user-image">
-                <VImg :src="user['image']" :alt="`${user['username']}'s image`" />
-            </VAvatar>
+            <RouterLink :to="`/profile/${user['username']}`">
+                <VAvatar class="user-image">
+                    <VImg :src="user['image']" :alt="`${user['username']}'s image`" />
+                </VAvatar>
+            </RouterLink>
             <span class="user-name">{{ user['username'] }}</span>
             <VMenu v-if="loggedIn.id === user.id">
                 <template v-slot:activator="{ props }">

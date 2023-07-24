@@ -108,14 +108,16 @@ async function saveCurrentPost() {
 <template>
     <div class="post">
         <div class="user">
-            <VAvatar class="user-image">
-                <VImg
-                    v-if="!post.deleted"
-                    :src="post.user.image"
-                    :alt="`${post.user.username}'s image`"
-                />
-                <VIcon v-else>mdi-account-remove</VIcon>
-            </VAvatar>
+            <RouterLink :to="`/profile/${post.user.username}`">
+                <VAvatar class="user-image">
+                    <VImg
+                        v-if="!post.deleted"
+                        :src="post.user.image"
+                        :alt="`${post.user.username}'s image`"
+                    />
+                    <VIcon v-else>mdi-account-remove</VIcon>
+                </VAvatar>
+            </RouterLink>
             <span class="user-name">{{ post.user.username }}</span>
             <VMenu v-if="loggedIn.id === post.user.id">
                 <template v-slot:activator="{ props }">
