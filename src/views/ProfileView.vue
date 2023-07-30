@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, watch } from 'vue'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -147,6 +147,7 @@ const processInput = () => {
 
 // Define lifecycle hooks
 onMounted(fetchUser)
+watch(() => props.username, fetchUser)
 </script>
 
 <template>

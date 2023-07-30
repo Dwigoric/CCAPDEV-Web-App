@@ -52,7 +52,7 @@ const dayMessage = () => {
             <div v-if="loggedInStore.image">
                 <RouterLink :to="`/profile/${loggedInStore.username}`" id="profile-picture-link">
                     <VAvatar class="mx-2">
-                        <img id="user-image" :src="loggedInStore.image" alt="User" />
+                        <VImg id="user-image" :src="loggedInStore.image" alt="User" />
                     </VAvatar>
                 </RouterLink>
             </div>

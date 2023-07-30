@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, watch } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import router from '../router'
 
@@ -150,6 +150,16 @@ async function deletePost() {
 onMounted(fetchPost)
 onMounted(fetchComments)
 onUnmounted(clearComments)
+watch(
+    () => props.id,
+    () => {
+        isLoadingPost.value = true
+        isLoadingComments.value = true
+        clearComments()
+        fetchPost()
+        fetchComments()
+    }
+)
 </script>
 
 <template>
