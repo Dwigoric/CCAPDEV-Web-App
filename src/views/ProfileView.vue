@@ -151,119 +151,135 @@ onMounted(fetchUser)
 
 <template>
     <NavigationBar />
-    <div id="header">
-        <div id="user-panel">
-            <div id="user-data">
-                <VAvatar size="150" class="mb-3" variant="tonal">
-                    <VImg :src="currentUser.image" alt="Profile image" :aspect-ratio="1" />
-                </VAvatar>
-                <span id="username" class="rounded-pill pa-1 px-3">{{ currentUser.username }}</span>
+    <div id="profile-container">
+        <div id="header">
+            <div id="user-panel">
+                <div id="user-data">
+                    <VAvatar size="150" class="mb-3" variant="tonal">
+                        <VImg :src="currentUser.image" alt="Profile image" :aspect-ratio="1" />
+                    </VAvatar>
+                    <span id="username" class="rounded-pill pa-1 px-3">{{
+                        currentUser.username
+                    }}</span>
+                </div>
+                <div id="user-description">
+                    <span>
+                        {{
+                            currentUser.description ||
+                            'This user has not written a description yet.'
+                        }}
+                    </span>
+                </div>
             </div>
-            <div id="user-description">
-                <span>
-                    {{ currentUser.description || 'This user has not written a description yet.' }}
-                </span>
-            </div>
+
+            <v-row justify="center" v-if="currentUser.id === login.id">
+                <v-dialog v-model="dialog" persistent="persistent" width="1024">
+                    <template v-slot:activator="{ props }">
+                        <v-btn
+                            class="rounded-pill"
+                            id="edit-btn"
+                            v-bind="props"
+                            @click="dialog = true"
+                        >
+                            Edit Profile
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title>
+                            <span class="text-h5">Edit User Information</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <span class="label1"> New Username </span>
+                                        <VTextField
+                                            label="A user can go by many names, but they still keep their own identity."
+                                            v-model="newUsername"
+                                        >
+                                        </VTextField>
+                                        <small class="note">
+                                            Username should be at least 1 character long. Otherwise,
+                                            the empty string will not be saved
+                                        </small>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <span class="label2"> New Description </span>
+                                        <VTextField
+                                            label="Don't forget to bake it with love!"
+                                            v-model="newDescription"
+                                        ></VTextField>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <span class="label2"> New Profile Picture </span>
+                                        <v-file-input
+                                            label="Change profile picture"
+                                            v-model="files"
+                                            accept="image*/"
+                                            clearable="clearable"
+                                            ref="inputImage"
+                                        ></v-file-input>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <VBtn @click="processInput" class="Submit">
+                                            Save Changes
+                                        </VBtn>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <VBtn color="red-darken-1" variant="text" @click="dialog = false">
+                                Close
+                            </VBtn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-row>
         </div>
 
-        <v-row justify="center" v-if="currentUser.id === login.id">
-            <v-dialog v-model="dialog" persistent="persistent" width="1024">
-                <template v-slot:activator="{ props }">
-                    <v-btn class="rounded-pill" id="edit-btn" v-bind="props" @click="dialog = true">
-                        Edit Profile
-                    </v-btn>
-                </template>
-                <v-card>
-                    <v-card-title>
-                        <span class="text-h5">Edit User Information</span>
-                    </v-card-title>
-                    <v-card-text>
-                        <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <span class="label1"> New Username </span>
-                                    <VTextField
-                                        label="A user can go by many names, but they still keep their own identity."
-                                        v-model="newUsername"
-                                    >
-                                    </VTextField>
-                                    <small class="note">
-                                        Username should be at least 1 character long. Otherwise, the
-                                        empty string will not be saved
-                                    </small>
-                                </v-col>
-                                <v-col cols="12">
-                                    <span class="label2"> New Description </span>
-                                    <VTextField
-                                        label="Don't forget to bake it with love!"
-                                        v-model="newDescription"
-                                    ></VTextField>
-                                </v-col>
-                                <v-col cols="12">
-                                    <span class="label2"> New Profile Picture </span>
-                                    <v-file-input
-                                        label="Change profile picture"
-                                        v-model="files"
-                                        accept="image*/"
-                                        clearable="clearable"
-                                        ref="inputImage"
-                                    ></v-file-input>
-                                </v-col>
-                                <v-col cols="12">
-                                    <VBtn @click="processInput" class="Submit"> Save Changes </VBtn>
-                                </v-col>
-                            </v-row>
-                        </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <VBtn color="red-darken-1" variant="text" @click="dialog = false">
-                            Close
-                        </VBtn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-        </v-row>
-    </div>
-
-    <div id="posts">
-        <Waypoint v-if="loading">
-            <LoaderHeart />
-        </Waypoint>
-        <FeedPost
-            v-else
-            v-for="post in userPosts"
-            :key="post.id"
-            :id="post.id"
-            :title="post.title"
-            :body="post.body"
-            :user="post.user"
-            :image="post.image"
-            :reactions="post.reactions"
-        />
-        <ThemeSwitch />
+        <div id="posts">
+            <Waypoint v-if="loading">
+                <LoaderHeart />
+            </Waypoint>
+            <FeedPost
+                v-else
+                v-for="post in userPosts"
+                :key="post.id"
+                :id="post.id"
+                :title="post.title"
+                :body="post.body"
+                :user="post.user"
+                :image="post.image"
+                :reactions="post.reactions"
+            />
+            <ThemeSwitch />
+        </div>
     </div>
 </template>
 
 <style scoped>
+#profile-container {
+    display: flex;
+    width: 100%;
+    flex-flow: column nowrap;
+}
+
 #header {
-    height: 35vh;
-    width: 100vw;
-    background-color: linear-gradient(
-        to right,
-        var(--color-pale-green) 0%,
-        var(--color-dark-pink) 100%
+    background: linear-gradient(
+        360deg,
+        var(--color-background) 0%,
+        var(--color-background-soft) 100%
     );
 }
 
 #user-panel {
     display: flex;
-    position: absolute;
-    top: calc(var(--navbar-height) + 3vh);
-    left: 10vw;
+    flex-flow: column nowrap;
+    margin-top: calc(var(--navbar-height) + 3vh);
     width: 100vw;
-    flex-flow: row wrap;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
 }
 
@@ -284,8 +300,8 @@ onMounted(fetchUser)
 #user-description {
     font-size: 1rem;
     padding: 0.5rem 1rem;
-    margin: 12vh 0 0 1rem;
     width: 50vw;
+    text-align: center;
 }
 
 #edit-btn {
@@ -305,6 +321,7 @@ onMounted(fetchUser)
     justify-content: center;
     align-items: center;
     padding: 2rem 10vw;
+    margin-top: 5rem;
     width: 100%;
     gap: 2rem;
 }
