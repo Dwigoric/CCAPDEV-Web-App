@@ -93,8 +93,11 @@ async function saveChanges(file) {
 
     if (!willUpdate) return
 
+    const { token } = window.$cookies.get('credentials')
+
     const { user, error, message } = await fetch(`${API_URL}/users/${login.id}`, {
         method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
         body: payload
     }).then((response) => response.json())
 

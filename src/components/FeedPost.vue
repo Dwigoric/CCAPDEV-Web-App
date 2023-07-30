@@ -59,8 +59,11 @@ const newBody = ref(props.body)
 
 async function deletePost() {
     try {
+        const { token } = window.$cookies.get('credentials')
+
         const response = await fetch(`${API_URL}/posts/${props.id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
         }).then((res) => res.json())
 
         if (response.error) {
@@ -89,11 +92,14 @@ async function savePost() {
     post.body = newBody.value
     post.edited = Date.now()
 
+    const { token } = window.$cookies.get('credentials')
+
     try {
         const response = await fetch(`${API_URL}/posts/${props.id}`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
                 title: newTitle.value,
