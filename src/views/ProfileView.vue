@@ -147,7 +147,15 @@ const processInput = () => {
 
 // Define lifecycle hooks
 onMounted(fetchUser)
-watch(() => props.username, fetchUser)
+watch(
+    () => props.username,
+    () => {
+        loading.value = true
+        userPosts.splice(0, userPosts.length)
+
+        fetchUser()
+    }
+)
 </script>
 
 <template>
