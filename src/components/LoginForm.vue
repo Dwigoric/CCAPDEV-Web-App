@@ -2,6 +2,7 @@
 // Import packages
 import { ref } from 'vue'
 import router from '../router'
+import jwt_decode from 'jwt-decode'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -36,20 +37,28 @@ const confirmPasswordRules = [
 ]
 
 // Define functions
-const authenticate = async (userLogin) => {
+const saveUser = async (token) => {
     const loggedInStore = useLoggedInStore()
 
+    // Decode the token.
+    const { id } = jwt_decode(token)
+
+    // Fetch the user
+    const { user } = await fetch(`${API_URL}/users/${id}`)
+        .then((res) => res.json())
+        .catch(console.error)
+
     // Store user in the loggedInStore
-    loggedInStore.id = userLogin.id
-    loggedInStore.username = userLogin.username
-    loggedInStore.image = userLogin.image
+    loggedInStore.id = user.id
+    loggedInStore.username = user.username
+    loggedInStore.image = user.image
 
     invalidCredentials.value = false
 
     // Set cookie
     window.$cookies.set(
-        'user',
-        { id: userLogin.id, persist: Boolean(remember.value) },
+        'credentials',
+        { token, persist: Boolean(remember.value) },
         remember.value ? '21d' : 0
     )
 
@@ -65,7 +74,7 @@ const login = async () => {
     isClicked.value = true
 
     // Call the API to login
-    const result = await fetch(`${API_URL}/users/login`, {
+    const { token, message } = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -76,18 +85,15 @@ const login = async () => {
         .then((res) => res.json())
         .catch(console.error)
 
-    if (result.error) {
+    // If the token is not returned, then the credentials are invalid
+    if (!token) {
         isClicked.value = false
         invalidCredentials.value = true
-        invalidCredentialsMessage.value = result.message
+        invalidCredentialsMessage.value = message
         return
     }
 
-    await authenticate({
-        id: result.user.id,
-        username: result.user.username,
-        image: result.user.image
-    })
+    await saveUser(token)
 }
 
 const registerUser = async () => {
@@ -102,7 +108,7 @@ const registerUser = async () => {
     params.set('key', 'username')
     params.set('value', username.value)
 
-    const result = await fetch(`${API_URL}/users/register`, {
+    const { token, message } = await fetch(`${API_URL}/auth/signup`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -113,21 +119,14 @@ const registerUser = async () => {
         .then((res) => res.json())
         .catch(console.error)
 
-    if (result.error) {
+    if (!token) {
         isClicked.value = false
         invalidCredentials.value = true
-        invalidCredentialsMessage.value = result.message
+        invalidCredentialsMessage.value = message
         return
     }
 
-    // TODO: Change this to a more secure method once we have a backend
-    // Add user to the database
-
-    await authenticate({
-        id: result.user.id,
-        username: username.value,
-        image: `https://robohash.org/${username.value}.png`
-    })
+    await saveUser(token)
 }
 
 defineProps({

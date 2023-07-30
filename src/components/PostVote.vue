@@ -24,13 +24,15 @@ const props = defineProps({
 // Define functions
 async function callAPI() {
     try {
+        const { token } = window.$cookies.get('credentials')
+
         const { error, message } = await fetch(`${API_URL}/votes/${props.id}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
-                userId,
                 vote: vote.value
             })
         }).then((res) => res.json())

@@ -23,17 +23,19 @@ const addPost = async (post) => {
     processing.value = true
 
     const payload = new FormData()
-    payload.append('userId', post.userId)
     payload.append('title', post.title)
     payload.append('body', post.body)
     if (post.image) {
         payload.append('image', post.image)
     }
 
+    const { token } = window.$cookies.get('credentials')
+
     const result = await fetch(`${API_URL}/posts`, {
         method: 'PUT',
         headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`
         },
         body: payload
     }).then((res) => res.json())

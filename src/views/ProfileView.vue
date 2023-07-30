@@ -13,6 +13,7 @@ import router from '../router/index.js'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
+import { useCachedPostsStore } from '../stores/cachedPosts'
 
 // Import constants
 import { API_URL } from '../constants'
@@ -36,6 +37,7 @@ const currentUser = reactive({
 
 // Define variables
 const login = useLoggedInStore()
+const { cachedPosts } = useCachedPostsStore()
 
 const inputImage = ref(null)
 const dialog = ref(false)
@@ -91,8 +93,11 @@ async function saveChanges(file) {
 
     if (!willUpdate) return
 
+    const { token } = window.$cookies.get('credentials')
+
     const { user, error, message } = await fetch(`${API_URL}/users/${login.id}`, {
         method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
         body: payload
     }).then((response) => response.json())
 
@@ -105,6 +110,12 @@ async function saveChanges(file) {
     login.description = user.description
     login.image = file ? user.image : login.image
     for (const post of userPosts) {
+        post['user'].username = user.username
+        post['user'].image = file ? user.image : post['user'].image
+    }
+    for (const post of cachedPosts) {
+        if (post['user'].id !== login.id) continue
+
         post['user'].username = user.username
         post['user'].image = file ? user.image : post['user'].image
     }

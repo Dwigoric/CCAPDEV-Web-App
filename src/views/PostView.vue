@@ -32,7 +32,6 @@ const props = defineProps({
 const loggedInStore = useLoggedInStore()
 const { comments, addComment, clearComments } = useCommentsStore()
 const currentCommentStore = useCurrentCommentStore()
-const loggedIn = useLoggedInStore()
 
 document.title = 'Compact Donuts | Post'
 
@@ -93,8 +92,7 @@ const processComment = () => {
     addComment({
         postId: props.id,
         body: newCommentBody.value,
-        parentCommentId: null,
-        user: loggedIn.id
+        parentCommentId: null
     })
 
     // Reset form
@@ -107,10 +105,13 @@ async function savePost(newTitle, newBody) {
     currentPost.edited = Date.now()
 
     try {
+        const { token } = window.$cookies.get('credentials')
+
         const result = await fetch(`${API_URL}/posts/${currentPost.id}`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
                 title: newTitle,
@@ -128,8 +129,11 @@ async function savePost(newTitle, newBody) {
 
 async function deletePost() {
     try {
+        const { token } = window.$cookies.get('credentials')
+
         const result = await fetch(`${API_URL}/posts/${currentPost.id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
         }).then((res) => res.json())
 
         if (result.error) {

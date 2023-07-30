@@ -62,8 +62,7 @@ function addReply(pCommentId) {
     addComment({
         postId: props.postId,
         body: newReplyBody.value,
-        parentCommentId: pCommentId,
-        user: loggedInStore.id
+        parentCommentId: pCommentId
     })
 
     // Reset form
@@ -72,8 +71,11 @@ function addReply(pCommentId) {
 
 async function deleteComment() {
     try {
+        const { token } = window.$cookies.get('credentials')
+
         const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` }
         }).then((res) => res.json())
 
         if (result.error) {
@@ -100,11 +102,14 @@ async function saveComment() {
 
     if (newComment.value === '') return
 
+    const { token } = window.$cookies.get('credentials')
+
     try {
         const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
                 body: newComment.value

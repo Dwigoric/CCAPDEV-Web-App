@@ -10,6 +10,8 @@ export const useCommentsStore = defineStore('comments', () => {
         comments,
         async addComment(comment) {
             try {
+                const { token } = window.$cookies.get('credentials')
+
                 const {
                     comment: newComment,
                     error,
@@ -17,7 +19,8 @@ export const useCommentsStore = defineStore('comments', () => {
                 } = await fetch(`${API_URL}/comments/${comment.postId}`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
                     },
                     body: JSON.stringify(comment)
                 }).then((res) => res.json())

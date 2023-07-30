@@ -19,7 +19,7 @@ const logout = () => {
     loggedInStore.image = ''
 
     // Remove cookie
-    window.$cookies.remove('user')
+    window.$cookies.remove('credentials')
 }
 
 const dayMessage = () => {
