@@ -159,6 +159,7 @@ async function saveComment() {
                 <VMenu v-if="loggedInStore.id === user.id">
                     <template v-slot:activator="{ props }">
                         <VBtn
+                            class="ml-5"
                             v-bind="props"
                             size="large"
                             density="compact"
