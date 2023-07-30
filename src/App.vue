@@ -2,6 +2,7 @@
 // Import packages
 import { inject } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
+import jwt_decode from 'jwt-decode'
 
 // Import stores
 import { useLoggedInStore } from './stores/loggedIn'
@@ -14,10 +15,16 @@ const isDarkStore = useIsDarkStore()
 const theme = useTheme()
 
 const $cookies = inject('$cookies')
-const userCookie = $cookies.get('user')
-if (userCookie) {
-    loggedInStore.id = userCookie.id
-    if (userCookie.persist) $cookies.set('user', userCookie, '21d')
+const credentials = $cookies.get('credentials')
+if (credentials) {
+    // Decode the token
+    const { id } = jwt_decode(credentials.token)
+    loggedInStore.id = id
+
+    // Extend the cookie if it's set to persist
+    if (credentials.persist) $cookies.set('user', credentials, '21d')
+
+    // Fetch the user
     loggedInStore.fetchUser()
 }
 
