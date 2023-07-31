@@ -142,7 +142,12 @@ async function saveCurrentPost() {
             </VMenu>
             <div v-if="post.edited" class="ml-5">
                 <VIcon size="x-small"> mdi-pencil </VIcon>
-                <span class="edit-span">edited {{ moment(post.edited).fromNow() }}</span>
+                <span class="edit-span">
+                    edited {{ moment(post.edited).fromNow() }}
+                    <VTooltip activator="parent" location="top">
+                        {{ moment(post.edited) }}
+                    </VTooltip>
+                </span>
             </div>
         </div>
         <div class="content">

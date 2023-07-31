@@ -3,6 +3,7 @@
 import { ref, reactive, onMounted, onUnmounted, watch } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import router from '../router'
+import moment from 'moment'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -41,6 +42,7 @@ const currentPost = reactive({
     body: '',
     image: '',
     reactions: 0,
+    date: null,
     edited: null,
     user: {
         id: '',
@@ -180,7 +182,18 @@ watch(
         </div>
         <div id="post-details" v-else>
             <PostSpecific :post="currentPost" :save-post="savePost" :delete-post="deletePost" />
-            <PostVote :id="id" />
+            <div id="post-info">
+                <PostVote :id="id" />
+                <span id="created-timestamp">
+                    <VIcon size="x-small"> mdi-clock </VIcon>
+                    <span id="time-span">
+                        posted {{ moment(currentPost.date).fromNow() }}
+                        <VTooltip activator="parent" location="top">{{
+                            moment(currentPost.date)
+                        }}</VTooltip>
+                    </span>
+                </span>
+            </div>
             <div id="new-comment" v-if="loggedInStore.username">
                 <VTextarea
                     placeholder="Add a comment..."
@@ -276,6 +289,29 @@ watch(
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+}
+
+#post-info {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: var(--color-background-soft);
+    border-bottom: 1px solid var(--color-background);
+}
+
+#created-timestamp {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 1rem;
+}
+
+#time-span {
+    font-size: 0.8rem;
+    color: var(--color-text);
+    margin-left: 10px;
 }
 
 #new-comment {
