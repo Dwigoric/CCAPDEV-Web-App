@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import RegisterView from '../views/RegisterView.vue'
-import ProfileView from '../views/ProfileView.vue'
+import FeedView from '../views/FeedView.vue'
 import SearchView from '../views/SearchView.vue'
 
 // Import stores
@@ -13,7 +11,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: HomeView,
+            component: () => import('../views/HomeView.vue'),
             beforeEnter: (to, from, next) => {
                 const loggedInStore = useLoggedInStore()
                 if (loggedInStore.username) next({ name: 'feed' })
@@ -23,15 +21,12 @@ const router = createRouter({
         {
             path: '/feed',
             name: 'feed',
-            // route level code-splitting
-            // this generates a separate chunk (FeedView.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
-            component: () => import('../views/FeedView.vue')
+            component: FeedView
         },
         {
             path: '/register',
             name: 'register',
-            component: RegisterView,
+            component: () => import('../views/RegisterView.vue'),
             beforeEnter: (to, from, next) => {
                 const loggedInStore = useLoggedInStore()
                 if (loggedInStore.username) next({ name: 'feed' })
@@ -53,7 +48,7 @@ const router = createRouter({
         {
             path: '/profile/:username',
             name: 'profile',
-            component: ProfileView,
+            component: () => import('../views/ProfileView.vue'),
             props: true
         },
         {
