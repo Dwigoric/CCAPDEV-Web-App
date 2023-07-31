@@ -54,7 +54,6 @@ onUnmounted(() => {
     margin-top: 2rem;
     gap: 1rem;
     border-radius: 10px;
-    box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
     text-decoration: none;
     color: var(--color-text);
 }
