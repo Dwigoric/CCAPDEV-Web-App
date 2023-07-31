@@ -30,7 +30,10 @@ export const useCommentsStore = defineStore('comments', () => {
                     return
                 }
 
-                comments.push(newComment)
+                comments.push({
+                    ...newComment,
+                    date: Date.now()
+                })
             } catch (err) {
                 console.error(err)
             }

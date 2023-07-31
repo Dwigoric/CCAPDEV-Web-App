@@ -193,8 +193,10 @@ async function savePost() {
             <PostVote :id="id" style="z-index: 2; position: absolute" />
             <span class="created-timestamp">
                 <VIcon size="x-small"> mdi-clock </VIcon>
-                <span class="time-span">posted {{ moment(date).fromNow() }}</span>
-                <VTooltip activator="parent" location="top">{{ moment(date) }}</VTooltip>
+                <span class="time-span">
+                    posted {{ moment(date).fromNow() }}
+                    <VTooltip activator="parent" location="top">{{ moment(date) }}</VTooltip>
+                </span>
             </span>
         </div>
     </div>
@@ -297,19 +299,18 @@ async function savePost() {
 
 .post-footer {
     position: absolute;
-    display: inline-grid;
-    grid-template-columns: 1fr 1fr 1fr 25fr;
+    display: flex;
     width: calc(100% - 4rem);
     align-items: center;
     bottom: 2rem;
 }
 
 .created-timestamp {
-    justify-self: flex-end;
-}
-
-[data-theme='light'] .created-timestamp {
-    background-color: var(--color-dark-pink);
+    display: flex;
+    flex: 1;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .content {

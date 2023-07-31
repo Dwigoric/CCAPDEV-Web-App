@@ -36,6 +36,10 @@ const props = defineProps({
         type: String,
         required: true
     },
+    date: {
+        type: Number,
+        required: true
+    },
     edited: {
         type: Number,
         required: false
@@ -179,10 +183,17 @@ async function saveComment() {
                 </VMenu>
                 <div v-if="edited" class="ml-9">
                     <VIcon size="x-small"> mdi-pencil </VIcon>
-                    <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
+                    <span class="time-span">edited {{ moment(edited).fromNow() }}</span>
                 </div>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
+            <span class="created-timestamp">
+                <VIcon size="x-small"> mdi-clock </VIcon>
+                <span class="time-span">
+                    {{ moment(date).fromNow() }}
+                    <VTooltip activator="parent" location="top">{{ moment(date) }}</VTooltip>
+                </span>
+            </span>
         </div>
         <VTextarea
             placeholder="Reply to this comment..."
@@ -203,6 +214,7 @@ async function saveComment() {
                 :post-id="postId"
                 :user="reply.user"
                 :body="reply.body"
+                :date="reply.date"
                 :edited="reply.edited"
                 :onclick="onclick"
             >
@@ -254,10 +266,20 @@ async function saveComment() {
     padding-left: 0.5rem;
 }
 
-.edit-span {
+.time-span {
     font-size: 0.8rem;
     color: var(--color-text);
     margin-left: 10px;
+}
+
+.created-timestamp {
+    display: flex;
+    flex: 1;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: 100%;
+    margin-right: 0.5rem;
+    justify-content: flex-end;
 }
 
 .user {
