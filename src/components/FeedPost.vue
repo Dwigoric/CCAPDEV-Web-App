@@ -47,6 +47,10 @@ const props = defineProps({
         required: false,
         default: 0
     },
+    date: {
+        type: Date,
+        required: true
+    },
     edited: {
         type: Date,
         required: false,
@@ -151,7 +155,8 @@ async function savePost() {
             </VMenu>
             <div v-if="edited">
                 <VIcon size="x-small"> mdi-pencil </VIcon>
-                <span class="edit-span">edited {{ moment(edited).fromNow() }}</span>
+                <span class="time-span">edited {{ moment(edited).fromNow() }}</span>
+                <VTooltip activator="parent" location="top"> {{ moment(edited) }} </VTooltip>
             </div>
         </div>
         <div class="content">
@@ -186,6 +191,11 @@ async function savePost() {
         </div>
         <div class="post-footer">
             <PostVote :id="id" style="z-index: 2; position: absolute" />
+            <span class="created-timestamp">
+                <VIcon size="x-small"> mdi-clock </VIcon>
+                <span class="time-span">posted {{ moment(date).fromNow() }}</span>
+                <VTooltip activator="parent" location="top">{{ moment(date) }}</VTooltip>
+            </span>
         </div>
     </div>
 </template>
@@ -241,7 +251,7 @@ async function savePost() {
     background-color: var(--color-bright-blue);
 }
 
-.edit-span {
+.time-span {
     font-size: 0.8rem;
     color: var(--color-text);
     margin-left: 10px;
@@ -287,10 +297,19 @@ async function savePost() {
 
 .post-footer {
     position: absolute;
-    display: flex;
-    flex-flow: row nowrap;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr 1fr 25fr;
+    width: calc(100% - 4rem);
     align-items: center;
     bottom: 2rem;
+}
+
+.created-timestamp {
+    justify-self: flex-end;
+}
+
+[data-theme='light'] .created-timestamp {
+    background-color: var(--color-dark-pink);
 }
 
 .content {

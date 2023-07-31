@@ -75,6 +75,7 @@ function deletePost(id) {
                 :user="post.user"
                 :image="post.image"
                 :reactions="post.reactions"
+                :date="post.date"
                 :edited="post.edited"
                 :on-delete="deletePost"
             />

@@ -121,7 +121,7 @@ onMounted(callVoteNum)
         >
         </VBtn>
     </VHover>
-    <span>{{ reactions }}</span>
+    <span class="reaction-number">{{ reactions }}</span>
     <VHover v-slot="{ isHovering, props }">
         <VBtn
             class="ma-1 downvote"
@@ -136,4 +136,8 @@ onMounted(callVoteNum)
     </VHover>
 </template>
 
-<style scoped></style>
+<style scoped>
+.reaction-number {
+    justify-self: center;
+}
+</style>
