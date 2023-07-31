@@ -296,8 +296,19 @@ watch(
     flex-flow: row nowrap;
     align-items: center;
     padding: 0.5rem;
-    background-color: var(--color-background-soft);
-    border-bottom: 1px solid var(--color-background);
+    background: linear-gradient(
+        to bottom,
+        var(--color-pale-blue) 0%,
+        var(--color-background-soft) 100%
+    );
+}
+
+[data-theme='light'] #post-info {
+    background: linear-gradient(
+        to bottom,
+        var(--color-dark-pink) 0%,
+        var(--color-background-soft) 100%
+    );
 }
 
 #created-timestamp {
@@ -322,7 +333,6 @@ watch(
     align-items: center;
     background-color: var(--color-background-soft);
     padding: 1rem;
-    border-top: 1px solid var(--color-background);
 }
 
 #new-comment-body {

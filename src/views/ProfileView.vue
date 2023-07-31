@@ -288,7 +288,7 @@ watch(
 
 #header {
     background: linear-gradient(
-        360deg,
+        to top,
         var(--color-background) 0%,
         var(--color-background-soft) 100%
     );
