@@ -239,7 +239,7 @@ async function saveComment() {
 
 [data-theme='light'] .user-image {
     background-color: var(--color-dark-pink);
-    border: var(--color-border) solid 3px;
+    border: var(--color-bright-blue) solid 3px;
 }
 
 .main-comment {
