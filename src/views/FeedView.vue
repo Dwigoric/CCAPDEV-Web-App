@@ -25,12 +25,18 @@ const { cachedPosts, fetchPosts } = cachedPostsStore
 const loggedIn = useLoggedInStore()
 const { votes } = useVoteStore()
 
+// Define functions
 const getPosts = async (waypointState) => {
     if (waypointState.going !== 'IN') {
         return
     }
 
     fetchPosts()
+}
+
+function deletePost(id) {
+    const postIndex = cachedPosts.findIndex((post) => post.id === id)
+    cachedPosts.splice(postIndex, 1)
 }
 </script>
 
@@ -70,6 +76,7 @@ const getPosts = async (waypointState) => {
                 :image="post.image"
                 :reactions="post.reactions"
                 :edited="post.edited"
+                :on-delete="deletePost"
             />
         </div>
         <div

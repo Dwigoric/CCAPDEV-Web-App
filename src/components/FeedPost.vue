@@ -51,12 +51,17 @@ const props = defineProps({
         type: Date,
         required: false,
         default: false
+    },
+    onDelete: {
+        type: Function,
+        required: true
     }
 })
 
 const newTitle = ref(props.title)
 const newBody = ref(props.body)
 
+// Define functions
 async function deletePost() {
     try {
         const { token } = window.$cookies.get('credentials')
@@ -73,8 +78,7 @@ async function deletePost() {
         console.error(error)
     }
 
-    const postIndex = cachedPosts.findIndex((post) => post.id === props.id)
-    cachedPosts.splice(postIndex, 1)
+    props.onDelete(props.id)
 }
 
 function editPost() {

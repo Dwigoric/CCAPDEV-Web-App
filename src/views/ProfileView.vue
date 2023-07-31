@@ -145,6 +145,14 @@ const processInput = () => {
     files.value = []
 }
 
+function deletePost(id) {
+    const postIndexUser = userPosts.findIndex((post) => post['id'] === id)
+    userPosts.splice(postIndexUser, 1)
+
+    const postIndexFeed = cachedPosts.findIndex((post) => post.id === id)
+    cachedPosts.splice(postIndexFeed, 1)
+}
+
 // Define lifecycle hooks
 onMounted(fetchUser)
 watch(
@@ -262,6 +270,7 @@ watch(
                 :user="post.user"
                 :image="post.image"
                 :reactions="post.reactions"
+                :on-delete="deletePost"
             />
             <ThemeSwitch />
         </div>
