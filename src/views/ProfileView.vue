@@ -190,7 +190,7 @@ watch(
             </div>
 
             <v-row justify="center" v-if="currentUser.id === login.id">
-                <v-dialog v-model="dialog" persistent="persistent" width="1024">
+                <v-dialog v-model="dialog" width="1024">
                     <template v-slot:activator="{ props }">
                         <v-btn
                             class="rounded-pill"
