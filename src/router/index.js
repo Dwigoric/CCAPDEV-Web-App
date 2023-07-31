@@ -60,4 +60,15 @@ const router = createRouter({
     ]
 })
 
+router.beforeEach(async (to, from, next) => {
+    // eslint-disable-next-line no-undef
+    NProgress.start()
+    next()
+})
+
+router.afterEach(() => {
+    // eslint-disable-next-line no-undef
+    NProgress.done()
+})
+
 export default router

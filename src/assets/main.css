@@ -27,3 +27,7 @@ a,
         background-color: hsla(208, 36%, 26%, 0.5);
     }
 }
+
+#nprogress .bar {
+    background: var(--color-dark-pink);
+}
