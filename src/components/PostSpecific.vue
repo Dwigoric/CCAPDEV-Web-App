@@ -189,17 +189,17 @@ async function saveCurrentPost() {
 }
 
 [data-theme='light'] .post {
-    background-color: var(--color-dark-pink);
+    background-color: var(--color-bright-pink);
     box-shadow: none;
 }
 
 [data-theme='light'] .user-image {
-    background-color: var(--color-bright-pink);
-    border: var(--vt-c-white) solid 3px;
+    background-color: var(--color-dark-pink);
+    border: var(--color-pale-green) solid 3px;
 }
 
 [data-theme='light'] .user-name {
-    background-color: var(--color-bright-pink);
+    background-color: var(--color-dark-pink);
 }
 
 .user {

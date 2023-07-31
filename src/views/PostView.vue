@@ -306,7 +306,7 @@ watch(
 [data-theme='light'] #post-info {
     background: linear-gradient(
         to bottom,
-        var(--color-dark-pink) 0%,
+        var(--color-bright-pink) 0%,
         var(--color-background-soft) 100%
     );
 }
