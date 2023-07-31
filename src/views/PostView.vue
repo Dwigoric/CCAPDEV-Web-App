@@ -221,7 +221,7 @@ watch(
                     :body="comment.body"
                     :user="comment.user"
                     :depth="0"
-                    :date="comment.edited"
+                    :date="comment.date"
                     :edited="comment.edited"
                     :onclick="
                         (parentId) => {
