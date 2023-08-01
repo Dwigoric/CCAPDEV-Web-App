@@ -1,6 +1,7 @@
 <script setup>
 // Import packages
 import { reactive, ref, onMounted, watch } from 'vue'
+import moment from 'moment'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -43,7 +44,9 @@ const inputImage = ref(null)
 const dialog = ref(false)
 const files = ref([])
 const userPosts = reactive([])
+const userComments = reactive([])
 const loading = ref(true)
+const commentsMode = ref(false)
 
 const newUsername = ref('')
 const newDescription = ref('')
@@ -61,7 +64,7 @@ async function fetchUser() {
 
     //user initially was the object
 
-    return fetchPosts()
+    await Promise.all([fetchPosts(), fetchComments()])
 }
 
 async function fetchPosts() {
@@ -72,6 +75,14 @@ async function fetchPosts() {
     userPosts.push(...posts)
 
     loading.value = false
+}
+
+async function fetchComments() {
+    // Process comments
+    const { comments } = await fetch(`${API_URL}/comments/user/${currentUser.id}`).then((res) =>
+        res.json()
+    )
+    userComments.push(...comments)
 }
 
 async function saveChanges(file) {
@@ -160,6 +171,7 @@ watch(
     () => {
         loading.value = true
         userPosts.splice(0, userPosts.length)
+        userComments.splice(0, userComments.length)
 
         fetchUser()
     }
@@ -255,25 +267,52 @@ watch(
                 </v-dialog>
             </v-row>
         </div>
-
-        <div id="posts">
+        <div id="contents">
+            <div id="mode-switch">
+                <VSwitch v-model="commentsMode" label="Comments Mode" color="teal-darken-3" />
+            </div>
             <Waypoint v-if="loading">
                 <LoaderHeart />
             </Waypoint>
-            <FeedPost
-                v-else
-                v-for="post in userPosts"
-                :key="post.id"
-                :id="post.id"
-                :title="post.title"
-                :body="post.body"
-                :user="post.user"
-                :image="post.image"
-                :reactions="post.reactions"
-                :date="post.date"
-                :edited="post.edited"
-                :on-delete="deletePost"
-            />
+            <div id="posts" v-if="!loading && !commentsMode">
+                <FeedPost
+                    v-for="post in userPosts"
+                    :key="post.id"
+                    :id="post.id"
+                    :title="post.title"
+                    :body="post.body"
+                    :user="post.user"
+                    :image="post.image"
+                    :reactions="post.reactions"
+                    :date="post.date"
+                    :edited="post.edited"
+                    :on-delete="deletePost"
+                />
+            </div>
+            <div id="comments" v-if="!loading && commentsMode">
+                <VList lines="three" class="rounded-t-xl" bg-color="teal-darken-2">
+                    <VListItem
+                        v-for="comment in userComments"
+                        class="rounded-xl"
+                        :key="comment.id"
+                        @click="router.push({ name: 'post', params: { id: comment.post.id } })"
+                    >
+                        <template v-slot:prepend>
+                            <VAvatar>
+                                <VIcon>mdi-comment</VIcon>
+                            </VAvatar>
+                        </template>
+                        <VListItemTitle>
+                            <span class="comment-post-title">{{ comment.post.title }}</span>
+                            • commented
+                            {{ moment(comment.date).fromNow() }}
+                        </VListItemTitle>
+                        <VListItemSubtitle>
+                            {{ comment.body }}
+                        </VListItemSubtitle>
+                    </VListItem>
+                </VList>
+            </div>
             <ThemeSwitch />
         </div>
     </div>
@@ -335,14 +374,39 @@ watch(
     transition: all 0.2s ease-in-out;
 }
 
+#contents {
+    display: flex;
+    width: 100%;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+#mode-switch {
+    display: flex;
+    flex-flow: row nowrap;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
 #posts {
     display: flex;
     flex-flow: column-reverse nowrap;
     justify-content: center;
     align-items: center;
     padding: 2rem 10vw;
-    margin-top: 5rem;
     width: 100%;
     gap: 2rem;
+}
+
+#comments {
+    width: 50%;
+}
+
+.comment-post-title {
+    color: var(--color-dark-pink);
+    font-weight: bolder;
 }
 </style>
