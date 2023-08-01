@@ -77,7 +77,7 @@ async function deleteComment() {
     try {
         const { token } = window.$cookies.get('credentials')
 
-        const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}`, {
+        const result = await fetch(`${API_URL}/comments/${props.id}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${token}` }
         }).then((res) => res.json())
@@ -109,7 +109,7 @@ async function saveComment() {
     const { token } = window.$cookies.get('credentials')
 
     try {
-        const result = await fetch(`${API_URL}/comments/${props.postId}/${props.id}`, {
+        const result = await fetch(`${API_URL}/comments/${props.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
