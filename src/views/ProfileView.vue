@@ -290,7 +290,12 @@ watch(
                 />
             </div>
             <div id="comments" v-if="!loading && commentsMode">
-                <VList lines="three" class="rounded-t-xl" bg-color="teal-darken-2">
+                <VList
+                    lines="three"
+                    class="rounded-t-xl"
+                    bg-color="teal-darken-2"
+                    v-if="userComments.length > 0"
+                >
                     <VListItem
                         v-for="comment in userComments"
                         class="rounded-xl"
