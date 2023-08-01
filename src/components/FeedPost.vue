@@ -2,6 +2,7 @@
 // Import packages
 import { ref } from 'vue'
 import moment from 'moment'
+import router from '../router'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -127,11 +128,15 @@ async function savePost() {
 <template>
     <div class="post" id="post_id">
         <div class="user">
-            <RouterLink :to="`/profile/${user['username']}`">
-                <VAvatar class="user-image">
-                    <VImg :src="user['image']" :alt="`${user['username']}'s image`" />
-                </VAvatar>
-            </RouterLink>
+            <VAvatar class="user-image">
+                <VImg
+                    :src="user['image']"
+                    :alt="`${user['username']}'s image`"
+                    @click="
+                        router.push({ name: 'profile', params: { username: user['username'] } })
+                    "
+                />
+            </VAvatar>
             <span class="user-name">{{ user['username'] }}</span>
             <VMenu v-if="loggedIn.id === user.id">
                 <template v-slot:activator="{ props }">
@@ -245,6 +250,7 @@ async function savePost() {
     border-radius: 50%;
     border: var(--color-border) solid 3px;
     background-color: var(--color-dark-green);
+    cursor: pointer;
 }
 
 .user-name {

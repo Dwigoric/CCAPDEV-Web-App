@@ -108,16 +108,17 @@ async function saveCurrentPost() {
 <template>
     <div class="post">
         <div class="user">
-            <RouterLink :to="`/profile/${post.user.username}`">
-                <VAvatar class="user-image">
-                    <VImg
-                        v-if="!post.deleted"
-                        :src="post.user.image"
-                        :alt="`${post.user.username}'s image`"
-                    />
-                    <VIcon v-else>mdi-account-remove</VIcon>
-                </VAvatar>
-            </RouterLink>
+            <VAvatar class="user-image">
+                <VImg
+                    v-if="!post.deleted"
+                    :src="post.user.image"
+                    :alt="`${post.user.username}'s image`"
+                    @click="
+                        router.push({ name: 'profile', params: { username: post.user.username } })
+                    "
+                />
+                <VIcon v-else>mdi-account-remove</VIcon>
+            </VAvatar>
             <span class="user-name">{{ post.user.username }}</span>
             <VMenu v-if="loggedIn.id === post.user.id">
                 <template v-slot:activator="{ props }">
@@ -217,6 +218,7 @@ async function saveCurrentPost() {
     border-radius: 50%;
     border: var(--color-border) solid 3px;
     background-color: var(--color-dark-green);
+    cursor: pointer;
 }
 
 .user-name {
