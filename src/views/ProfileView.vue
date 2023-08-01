@@ -47,6 +47,9 @@ const userPosts = reactive([])
 const userComments = reactive([])
 const loading = ref(true)
 const commentsMode = ref(false)
+const editDialog = ref(false)
+const commentEditing = ref('')
+const newCommentBody = ref('')
 
 const newUsername = ref('')
 const newDescription = ref('')
@@ -162,6 +165,50 @@ function deletePost(id) {
 
     const postIndexFeed = cachedPosts.findIndex((post) => post.id === id)
     cachedPosts.splice(postIndexFeed, 1)
+}
+
+function editComment(id, body) {
+    commentEditing.value = id
+    newCommentBody.value = body
+}
+
+async function saveComment(id) {
+    const { token } = window.$cookies.get('credentials')
+
+    const { comment, error, message } = await fetch(`${API_URL}/comments/${id}`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: newCommentBody.value })
+    }).then((response) => response.json())
+
+    if (error) {
+        console.error(message)
+        return
+    }
+
+    const commentIndex = userComments.findIndex((comment) => comment.id === id)
+    userComments[commentIndex].body = comment.body
+    userComments[commentIndex].edited = comment.edited
+
+    commentEditing.value = ''
+    editDialog.value = false
+}
+
+async function deleteComment(id) {
+    const { token } = window.$cookies.get('credentials')
+
+    const { error, message } = await fetch(`${API_URL}/comments/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+    }).then((response) => response.json())
+
+    if (error) {
+        console.error(message)
+        return
+    }
+
+    const commentIndex = userComments.findIndex((comment) => comment.id === id)
+    userComments.splice(commentIndex, 1)
 }
 
 // Define lifecycle hooks
@@ -307,10 +354,70 @@ watch(
                                 <VIcon>mdi-comment</VIcon>
                             </VAvatar>
                         </template>
+                        <template v-slot:append v-if="currentUser.id === login.id">
+                            <VListItemAction>
+                                <VMenu>
+                                    <template v-slot:activator="{ props }">
+                                        <VBtn
+                                            v-bind="props"
+                                            size="large"
+                                            density="compact"
+                                            variant="text"
+                                            icon="mdi-dots-vertical"
+                                        >
+                                        </VBtn>
+                                    </template>
+                                    <VList>
+                                        <VDialog v-model="editDialog" width="50%">
+                                            <template v-slot:activator="{ props }">
+                                                <VListItem
+                                                    v-bind="props"
+                                                    @click="editComment(comment.id, comment.body)"
+                                                >
+                                                    <VListItemTitle>Edit</VListItemTitle>
+                                                </VListItem>
+                                            </template>
+                                            <VCard>
+                                                <VCardTitle>Edit Comment</VCardTitle>
+                                                <VCardText>
+                                                    <VTextField
+                                                        v-model="newCommentBody"
+                                                        label="Comment"
+                                                        required
+                                                    ></VTextField>
+                                                </VCardText>
+                                                <VCardActions>
+                                                    <VSpacer></VSpacer>
+                                                    <VBtn
+                                                        color="red darken-1"
+                                                        @click="editDialog = false"
+                                                    >
+                                                        Cancel
+                                                    </VBtn>
+                                                    <VBtn
+                                                        color="teal darken-1"
+                                                        @click="saveComment(comment.id)"
+                                                    >
+                                                        Save
+                                                    </VBtn>
+                                                </VCardActions>
+                                            </VCard>
+                                        </VDialog>
+                                        <VListItem @click="deleteComment(comment.id)">
+                                            <VListItemTitle>Delete</VListItemTitle>
+                                        </VListItem>
+                                    </VList>
+                                </VMenu>
+                            </VListItemAction>
+                        </template>
                         <VListItemTitle>
                             <span class="comment-post-title">{{ comment.post.title }}</span>
                             • commented
                             {{ moment(comment.date).fromNow() }}
+                            <span v-if="comment.edited">
+                                • edited
+                                {{ moment(comment.edited).fromNow() }}
+                            </span>
                         </VListItemTitle>
                         <VListItemSubtitle>
                             {{ comment.body }}
