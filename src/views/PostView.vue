@@ -166,7 +166,7 @@ watch(
 
 <template>
     <ThemeSwitch v-if="useMediaQuery('(min-width: 1024px)').value" />
-    <NavigationBar />
+    <NavigationBar :postSpeci=true />
     <div id="view">
         <div v-if="isLoadingPost" class="preload">
             <LoaderHeart />

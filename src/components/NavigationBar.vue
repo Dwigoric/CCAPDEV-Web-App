@@ -33,12 +33,21 @@ const dayMessage = () => {
         return 'Good evening'
     }
 }
+
+const props = defineProps({
+    postSpeci: {
+        type: Boolean,
+        default: false
+    }
+})
+
 </script>
 
 <template>
     <header>
         <div class="navbar-item" v-if="useMediaQuery('(min-width: 1024px)').value">
-            <RouterLink to="/feed" id="feed-link">Compact Donuts</RouterLink>
+            <RouterLink to="/feed" id="feed-link" v-if="postSpeci">Back</RouterLink>
+            <RouterLink to="/about" id="feed-link" v-if="!postSpeci">Compact Donuts</RouterLink>
         </div>
         <div class="navbar-item" id="search-bar">
             <SearchBar />
