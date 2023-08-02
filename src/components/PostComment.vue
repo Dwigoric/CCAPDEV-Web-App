@@ -143,9 +143,9 @@ async function saveComment() {
                         :src="user['image']"
                         :alt="`${user['username']}'s image`"
                     />
-                    <div class="user-name">{{ user['username'] }}</div>
                 </div>
                 <div class="content">
+                    <span class="user-name">{{ user['username'] }}</span>
                     <p v-if="!editFlag" class="body">{{ body }}</p>
                     <VForm v-else ref="form">
                         <VTextarea
@@ -303,6 +303,7 @@ async function saveComment() {
     flex-direction: column;
     text-align: center;
     padding: 0.2rem;
+    margin-right: 1rem;
     border-radius: 5px;
     color: var(--color-bright-blue);
 }
@@ -333,6 +334,8 @@ svg {
 
 .content {
     display: flex;
-    flex-flow: row;
+    flex-flow: row nowrap;
+    align-items: center;
+    max-width: 30rem;
 }
 </style>
