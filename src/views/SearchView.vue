@@ -6,6 +6,7 @@ import { onUnmounted } from 'vue'
 import NavigationBar from '../components/NavigationBar.vue'
 import FeedPost from '../components/FeedPost.vue'
 import LoaderHeart from '../components/LoaderHeart.vue'
+import ThemeSwitch from '../components/ThemeSwitch.vue'
 
 // Import stores
 import { useSearchStore } from '../stores/search'
@@ -15,6 +16,13 @@ const searchStore = useSearchStore()
 
 document.title = 'Compact Donuts | Search'
 
+// Define functions
+function deletePost(id) {
+    const postIndex = searchStore.searchPosts.findIndex((post) => post.id === id)
+    searchStore.searchPosts.splice(postIndex, 1)
+}
+
+// Define lifecycle hooks
 onUnmounted(() => {
     searchStore.searchPosts.splice(0, searchStore.searchPosts.length)
 })
@@ -22,6 +30,7 @@ onUnmounted(() => {
 
 <template>
     <NavigationBar />
+    <ThemeSwitch />
     <div class="search-view" v-if="!searchStore.fetching && searchStore.searchPosts.length > 0">
         <FeedPost
             class="search-post"
@@ -33,6 +42,8 @@ onUnmounted(() => {
             :user="post.user"
             :image="post.image"
             :reactions="post.reactions"
+            :date="post.date"
+            :on-delete="deletePost"
         />
     </div>
     <div class="no-result" v-else>
@@ -43,18 +54,14 @@ onUnmounted(() => {
 
 <style scoped>
 .search-view {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, [col-start] minmax(300px, 2fr));
-    grid-auto-rows: 1fr;
-    grid-column-gap: 1rem;
-    grid-row-gap: 1rem;
+    display: flex;
+    flex-flow: column nowrap;
     width: 100%;
     height: 100%;
-    padding: 2rem;
-    margin-top: 2rem;
-    gap: 1rem;
+    padding: 2rem 20vw;
+    margin-top: var(--navbar-height);
+    gap: 1.5rem;
     border-radius: 10px;
-    text-decoration: none;
     color: var(--color-text);
 }
 
