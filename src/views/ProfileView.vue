@@ -60,8 +60,6 @@ const newCommentBody = ref('')
 const newUsername = ref(login.username)
 const newDescription = ref(login.description)
 
-
-
 // Define functions
 async function fetchUser() {
     const { user } = await fetch(`${API_URL}/users/username/${props.username}`).then((res) =>
@@ -100,11 +98,11 @@ async function saveChanges(file) {
     let willUpdate = false
 
     const payload = new FormData()
-    if (newUsername.value.length > 0) {
+    if (newUsername.value !== login.username) {
         payload.append('username', newUsername.value)
         willUpdate = true
     }
-    if (newDescription.value.length > 0) {
+    if (newDescription.value !== login.description) {
         payload.append('description', newDescription.value)
         willUpdate = true
     }
