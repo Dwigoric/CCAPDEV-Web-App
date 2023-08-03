@@ -29,7 +29,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <NavigationBar />
+    <NavigationBar title-custom-text="Back to Feed" />
     <ThemeSwitch />
     <div class="search-view" v-if="!searchStore.fetching && searchStore.searchPosts.length > 0">
         <FeedPost

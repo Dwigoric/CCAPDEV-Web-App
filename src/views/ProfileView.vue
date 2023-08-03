@@ -22,6 +22,12 @@ import { API_URL } from '../constants'
 // Define variables
 document.title = 'Compact Donuts | Profile'
 
+const usernameRules = [
+    (v) => !!v || 'Username is required',
+    (v) => (v && v.length <= 20) || 'Username must be less than 20 characters',
+    (v) => /^[A-Za-z0-9]+$/.test(v) || 'Username can only be alphanumeric'
+]
+
 const props = defineProps({
     username: {
         type: String,
@@ -51,8 +57,10 @@ const editDialog = ref(false)
 const commentEditing = ref('')
 const newCommentBody = ref('')
 
-const newUsername = ref('')
-const newDescription = ref('')
+const newUsername = ref(login.username)
+const newDescription = ref(login.description)
+
+
 
 // Define functions
 async function fetchUser() {
@@ -272,6 +280,7 @@ watch(
                                         <VTextField
                                             label="A user can go by many names, but they still keep their own identity."
                                             v-model="newUsername"
+                                            :rule="usernameRules"
                                         >
                                         </VTextField>
                                         <small class="note">
