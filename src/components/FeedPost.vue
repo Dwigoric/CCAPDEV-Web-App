@@ -165,10 +165,20 @@ async function savePost() {
             </div>
         </div>
         <div class="content">
-            <RouterLink class="post-content" :to="`/post/${id}`" v-if="!editFlag">
+            <VContainer
+                class="post-content"
+                v-if="!editFlag"
+                @click="router.push({ name: 'post', params: { id } })"
+            >
                 <p class="title" id="title">{{ title }}</p>
                 <p class="body" id="body">{{ body }}</p>
-            </RouterLink>
+                <img
+                    v-if="image"
+                    class="post-image"
+                    :src="image"
+                    :alt="`An image in ${user['username']}'s post`"
+                />
+            </VContainer>
             <VForm @submit.prevent ref="form">
                 <VTextField
                     v-if="editFlag"
@@ -187,12 +197,6 @@ async function savePost() {
                 />
                 <VBtn type="submit" v-if="editFlag" @click="savePost">Save</VBtn>
             </VForm>
-            <img
-                v-if="image"
-                class="post-image"
-                :src="image"
-                :alt="`An image in ${user['username']}'s post`"
-            />
         </div>
         <div class="post-footer">
             <PostVote :id="id" style="z-index: 2; position: absolute" />
@@ -273,8 +277,8 @@ async function savePost() {
 }
 
 .post-content {
-    text-decoration: none;
     color: var(--color-text);
+    cursor: pointer;
 }
 
 .title {
