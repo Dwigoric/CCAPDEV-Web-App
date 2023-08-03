@@ -58,8 +58,8 @@ const form = ref(null)
 
 // Define form rules
 const commentRules = [
-    (v) => !!v || 'Comment is required',
-    (v) => v.length <= 500 || 'Comment must be less than 500 characters'
+    (v) => !!v || 'Comment must not be empty',
+    (v) => (v && v.length >= 500) || 'Comment must be less than 500 characters'
 ]
 
 // Define functions
@@ -155,8 +155,8 @@ async function saveComment() {
                         <VTextarea
                             class="new-reply-input"
                             v-model="newComment"
-                            :rules="commentRules"
                             placeholder="Enter a new comment..."
+                            :rules="commentRules"
                             rows="1"
                             no-resize=""
                             append-inner-icon="mdi-send"
@@ -206,6 +206,7 @@ async function saveComment() {
             v-if="loggedInStore.username && id === currentCommentStore.currentComment"
             v-model="newReplyBody"
             no-resize=""
+            :rules="commentRules"
             rows="1"
             append-inner-icon="mdi-send"
             @click:append-inner="addReply(id)"

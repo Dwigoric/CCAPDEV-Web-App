@@ -55,6 +55,12 @@ const newReplyBody = ref('')
 const isLoadingPost = ref(true)
 const isLoadingComments = ref(true)
 
+// Define form rules
+const commentRules = [
+    (v) => !!v || 'Comment must not be empty',
+    (v) => (v && v.length >= 500) || 'Comment must be less than 500 characters'
+]
+
 // Define functions
 async function fetchPost() {
     try {
@@ -200,6 +206,7 @@ watch(
                     id="new-comment-body"
                     active="true"
                     no-resize="true"
+                    :rules="commentRules"
                     rows="1"
                     v-model="newCommentBody"
                     append-inner-icon="mdi-send"
