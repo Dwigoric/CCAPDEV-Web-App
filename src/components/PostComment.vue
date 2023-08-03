@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import router from '../router'
 import moment from 'moment'
 
 // Import components
@@ -142,6 +143,9 @@ async function saveComment() {
                         class="user-image"
                         :src="user['image']"
                         :alt="`${user['username']}'s image`"
+                        @click="
+                            router.push({ name: 'profile', params: { username: user['username'] } })
+                        "
                     />
                 </div>
                 <div class="content">
@@ -296,6 +300,7 @@ async function saveComment() {
     border-radius: 50%;
     border: var(--color-border) solid 3px;
     background-color: var(--color-background-mute);
+    cursor: pointer;
 }
 
 .user-name {
