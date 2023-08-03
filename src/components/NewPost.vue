@@ -19,12 +19,8 @@ const inputImage = ref(null)
 const processing = ref(false)
 
 // Define form rules
-const titleRules = [
-    (v) => !!v || 'Title cannot be empty'
-]
-const bodyRules = [
-    (v) => !!v || 'Body cannot be empty'
-]
+const titleRules = [(v) => !!v || 'Title cannot be empty']
+const bodyRules = [(v) => !!v || 'Body cannot be empty']
 
 // Define functions
 const addPost = async (post) => {
@@ -78,19 +74,20 @@ const processInput = () => {
 
 <template>
     <VContainer>
-        <VForm>
-            <VTextField placeholder="Title" v-model="title" :rules="titleRules" />
+        <VForm id="new-post-form">
+            <VTextField class="new-post" placeholder="Title" v-model="title" :rules="titleRules" />
             <VTextarea
+                class="new-post"
                 placeholder="Body"
-                id="new-post-body"
                 active="true"
-                flat="true"
+                flat
                 variant="solo"
                 v-model="body"
-                no-resize="true"
+                no-resize
                 :rules="bodyRules"
             />
             <VFileInput
+                class="new-post"
                 label="Insert image"
                 variant="outlined"
                 clearable="clearable"
@@ -100,10 +97,10 @@ const processInput = () => {
                 ref="inputImage"
             ></VFileInput>
             <VBtn
+                id="submit-btn"
                 @click="processInput"
                 :disabled="!title || !body"
                 :loading="processing"
-                class="Submit"
             >
                 Bake!
             </VBtn>
@@ -112,7 +109,7 @@ const processInput = () => {
 </template>
 
 <style scoped>
-.v-form {
+#new-post-form {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -124,33 +121,16 @@ const processInput = () => {
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
 }
 
-[data-theme='light'] .v-form {
+[data-theme='light'] #new-post-form {
     background-color: var(--color-dark-pink);
     box-shadow: none;
 }
 
-.v-text-field {
-    width: 100%;
-    border-radius: 5px;
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-
-.v-textarea {
-    width: 100%;
-    border-radius: 5px;
-    border: none;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-dark-pink);
-    outline: none;
-}
-
-.v-file-input {
+.new-post {
     width: 100%;
 }
 
-.v-btn {
+#submit-btn {
     align-self: center;
     padding: 0.5rem;
     border-radius: 5px;
@@ -160,7 +140,7 @@ const processInput = () => {
     cursor: pointer;
 }
 
-[data-theme='light'] .v-btn {
+[data-theme='light'] #submit-btn {
     background-color: var(--color-bright-blue);
     color: white;
 }

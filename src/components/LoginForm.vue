@@ -26,7 +26,7 @@ const form = ref(null)
 const usernameRules = [
     (v) => !!v || 'Username is required',
     (v) => (v && v.length <= 20) || 'Username must be less than 20 characters',
-    (v) => (/^[A-Za-z0-9]+$/.test(v)) || 'Username can only be alphanumeric'
+    (v) => /^[A-Za-z0-9]+$/.test(v) || 'Username can only be alphanumeric'
 ]
 const passwordRules = [
     (v) => !!v || 'Password is required',
@@ -144,10 +144,10 @@ defineProps({
 </script>
 
 <template>
-    <VForm method="post" @submit.prevent ref="form">
+    <VForm id="login-form" method="post" @submit.prevent ref="form">
         <VTextField
+            class="form-input"
             type="text"
-            id="username"
             name="username"
             placeholder="Username"
             :rules="usernameRules"
@@ -155,9 +155,9 @@ defineProps({
             v-model.lazy="username"
         />
         <VTextField
+            class="form-input"
             :type="showPassword ? 'text' : 'password'"
             :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            id="password"
             name="password"
             placeholder="Password"
             :rules="passwordRules"
@@ -166,10 +166,10 @@ defineProps({
             @click:append-inner="showPassword = !showPassword"
         />
         <VTextField
+            class="form-input"
             v-if="showConfirmPassword"
             :type="showPasswordConfirmation ? 'text' : 'password'"
             :append-inner-icon="showPasswordConfirmation ? 'mdi-eye' : 'mdi-eye-off'"
-            id="confirmPassword"
             name="confirmPassword"
             placeholder="Confirm Password"
             :rules="confirmPasswordRules"
@@ -199,7 +199,7 @@ defineProps({
 </template>
 
 <style scoped>
-.v-form {
+#login-form {
     display: flex;
     flex-flow: column wrap;
     align-items: center;
@@ -207,11 +207,8 @@ defineProps({
     width: 100%;
 }
 
-.v-input {
-    font-family: var(--source-sans);
+.form-input {
     width: 100%;
-    border-radius: 30px;
-    color: var(--color-text);
 }
 
 #invalidCredentials {
