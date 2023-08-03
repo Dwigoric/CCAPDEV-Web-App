@@ -226,7 +226,7 @@ watch(
 </script>
 
 <template>
-    <NavigationBar />
+    <NavigationBar title-custom-text="Back to Feed" />
     <div id="profile-container">
         <div id="header">
             <div id="user-panel">

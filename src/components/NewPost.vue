@@ -18,6 +18,14 @@ const files = ref([])
 const inputImage = ref(null)
 const processing = ref(false)
 
+// Define form rules
+const titleRules = [
+    (v) => !!v || 'Title cannot be empty'
+]
+const bodyRules = [
+    (v) => !!v || 'Body cannot be empty'
+]
+
 // Define functions
 const addPost = async (post) => {
     processing.value = true
@@ -71,7 +79,7 @@ const processInput = () => {
 <template>
     <VContainer>
         <VForm>
-            <VTextField placeholder="Title" v-model="title" />
+            <VTextField placeholder="Title" v-model="title" :rules="titleRules" />
             <VTextarea
                 placeholder="Body"
                 id="new-post-body"
@@ -80,6 +88,7 @@ const processInput = () => {
                 variant="solo"
                 v-model="body"
                 no-resize="true"
+                :rules="bodyRules"
             />
             <VFileInput
                 label="Insert image"

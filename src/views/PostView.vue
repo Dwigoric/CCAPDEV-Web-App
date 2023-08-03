@@ -166,7 +166,7 @@ watch(
 
 <template>
     <ThemeSwitch v-if="useMediaQuery('(min-width: 1024px)').value" />
-    <NavigationBar title-custom-text="Back" />
+    <NavigationBar title-custom-text="Back to Feed" />
     <div id="view">
         <div v-if="isLoadingPost" class="preload">
             <LoaderHeart />

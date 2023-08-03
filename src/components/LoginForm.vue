@@ -25,7 +25,8 @@ const form = ref(null)
 // Form rules
 const usernameRules = [
     (v) => !!v || 'Username is required',
-    (v) => (v && v.length <= 20) || 'Username must be less than 20 characters'
+    (v) => (v && v.length <= 20) || 'Username must be less than 20 characters',
+    (v) => (/^[A-Za-z0-9]+$/.test(v)) || 'Username can only be alphanumeric'
 ]
 const passwordRules = [
     (v) => !!v || 'Password is required',
