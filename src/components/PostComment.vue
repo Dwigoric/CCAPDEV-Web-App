@@ -182,12 +182,12 @@ async function saveComment() {
                         </VListItem>
                     </VList>
                 </VMenu>
-                <div v-if="edited" class="ml-9 mr-3">
-                    <VIcon size="x-small"> mdi-pencil </VIcon>
-                    <VTooltip activator="parent" location="top">{{ moment(edited) }}</VTooltip>
-                </div>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
+            <div v-if="edited" class="mr-3">
+                <VIcon size="x-small"> mdi-pencil </VIcon>
+                <VTooltip activator="parent" location="top">{{ moment(edited) }}</VTooltip>
+            </div>
             <span class="created-timestamp">
                 <VIcon size="x-small"> mdi-clock </VIcon>
                 <span class="time-span">
@@ -260,6 +260,7 @@ async function saveComment() {
 
 .existing-comment {
     display: flex;
+    flex: 1 1 auto;
     flex-flow: row nowrap;
     align-items: center;
 }
@@ -276,7 +277,7 @@ async function saveComment() {
 
 .created-timestamp {
     display: flex;
-    flex: 1 0 auto;
+    flex: 0 0 auto;
     flex-flow: row nowrap;
     align-items: center;
     height: 100%;
@@ -313,6 +314,7 @@ async function saveComment() {
 
 .body {
     width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .replies {
