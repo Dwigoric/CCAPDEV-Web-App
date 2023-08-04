@@ -19,7 +19,10 @@ const inputImage = ref(null)
 const processing = ref(false)
 
 // Define form rules
-const titleRules = [(v) => !!v || 'Title cannot be empty']
+const titleRules = [
+    (v) => !!v || 'Title cannot be empty',
+    (v) => v.length <= 100 || 'Title must be less than 100 characters'
+]
 const bodyRules = [(v) => !!v || 'Body cannot be empty']
 
 // Define functions
