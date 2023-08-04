@@ -98,7 +98,9 @@ function editComment() {
 }
 
 async function saveComment() {
-    if (newComment.value === '') return
+    editFlag.value = false
+
+    if (newComment.value === '' || newComment.value === props.body) return
 
     const { token } = window.$cookies.get('credentials')
 
@@ -120,7 +122,6 @@ async function saveComment() {
     } catch (err) {
         console.error(err)
     }
-    editFlag.value = false
     const comment = comments.find((cm) => cm.id === props.id)
     comment.body = newComment.value
     comment.edited = Date.now()

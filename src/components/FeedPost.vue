@@ -98,10 +98,21 @@ async function savePost() {
 
     editFlag.value = false
 
-    props.onEdit(props.id, {
-        newTitle: newTitle.value,
-        newBody: newBody.value
-    })
+    const newPostData = {}
+    let willEdit = false
+
+    if (newTitle.value !== props.title) {
+        newPostData.title = newTitle.value
+        willEdit = true
+    }
+    if (newBody.value !== props.body) {
+        newPostData.body = newBody.value
+        willEdit = true
+    }
+
+    if (!willEdit) return
+
+    props.onEdit(props.id, newPostData)
 
     const { token } = window.$cookies.get('credentials')
 
@@ -112,10 +123,7 @@ async function savePost() {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({
-                title: newTitle.value,
-                body: newBody.value
-            })
+            body: JSON.stringify(newPostData)
         }).then((res) => res.json())
 
         if (response.error) {

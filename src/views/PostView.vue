@@ -104,9 +104,23 @@ const processComment = () => {
     newCommentBody.value = ''
 }
 
-async function savePost(newTitle, newBody) {
-    currentPost.title = newTitle
-    currentPost.body = newBody
+async function savePost({ newTitle, newBody }) {
+    const newPostData = {}
+    let willEdit = false
+
+    if (newTitle !== props.title) {
+        currentPost.title = newTitle
+        newPostData.title = newTitle
+        willEdit = true
+    }
+    if (newBody !== props.body) {
+        currentPost.body = newBody
+        newPostData.body = newBody
+        willEdit = true
+    }
+
+    if (!willEdit) return
+
     currentPost.edited = Date.now()
 
     try {
@@ -118,10 +132,7 @@ async function savePost(newTitle, newBody) {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify({
-                title: newTitle,
-                body: newBody
-            })
+            body: JSON.stringify(newPostData)
         }).then((res) => res.json())
 
         if (result.error) {

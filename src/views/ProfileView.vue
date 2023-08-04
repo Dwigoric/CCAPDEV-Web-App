@@ -167,13 +167,13 @@ const processInput = () => {
 
 function editPost(id, { newTitle, newBody }) {
     const postIndexUser = userPosts.findIndex((post) => post['id'] === id)
-    userPosts[postIndexUser].title = newTitle
-    userPosts[postIndexUser].body = newBody
+    if (newTitle) userPosts[postIndexUser].title = newTitle
+    if (newBody) userPosts[postIndexUser].body = newBody
     userPosts[postIndexUser].edited = Date.now()
 
     const postIndexFeed = cachedPosts.findIndex((post) => post.id === id)
-    cachedPosts[postIndexFeed].title = newTitle
-    cachedPosts[postIndexFeed].body = newBody
+    if (newTitle) cachedPosts[postIndexFeed].title = newTitle
+    if (newBody) cachedPosts[postIndexFeed].body = newBody
     cachedPosts[postIndexFeed].edited = Date.now()
 }
 
