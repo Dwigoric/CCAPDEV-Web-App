@@ -19,11 +19,7 @@ const inputImage = ref(null)
 const processing = ref(false)
 
 // Define form rules
-const titleRules = [
-    (v) => !!v || 'Title cannot be empty',
-    (v) => v.length <= 100 || 'Title must be less than 100 characters'
-]
-const bodyRules = [(v) => !!v || 'Body cannot be empty']
+const titleRules = [(v) => v.length <= 100 || 'Title must be less than 100 characters']
 
 // Define functions
 const addPost = async (post) => {
@@ -83,11 +79,10 @@ const processInput = () => {
                 class="new-post"
                 placeholder="Body"
                 active="true"
-                flat
+                flat="flat"
                 variant="solo"
                 v-model="body"
-                no-resize
-                :rules="bodyRules"
+                no-resize="no-resize"
             />
             <VFileInput
                 class="new-post"
