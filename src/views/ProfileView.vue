@@ -278,7 +278,7 @@ watch(
                                         <VTextField
                                             label="A user can go by many names, but they still keep their own identity."
                                             v-model="newUsername"
-                                            :rule="usernameRules"
+                                            :rules="usernameRules"
                                         >
                                         </VTextField>
                                         <small class="note">
