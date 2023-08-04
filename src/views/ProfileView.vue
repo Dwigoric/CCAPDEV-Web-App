@@ -165,15 +165,15 @@ const processInput = () => {
     files.value = []
 }
 
-function editPost(id, { newTitle, newBody }) {
+function editPost(id, { title, body }) {
     const postIndexUser = userPosts.findIndex((post) => post['id'] === id)
-    if (newTitle) userPosts[postIndexUser].title = newTitle
-    if (newBody) userPosts[postIndexUser].body = newBody
+    if (title) userPosts[postIndexUser].title = title
+    if (body) userPosts[postIndexUser].body = body
     userPosts[postIndexUser].edited = Date.now()
 
     const postIndexFeed = cachedPosts.findIndex((post) => post.id === id)
-    if (newTitle) cachedPosts[postIndexFeed].title = newTitle
-    if (newBody) cachedPosts[postIndexFeed].body = newBody
+    if (title) cachedPosts[postIndexFeed].title = title
+    if (body) cachedPosts[postIndexFeed].body = body
     cachedPosts[postIndexFeed].edited = Date.now()
 }
 

@@ -34,10 +34,10 @@ const getPosts = async (waypointState) => {
     fetchPosts()
 }
 
-function editPost(id, { newTitle, newBody }) {
+function editPost(id, { title, body }) {
     const postIndex = cachedPosts.findIndex((post) => post.id === id)
-    if (newTitle) cachedPosts[postIndex].title = newTitle
-    if (newBody) cachedPosts[postIndex].body = newBody
+    if (title) cachedPosts[postIndex].title = title
+    if (body) cachedPosts[postIndex].body = body
     cachedPosts[postIndex].edited = Date.now()
 }
 

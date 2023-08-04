@@ -101,7 +101,7 @@ async function saveCurrentPost() {
         cachedPost.edited = Date.now()
     }
 
-    props.savePost(newTitle.value, newBody.value)
+    props.savePost({ title: newTitle.value, body: newBody.value })
 }
 </script>
 

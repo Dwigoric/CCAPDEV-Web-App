@@ -104,18 +104,18 @@ const processComment = () => {
     newCommentBody.value = ''
 }
 
-async function savePost({ newTitle, newBody }) {
+async function savePost({ title, body }) {
     const newPostData = {}
     let willEdit = false
 
-    if (newTitle !== props.title) {
-        currentPost.title = newTitle
-        newPostData.title = newTitle
+    if (title !== props.title) {
+        currentPost.title = title
+        newPostData.title = title
         willEdit = true
     }
-    if (newBody !== props.body) {
-        currentPost.body = newBody
-        newPostData.body = newBody
+    if (body !== props.body) {
+        currentPost.body = body
+        newPostData.body = body
         willEdit = true
     }
 
