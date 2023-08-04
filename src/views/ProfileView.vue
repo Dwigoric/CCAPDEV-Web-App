@@ -165,6 +165,18 @@ const processInput = () => {
     files.value = []
 }
 
+function editPost(id, { newTitle, newBody }) {
+    const postIndexUser = userPosts.findIndex((post) => post['id'] === id)
+    userPosts[postIndexUser].title = newTitle
+    userPosts[postIndexUser].body = newBody
+    userPosts[postIndexUser].edited = Date.now()
+
+    const postIndexFeed = cachedPosts.findIndex((post) => post.id === id)
+    cachedPosts[postIndexFeed].title = newTitle
+    cachedPosts[postIndexFeed].body = newBody
+    cachedPosts[postIndexFeed].edited = Date.now()
+}
+
 function deletePost(id) {
     const postIndexUser = userPosts.findIndex((post) => post['id'] === id)
     userPosts.splice(postIndexUser, 1)
@@ -340,6 +352,7 @@ watch(
                     :reactions="post.reactions"
                     :date="post.date"
                     :edited="post.edited"
+                    :on-edit="editPost"
                     :on-delete="deletePost"
                 />
             </div>

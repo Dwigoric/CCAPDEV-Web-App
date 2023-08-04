@@ -6,7 +6,6 @@ import router from '../router'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
-import { useCachedPostsStore } from '../stores/cachedPosts'
 
 // Import constants
 import { API_URL } from '../constants'
@@ -18,7 +17,6 @@ const editBodyRules = [(v) => !!v || 'Body is required']
 
 // Define variables
 const loggedIn = useLoggedInStore()
-const { cachedPosts } = useCachedPostsStore()
 const editFlag = ref(false)
 const form = ref(null)
 
@@ -56,6 +54,10 @@ const props = defineProps({
         type: Date,
         required: false,
         default: false
+    },
+    onEdit: {
+        type: Function,
+        required: true
     },
     onDelete: {
         type: Function,
@@ -96,10 +98,10 @@ async function savePost() {
 
     editFlag.value = false
 
-    const post = cachedPosts.find((post) => post.id === props.id)
-    post.title = newTitle.value
-    post.body = newBody.value
-    post.edited = Date.now()
+    props.onEdit(props.id, {
+        newTitle: newTitle.value,
+        newBody: newBody.value
+    })
 
     const { token } = window.$cookies.get('credentials')
 

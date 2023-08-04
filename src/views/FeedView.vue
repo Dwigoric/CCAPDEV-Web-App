@@ -34,6 +34,13 @@ const getPosts = async (waypointState) => {
     fetchPosts()
 }
 
+function editPost(id, { newTitle, newBody }) {
+    const postIndex = cachedPosts.findIndex((post) => post.id === id)
+    cachedPosts[postIndex].title = newTitle
+    cachedPosts[postIndex].body = newBody
+    cachedPosts[postIndex].edited = Date.now()
+}
+
 function deletePost(id) {
     const postIndex = cachedPosts.findIndex((post) => post.id === id)
     cachedPosts.splice(postIndex, 1)
@@ -77,6 +84,7 @@ function deletePost(id) {
                 :reactions="post.reactions"
                 :date="post.date"
                 :edited="post.edited"
+                :on-edit="editPost"
                 :on-delete="deletePost"
             />
         </div>
