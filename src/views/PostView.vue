@@ -191,9 +191,9 @@ watch(
                     <VIcon size="x-small"> mdi-clock </VIcon>
                     <span id="time-span">
                         posted {{ moment(currentPost.date).fromNow() }}
-                        <VTooltip activator="parent" location="top">{{
-                            moment(currentPost.date)
-                        }}</VTooltip>
+                        <VTooltip activator="parent" location="top">
+                            posted at {{ moment(currentPost.date) }}
+                        </VTooltip>
                     </span>
                 </span>
             </div>

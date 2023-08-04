@@ -161,7 +161,9 @@ async function savePost() {
             <div v-if="edited">
                 <VIcon size="x-small"> mdi-pencil </VIcon>
                 <span class="time-span">edited {{ moment(edited).fromNow() }}</span>
-                <VTooltip activator="parent" location="top"> {{ moment(edited) }} </VTooltip>
+                <VTooltip activator="parent" location="top">
+                    edited at {{ moment(edited) }}
+                </VTooltip>
             </div>
         </div>
         <div class="content">
@@ -208,7 +210,9 @@ async function savePost() {
                 <VIcon size="x-small"> mdi-clock </VIcon>
                 <span class="time-span">
                     posted {{ moment(date).fromNow() }}
-                    <VTooltip activator="parent" location="top">{{ moment(date) }}</VTooltip>
+                    <VTooltip activator="parent" location="top">
+                        posted at {{ moment(date) }}
+                    </VTooltip>
                 </span>
             </span>
         </div>

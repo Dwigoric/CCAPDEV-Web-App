@@ -146,7 +146,7 @@ async function saveCurrentPost() {
                 <span class="edit-span">
                     edited {{ moment(post.edited).fromNow() }}
                     <VTooltip activator="parent" location="top">
-                        {{ moment(post.edited) }}
+                        edited at {{ moment(post.edited) }}
                     </VTooltip>
                 </span>
             </div>

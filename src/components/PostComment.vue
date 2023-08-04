@@ -184,13 +184,17 @@ async function saveComment() {
             <span class="deleted-comment" v-else> This comment has been deleted </span>
             <div v-if="edited" class="mr-3">
                 <VIcon size="x-small"> mdi-pencil </VIcon>
-                <VTooltip activator="parent" location="top">{{ moment(edited) }}</VTooltip>
+                <VTooltip activator="parent" location="top">
+                    edited at {{ moment(edited) }}
+                </VTooltip>
             </div>
             <span class="created-timestamp">
                 <VIcon size="x-small"> mdi-clock </VIcon>
                 <span class="time-span">
                     {{ moment(date).fromNow() }}
-                    <VTooltip activator="parent" location="top">{{ moment(date) }}</VTooltip>
+                    <VTooltip activator="parent" location="top">
+                        created at {{ moment(date) }}
+                    </VTooltip>
                 </span>
             </span>
         </div>
