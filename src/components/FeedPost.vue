@@ -171,7 +171,11 @@ async function savePost() {
                 @click="router.push({ name: 'post', params: { id } })"
             >
                 <p class="title" id="title">{{ title }}</p>
-                <p class="body" id="body">{{ body }}</p>
+                <p v-if="body.length <= 500" class="body" id="body">{{ body }}</p>
+                <p v-else class="body" id="body">
+                    {{ body.substring(0, 500) }}
+                    <span class="long-body-ellipsis">...</span>
+                </p>
                 <img
                     v-if="image"
                     class="post-image"
@@ -290,6 +294,15 @@ async function savePost() {
 .body {
     width: 100%;
     white-space: pre-wrap;
+}
+
+.long-body-ellipsis {
+    font-weight: bolder;
+    color: var(--color-bright-pink);
+}
+
+[data-theme='light'] .long-body-ellipsis {
+    color: var(--color-bright-blue);
 }
 
 .post-image {
