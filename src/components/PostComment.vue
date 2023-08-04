@@ -151,6 +151,8 @@ async function saveComment() {
                     <VForm v-else ref="form">
                         <VTextarea
                             class="new-reply-input"
+                            variant="solo-filled"
+                            auto-grow="auto-grow"
                             v-model="newComment"
                             placeholder="Enter a new comment..."
                             :rules="commentRules"
@@ -200,6 +202,9 @@ async function saveComment() {
             placeholder="Reply to this comment..."
             class="new-reply-input"
             active="true"
+            variant="solo-filled"
+            auto-grow="auto-grow"
+            clearable="clearable"
             v-if="loggedInStore.username && id === currentCommentStore.currentComment"
             v-model="newReplyBody"
             no-resize=""

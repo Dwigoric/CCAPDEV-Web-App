@@ -202,7 +202,10 @@ watch(
                     placeholder="Add a comment..."
                     id="new-comment-body"
                     active="true"
-                    no-resize
+                    no-resize="no-resize"
+                    variant="solo-filled"
+                    auto-grow="auto-grow"
+                    clearable="clearable"
                     :rules="commentRules"
                     rows="1"
                     v-model="newCommentBody"
