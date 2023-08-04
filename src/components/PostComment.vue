@@ -54,7 +54,6 @@ const props = defineProps({
 const newReplyBody = ref('')
 const newComment = ref(props.body)
 const editFlag = ref(false)
-const form = ref(null)
 
 // Define form rules
 const commentRules = [(v) => v.length <= 500 || 'Comment must be less than 500 characters']
@@ -99,9 +98,6 @@ function editComment() {
 }
 
 async function saveComment() {
-    const { valid } = await form.value.validate()
-    if (!valid) return
-
     if (newComment.value === '') return
 
     const { token } = window.$cookies.get('credentials')
@@ -148,20 +144,20 @@ async function saveComment() {
                 <div class="content">
                     <span class="user-name">{{ user['username'] }}</span>
                     <p v-if="!editFlag" class="body">{{ body }}</p>
-                    <VForm v-else ref="form">
-                        <VTextarea
-                            class="new-reply-input"
-                            variant="solo-filled"
-                            auto-grow="auto-grow"
-                            v-model="newComment"
-                            placeholder="Enter a new comment..."
-                            :rules="commentRules"
-                            rows="1"
-                            no-resize=""
-                            append-inner-icon="mdi-send"
-                            @click:append-inner="saveComment"
-                        />
-                    </VForm>
+                    <VTextarea
+                        v-else
+                        class="new-reply-input"
+                        variant="solo-filled"
+                        auto-grow="auto-grow"
+                        v-model="newComment"
+                        placeholder="Enter a new comment..."
+                        :rules="commentRules"
+                        rows="1"
+                        cols="50"
+                        no-resize="no-resize"
+                        append-inner-icon="mdi-send"
+                        @click:append-inner="saveComment"
+                    />
                 </div>
                 <VMenu v-if="loggedInStore.id === user.id">
                     <template v-slot:activator="{ props }">
