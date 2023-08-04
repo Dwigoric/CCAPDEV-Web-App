@@ -13,8 +13,8 @@ const router = createRouter({
             name: 'home',
             component: () => import('../views/HomeView.vue'),
             beforeEnter: (to, from, next) => {
-                const loggedInStore = useLoggedInStore()
-                if (loggedInStore.username) next({ name: 'feed' })
+                const credentials = window.$cookies.get('credentials')
+                if (credentials) next({ name: 'feed' })
                 else next()
             }
         },

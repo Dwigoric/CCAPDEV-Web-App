@@ -2,7 +2,6 @@
 // Import packages
 import { inject } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
-import router from './router'
 import jwt_decode from 'jwt-decode'
 
 // Import stores
@@ -26,7 +25,7 @@ if (credentials) {
     if (credentials.persist) $cookies.set('user', credentials, '21d')
 
     // Fetch the user
-    loggedInStore.fetchUser().then(() => router.push({ name: 'feed' }))
+    loggedInStore.fetchUser()
 }
 
 const prefersDark = useMediaQuery('(prefers-color-scheme: dark)').value
