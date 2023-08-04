@@ -57,10 +57,7 @@ const editFlag = ref(false)
 const form = ref(null)
 
 // Define form rules
-const commentRules = [
-    (v) => !!v || 'Comment must not be empty',
-    (v) => (v && v.length <= 500) || 'Comment must be less than 500 characters'
-]
+const commentRules = [(v) => v.length <= 500 || 'Comment must be less than 500 characters']
 
 // Define functions
 function addReply(pCommentId) {
@@ -185,9 +182,9 @@ async function saveComment() {
                         </VListItem>
                     </VList>
                 </VMenu>
-                <div v-if="edited" class="ml-9">
+                <div v-if="edited" class="ml-9 mr-3">
                     <VIcon size="x-small"> mdi-pencil </VIcon>
-                    <span class="time-span">edited {{ moment(edited).fromNow() }}</span>
+                    <VTooltip activator="parent" location="top">{{ moment(edited) }}</VTooltip>
                 </div>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
@@ -279,7 +276,7 @@ async function saveComment() {
 
 .created-timestamp {
     display: flex;
-    flex: 1;
+    flex: 1 0 auto;
     flex-flow: row nowrap;
     align-items: center;
     height: 100%;
@@ -342,6 +339,5 @@ svg {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    max-width: 30rem;
 }
 </style>

@@ -9,6 +9,8 @@ export const useCommentsStore = defineStore('comments', () => {
     return {
         comments,
         async addComment(comment) {
+            if (!comment.body) return
+
             try {
                 const { token } = window.$cookies.get('credentials')
 

@@ -56,10 +56,7 @@ const isLoadingPost = ref(true)
 const isLoadingComments = ref(true)
 
 // Define form rules
-const commentRules = [
-    (v) => !!v || 'Comment must not be empty',
-    (v) => (v && v.length <= 500) || 'Comment must be less than 500 characters'
-]
+const commentRules = [(v) => v.length <= 500 || 'Comment must be less than 500 characters']
 
 // Define functions
 async function fetchPost() {
