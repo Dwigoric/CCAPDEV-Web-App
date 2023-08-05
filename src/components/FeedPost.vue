@@ -214,6 +214,7 @@ async function savePost() {
         </div>
         <div class="post-footer">
             <PostVote :id="id" style="z-index: 2; position: absolute" />
+            <VSpacer></VSpacer>
             <span class="created-timestamp">
                 <VIcon size="x-small"> mdi-clock </VIcon>
                 <span class="time-span ml-1">
@@ -234,17 +235,11 @@ async function savePost() {
     align-items: flex-start;
     justify-content: left;
     width: 100%;
-    padding: 2rem;
+    padding: 1rem;
     background-color: var(--color-pale-blue);
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
     position: relative;
     max-width: 100vw;
-}
-
-@media (min-width: 1024px) {
-    .post {
-        border-radius: 10px;
-    }
 }
 
 [data-theme='light'] .post {
@@ -331,23 +326,17 @@ async function savePost() {
     max-width: 100%;
 }
 
-@media (min-width: 1024px) {
-    .post-image {
-        max-width: 500px;
-    }
-}
-
 .post-footer {
     position: absolute;
     display: flex;
-    width: calc(100% - 4rem);
+    width: calc(100% - 3rem);
     align-items: center;
     bottom: 2rem;
 }
 
 .created-timestamp {
     display: flex;
-    flex: 1;
+    flex: 0 0 auto;
     flex-flow: row nowrap;
     align-items: center;
     justify-content: flex-end;
@@ -364,5 +353,20 @@ svg path:hover {
 
 svg {
     pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+    .post {
+        border-radius: 10px;
+        padding: 2rem;
+    }
+
+    .post-image {
+        max-width: 500px;
+    }
+
+    .post-footer {
+        width: calc(100% - 4rem);
+    }
 }
 </style>
