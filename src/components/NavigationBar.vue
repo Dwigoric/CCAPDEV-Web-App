@@ -124,6 +124,7 @@ header {
     -webkit-background-clip: text; /* For Chromium browsers */
 
     font-weight: bold;
+    font-size: large;
 }
 
 #search-bar {
