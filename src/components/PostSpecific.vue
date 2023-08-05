@@ -2,7 +2,6 @@
 // Import packages
 import { ref } from 'vue'
 import router from '../router'
-import moment from 'moment'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -141,15 +140,6 @@ async function saveCurrentPost() {
                     </VListItem>
                 </VList>
             </VMenu>
-            <div v-if="post.edited" class="ml-5">
-                <VIcon size="x-small"> mdi-pencil </VIcon>
-                <span class="edit-span">
-                    edited {{ moment(post.edited).fromNow() }}
-                    <VTooltip activator="parent" location="top">
-                        edited at {{ moment(post.edited) }}
-                    </VTooltip>
-                </span>
-            </div>
             <VSpacer></VSpacer>
             <VBtn
                 variant="text"
@@ -237,12 +227,6 @@ async function saveCurrentPost() {
     font-size: 1rem;
     border-radius: 5px;
     background-color: var(--color-bright-blue);
-}
-
-.edit-span {
-    font-size: 0.8rem;
-    color: var(--color-text);
-    margin-left: 10px;
 }
 
 .title {

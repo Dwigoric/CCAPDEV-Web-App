@@ -1,6 +1,7 @@
 <script setup>
 // Import packages
 import { reactive, ref, onMounted, watch } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 import moment from 'moment'
 
 // Import components
@@ -252,9 +253,9 @@ watch(
                     <VAvatar size="150" class="mb-3" variant="tonal">
                         <VImg :src="currentUser.image" alt="Profile image" :aspect-ratio="1" />
                     </VAvatar>
-                    <span id="username" class="rounded-pill pa-1 px-3">{{
-                        currentUser.username
-                    }}</span>
+                    <span id="username" class="rounded-pill pa-1 px-3">
+                        {{ currentUser.username }}
+                    </span>
                 </div>
                 <div id="user-description">
                     <span>
@@ -267,16 +268,16 @@ watch(
             </div>
 
             <v-row justify="center" v-if="currentUser.id === login.id">
-                <v-dialog v-model="dialog" width="1024">
+                <v-dialog v-model="dialog" width="80%">
                     <template v-slot:activator="{ props }">
                         <v-btn
-                            class="rounded-pill"
                             id="edit-btn"
                             v-bind="props"
                             @click="dialog = true"
-                        >
-                            Edit Profile
-                        </v-btn>
+                            icon="mdi-pencil"
+                            type="text"
+                            color="primary"
+                        />
                     </template>
                     <v-card>
                         <v-card-title>
@@ -388,7 +389,7 @@ watch(
                                         </VBtn>
                                     </template>
                                     <VList>
-                                        <VDialog v-model="editDialog" width="50%">
+                                        <VDialog v-model="editDialog" width="80%">
                                             <template v-slot:activator="{ props }">
                                                 <VListItem
                                                     v-bind="props"
@@ -430,12 +431,12 @@ watch(
                                 </VMenu>
                             </VListItemAction>
                         </template>
-                        <VListItemTitle>
-                            <span class="comment-post-title">{{ comment.post.title }}</span>
-                            • commented
+                        <VListItemTitle class="comment-header">
+                            <span class="comment-post-title mr-2">{{ comment.post.title }}</span>
+                            <VIcon size="x-small"> mdi-clock </VIcon>
                             {{ moment(comment.date).fromNow() }}
                             <span v-if="comment.edited">
-                                • edited
+                                <VIcon size="x-small"> mdi-pencil </VIcon>
                                 {{ moment(comment.edited).fromNow() }}
                             </span>
                         </VListItemTitle>
@@ -445,7 +446,7 @@ watch(
                     </VListItem>
                 </VList>
             </div>
-            <ThemeSwitch />
+            <ThemeSwitch v-if="useMediaQuery('(min-width: 1024px)').value" />
         </div>
     </div>
 </template>
@@ -497,13 +498,10 @@ watch(
 
 #edit-btn {
     position: absolute;
-    top: calc(var(--navbar-height) + 15vh);
-    right: 1vw;
-    transform: translateX(-50%);
-    width: 150px;
+    top: calc(var(--navbar-height) + 3vh);
+    right: 3vw;
     font-weight: 600;
     font-size: 1rem;
-    transition: all 0.2s ease-in-out;
 }
 
 #contents {
@@ -528,17 +526,31 @@ watch(
     flex-flow: column-reverse nowrap;
     justify-content: center;
     align-items: center;
-    padding: 2rem 10vw;
     width: 100%;
-    gap: 2rem;
 }
 
 #comments {
-    width: 50%;
+    width: 100%;
+}
+
+.comment-header {
+    font-size: 0.8rem;
 }
 
 .comment-post-title {
+    font-size: 1rem;
     color: var(--color-dark-pink);
     font-weight: bolder;
+}
+
+@media (min-width: 1024px) {
+    #posts {
+        padding: 2rem 10vw;
+        gap: 2rem;
+    }
+
+    #comments {
+        width: 50%;
+    }
 }
 </style>

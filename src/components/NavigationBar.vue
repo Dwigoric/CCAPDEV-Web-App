@@ -35,6 +35,11 @@ const dayMessage = () => {
 }
 
 defineProps({
+    enabledTitle: {
+        type: Boolean,
+        required: false,
+        default: true
+    },
     titleCustomPath: {
         type: String,
         required: false,
@@ -50,21 +55,20 @@ defineProps({
 
 <template>
     <header>
-        <RouterLink
-            :to="titleCustomPath"
-            class="navbar-item"
-            v-if="useMediaQuery('(min-width: 1024px)').value"
-        >
-            <span id="feed-link">{{ titleCustomText }}</span>
+        <RouterLink :to="titleCustomPath" class="navbar-item" v-if="enabledTitle">
+            <span id="feed-link" v-if="useMediaQuery('(min-width: 1024px)').value">{{
+                titleCustomText
+            }}</span>
+            <VIcon v-else>mdi-arrow-left-circle</VIcon>
         </RouterLink>
         <div class="navbar-item" id="search-bar">
             <SearchBar />
         </div>
         <div class="navbar-item" v-if="loggedInStore.username" id="user-panel">
-            <span>
-                <span v-if="useMediaQuery('(min-width: 1024px)').value">{{ dayMessage() }}, </span>
+            <span v-if="useMediaQuery('(min-width: 1024px)').value">
+                <span>{{ dayMessage() }}, </span>
                 <span id="username">{{ loggedInStore.username }}</span>
-                <span v-if="useMediaQuery('(min-width: 1024px)').value">!</span>
+                <span>!</span>
             </span>
             <div v-if="loggedInStore.image">
                 <RouterLink :to="`/profile/${loggedInStore.username}`" id="profile-picture-link">
@@ -114,7 +118,12 @@ header {
     background-color: var(--color-background-soft);
     z-index: 1;
     border-bottom: var(--color-bright-blue) solid 2px;
-    padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+    header {
+        padding-right: 1rem;
+    }
 }
 
 #feed-link {

@@ -198,14 +198,20 @@ watch(
             <PostSpecific :post="currentPost" :save-post="savePost" :delete-post="deletePost" />
             <div id="post-info">
                 <PostVote :id="id" />
-                <span id="created-timestamp">
+                <VSpacer></VSpacer>
+                <span v-if="currentPost.edited" class="time-span ml-5">
+                    <VIcon size="x-small"> mdi-pencil </VIcon>
+                    edited {{ moment(currentPost.edited).fromNow() }}
+                    <VTooltip activator="parent" location="top">
+                        edited at {{ moment(currentPost.edited) }}
+                    </VTooltip>
+                </span>
+                <span class="time-span ml-2">
                     <VIcon size="x-small"> mdi-clock </VIcon>
-                    <span id="time-span">
-                        posted {{ moment(currentPost.date).fromNow() }}
-                        <VTooltip activator="parent" location="top">
-                            posted at {{ moment(currentPost.date) }}
-                        </VTooltip>
-                    </span>
+                    posted {{ moment(currentPost.date).fromNow() }}
+                    <VTooltip activator="parent" location="top">
+                        posted at {{ moment(currentPost.date) }}
+                    </VTooltip>
                 </span>
             </div>
             <div id="new-comment" v-if="loggedInStore.username">
@@ -294,6 +300,7 @@ watch(
     min-height: calc(100vh - var(--navbar-height));
     top: calc(var(--navbar-height));
     background: var(--color-background-soft);
+    max-width: 100vw;
 }
 
 @media (min-width: 1024px) {
@@ -329,18 +336,14 @@ watch(
     );
 }
 
-#created-timestamp {
+.time-span {
     display: flex;
-    flex: 1;
     align-items: center;
     justify-content: flex-end;
-    margin-right: 1rem;
-}
-
-#time-span {
+    flex: 0 0 auto;
     font-size: 0.8rem;
     color: var(--color-text);
-    margin-left: 10px;
+    gap: 1rem;
 }
 
 #new-comment {

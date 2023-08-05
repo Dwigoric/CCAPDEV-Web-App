@@ -48,7 +48,7 @@ function deletePost(id) {
 </script>
 
 <template>
-    <NavigationBar />
+    <NavigationBar :enabled-title="useMediaQuery('(min-width: 1024px)').value" />
     <div id="feed">
         <div
             class="feed-element"
@@ -72,7 +72,7 @@ function deletePost(id) {
             <Waypoint @change="getPosts" v-if="!cachedPostsStore.loadedAllPosts">
                 <LoaderHeart />
             </Waypoint>
-            <span v-else> You're all caught up! </span>
+            <span class="my-4" v-else> You're all caught up! </span>
             <FeedPost
                 v-for="post in cachedPosts"
                 :key="post.id"
@@ -87,6 +87,7 @@ function deletePost(id) {
                 :on-edit="editPost"
                 :on-delete="deletePost"
             />
+            <NewPost v-if="loggedIn.username && !useMediaQuery('(min-width: 1024px)').value" />
         </div>
         <div
             class="feed-element"
@@ -94,7 +95,7 @@ function deletePost(id) {
             v-if="useMediaQuery('(min-width: 1024px)').value"
         >
             <span v-if="loggedIn.username" class="sidebar-header">Bake a Post!</span>
-            <NewPost v-if="loggedIn.username" />
+            <NewPost v-if="loggedIn.username && useMediaQuery('(min-width: 1024px)').value" />
             <ThemeSwitch />
         </div>
     </div>
@@ -113,7 +114,6 @@ function deletePost(id) {
 .feed-element {
     display: flex;
     flex-grow: 1;
-    padding: 2rem;
 }
 
 #left-sidebar,
@@ -148,7 +148,6 @@ function deletePost(id) {
     justify-content: center;
     align-items: center;
     background-color: var(--color-background-mute);
-    gap: 2rem;
 }
 
 #right-sidebar {
@@ -160,5 +159,15 @@ function deletePost(id) {
 
 svg path:hover {
     fill: orangered;
+}
+
+@media (min-width: 1024px) {
+    .feed-element {
+        padding: 2rem;
+    }
+
+    #posts {
+        gap: 2rem;
+    }
 }
 </style>

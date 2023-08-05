@@ -168,13 +168,11 @@ async function savePost() {
                     </VListItem>
                 </VList>
             </VMenu>
-            <div v-if="edited">
-                <VIcon size="x-small"> mdi-pencil </VIcon>
-                <span class="time-span">edited {{ moment(edited).fromNow() }}</span>
-                <VTooltip activator="parent" location="top">
-                    edited at {{ moment(edited) }}
-                </VTooltip>
-            </div>
+        </div>
+        <div v-if="edited">
+            <VIcon size="x-small"> mdi-pencil </VIcon>
+            <span class="time-span">edited {{ moment(edited).fromNow() }}</span>
+            <VTooltip activator="parent" location="top"> edited at {{ moment(edited) }} </VTooltip>
         </div>
         <div class="content">
             <VContainer
@@ -238,9 +236,15 @@ async function savePost() {
     width: 100%;
     padding: 2rem;
     background-color: var(--color-pale-blue);
-    border-radius: 10px;
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
     position: relative;
+    max-width: 100vw;
+}
+
+@media (min-width: 1024px) {
+    .post {
+        border-radius: 10px;
+    }
 }
 
 [data-theme='light'] .post {
@@ -325,7 +329,7 @@ async function savePost() {
     border-radius: 10px;
     justify-self: center;
     margin: 20px auto 0;
-    max-width: 300px;
+    max-width: 100%;
 }
 
 @media (min-width: 1024px) {

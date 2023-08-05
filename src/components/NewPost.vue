@@ -72,7 +72,7 @@ const processInput = () => {
 </script>
 
 <template>
-    <VContainer>
+    <VContainer id="new-post-container">
         <VForm id="new-post-form">
             <VTextField class="new-post" placeholder="Title" v-model="title" :rules="titleRules" />
             <VTextarea
@@ -107,6 +107,10 @@ const processInput = () => {
 </template>
 
 <style scoped>
+#new-post-container {
+    padding: 0;
+}
+
 #new-post-form {
     display: flex;
     flex-flow: column nowrap;
@@ -115,7 +119,6 @@ const processInput = () => {
     width: 100%;
     padding: 2rem;
     background: var(--color-pale-green);
-    border-radius: 10px;
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
 }
 
@@ -141,5 +144,15 @@ const processInput = () => {
 [data-theme='light'] #submit-btn {
     background-color: var(--color-bright-blue);
     color: white;
+}
+
+@media (min-width: 1024px) {
+    #new-post-container {
+        padding: 2rem;
+    }
+
+    #new-post-form {
+        border-radius: 10px;
+    }
 }
 </style>
