@@ -436,7 +436,9 @@ watch(
                             </VListItemAction>
                         </template>
                         <VListItemTitle class="comment-header">
-                            <span class="comment-post-title mr-2">{{ comment.post.title }}</span>
+                            <span class="comment-post-title mr-2 text-cyan-lighten-3">{{
+                                comment.post.title
+                            }}</span>
                             <VIcon size="x-small"> mdi-clock </VIcon>
                             {{ moment(comment.date).fromNow() }}
                             <span v-if="comment.edited">
@@ -544,7 +546,6 @@ watch(
 
 .comment-post-title {
     font-size: 1rem;
-    color: var(--color-dark-pink);
     font-weight: bolder;
 }
 
