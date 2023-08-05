@@ -189,6 +189,7 @@ defineProps({
             :loading="isClicked"
             @click="
                 () => {
+                    invalidCredentials = false
                     showConfirmPassword ? registerUser() : login()
                 }
             "
