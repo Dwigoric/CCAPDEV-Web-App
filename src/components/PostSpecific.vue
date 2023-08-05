@@ -150,6 +150,16 @@ async function saveCurrentPost() {
                     </VTooltip>
                 </span>
             </div>
+            <VSpacer></VSpacer>
+            <VBtn
+                variant="text"
+                size="large"
+                density="compact"
+                @click="router.push({ name: 'feed' })"
+            >
+                Go Back
+                <VIcon>mdi-arrow-left-circle</VIcon>
+            </VBtn>
         </div>
         <div class="content">
             <p v-if="!editFlag" class="title" id="title">{{ post.title }}</p>
