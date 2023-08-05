@@ -1,6 +1,7 @@
 <script setup>
 // Import packages
 import { onUnmounted } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 
 // Import components
 import NavigationBar from '../components/NavigationBar.vue'
@@ -37,7 +38,7 @@ onUnmounted(() => {
 
 <template>
     <NavigationBar title-custom-text="Back to Feed" />
-    <ThemeSwitch />
+    <ThemeSwitch v-if="useMediaQuery('(min-width: 1024px)').value" />
     <div class="search-view" v-if="!searchStore.fetching && searchStore.searchPosts.length > 0">
         <FeedPost
             class="search-post"
