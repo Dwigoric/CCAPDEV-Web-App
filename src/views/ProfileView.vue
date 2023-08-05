@@ -360,14 +360,9 @@ watch(
             <div
                 class="bg-teal-darken-2 rounded-t-xl"
                 id="comments"
-                v-if="!loading && commentsMode"
+                v-if="!loading && commentsMode && userComments.length > 0"
             >
-                <VList
-                    lines="three"
-                    class="rounded-t-xl"
-                    bg-color="teal-darken-2"
-                    v-if="userComments.length > 0"
-                >
+                <VList lines="three" class="rounded-t-xl" bg-color="teal-darken-2">
                     <VListItem
                         v-for="comment in userComments"
                         class="rounded-xl"
