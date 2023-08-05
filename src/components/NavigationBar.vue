@@ -50,9 +50,13 @@ defineProps({
 
 <template>
     <header>
-        <div class="navbar-item" v-if="useMediaQuery('(min-width: 1024px)').value">
-            <RouterLink :to="titleCustomPath" id="feed-link">{{ titleCustomText }}</RouterLink>
-        </div>
+        <RouterLink
+            :to="titleCustomPath"
+            class="navbar-item"
+            v-if="useMediaQuery('(min-width: 1024px)').value"
+        >
+            <span id="feed-link">{{ titleCustomText }}</span>
+        </RouterLink>
         <div class="navbar-item" id="search-bar">
             <SearchBar />
         </div>
@@ -118,6 +122,8 @@ header {
     color: transparent;
     background-clip: text;
     -webkit-background-clip: text; /* For Chromium browsers */
+
+    font-weight: bold;
 }
 
 #search-bar {
