@@ -6,6 +6,7 @@ import router from '../router'
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
 import { useCachedPostsStore } from '../stores/cachedPosts'
+import { useMediaQuery } from '@vueuse/core'
 
 // Define props
 const props = defineProps({
@@ -142,6 +143,7 @@ async function saveCurrentPost() {
             </VMenu>
             <VSpacer></VSpacer>
             <VBtn
+                v-if="useMediaQuery('(min-width: 1024px)').value"
                 variant="text"
                 size="large"
                 density="compact"
@@ -187,6 +189,7 @@ async function saveCurrentPost() {
     padding: 1rem 2rem 2rem 2rem;
     background-color: var(--color-pale-blue);
     box-shadow: 0 0 10px 0 var(--vt-c-black-soft);
+    max-width: 100vw;
 }
 
 [data-theme='light'] .post {
@@ -243,13 +246,11 @@ async function saveCurrentPost() {
 }
 
 .post-image {
-    display: block;
-    margin-top: 25px;
-    margin-left: auto;
-    margin-right: auto;
-    height: auto;
-    max-width: 500px;
+    flex-basis: 30rem;
     background-color: transparent;
     border-radius: 10px;
+    justify-self: center;
+    margin: 20px auto 0;
+    max-width: 100%;
 }
 </style>
