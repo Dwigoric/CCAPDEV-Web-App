@@ -132,7 +132,7 @@ async function saveComment() {
     <div class="comment">
         <div class="main-comment" @click="onclick(id)">
             <div class="existing-comment" v-if="!comments.some((cm) => cm.id === id && cm.deleted)">
-                <div class="user">
+                <div class="header mx-3 mt-2">
                     <img
                         class="user-image"
                         :src="user['image']"
@@ -141,9 +141,24 @@ async function saveComment() {
                             router.push({ name: 'profile', params: { username: user['username'] } })
                         "
                     />
-                </div>
-                <div class="content">
                     <span class="user-name">{{ user['username'] }}</span>
+                    <span v-if="edited" class="time-span ml-2">
+                        <VIcon size="x-small"> mdi-pencil </VIcon>
+                        {{ moment(edited).fromNow() }}
+                        <VTooltip activator="parent" location="top">
+                            edited at {{ moment(edited) }}
+                        </VTooltip>
+                    </span>
+                    <span class="time-span ml-2">
+                        <VIcon size="x-small"> mdi-clock </VIcon>
+                        {{ moment(date).fromNow() }}
+                        <VTooltip activator="parent" location="top">
+                            created at {{ moment(date) }}
+                        </VTooltip>
+                        <span class="time-span"> </span>
+                    </span>
+                </div>
+                <div class="content mx-3 my-2">
                     <p v-if="!editFlag" class="body">{{ body }}</p>
                     <VTextarea
                         v-else
@@ -159,45 +174,30 @@ async function saveComment() {
                         append-inner-icon="mdi-send"
                         @click:append-inner="saveComment"
                     />
+                    <VMenu v-if="loggedInStore.id === user.id">
+                        <template v-slot:activator="{ props }">
+                            <VBtn
+                                class="ml-3"
+                                v-bind="props"
+                                size="large"
+                                density="compact"
+                                variant="text"
+                                icon="mdi-dots-vertical"
+                            >
+                            </VBtn>
+                        </template>
+                        <VList>
+                            <VListItem @click="editComment">
+                                <VListItemTitle>Edit</VListItemTitle>
+                            </VListItem>
+                            <VListItem @click="deleteComment">
+                                <VListItemTitle>Delete</VListItemTitle>
+                            </VListItem>
+                        </VList>
+                    </VMenu>
                 </div>
-                <VMenu v-if="loggedInStore.id === user.id">
-                    <template v-slot:activator="{ props }">
-                        <VBtn
-                            class="ml-5"
-                            v-bind="props"
-                            size="large"
-                            density="compact"
-                            variant="text"
-                            icon="mdi-dots-vertical"
-                        >
-                        </VBtn>
-                    </template>
-                    <VList>
-                        <VListItem @click="editComment">
-                            <VListItemTitle>Edit</VListItemTitle>
-                        </VListItem>
-                        <VListItem @click="deleteComment">
-                            <VListItemTitle>Delete</VListItemTitle>
-                        </VListItem>
-                    </VList>
-                </VMenu>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
-            <div v-if="edited" class="mr-3">
-                <VIcon size="x-small"> mdi-pencil </VIcon>
-                <VTooltip activator="parent" location="top">
-                    edited at {{ moment(edited) }}
-                </VTooltip>
-            </div>
-            <span class="created-timestamp">
-                <VIcon size="x-small"> mdi-clock </VIcon>
-                <span class="time-span">
-                    {{ moment(date).fromNow() }}
-                    <VTooltip activator="parent" location="top">
-                        created at {{ moment(date) }}
-                    </VTooltip>
-                </span>
-            </span>
         </div>
         <VTextarea
             placeholder="Reply to this comment..."
@@ -258,6 +258,7 @@ async function saveComment() {
     width: 100%;
     height: 100%;
     cursor: pointer;
+    max-width: 100vw;
 }
 
 .main-comment:hover {
@@ -267,8 +268,8 @@ async function saveComment() {
 .existing-comment {
     display: flex;
     flex: 1 1 auto;
-    flex-flow: row nowrap;
-    align-items: center;
+    flex-flow: column nowrap;
+    align-items: flex-start;
 }
 
 .deleted-comment {
@@ -276,12 +277,6 @@ async function saveComment() {
 }
 
 .time-span {
-    font-size: 0.8rem;
-    color: var(--color-text);
-    margin-left: 10px;
-}
-
-.created-timestamp {
     display: flex;
     flex: 0 0 auto;
     flex-flow: row nowrap;
@@ -289,9 +284,11 @@ async function saveComment() {
     height: 100%;
     margin-right: 0.5rem;
     justify-content: flex-end;
+    font-size: 0.8rem;
+    gap: 0.2rem;
 }
 
-.user {
+.header {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -313,7 +310,6 @@ async function saveComment() {
     flex-direction: column;
     text-align: center;
     padding: 0.2rem;
-    margin-right: 1rem;
     border-radius: 5px;
     color: var(--color-bright-blue);
 }
