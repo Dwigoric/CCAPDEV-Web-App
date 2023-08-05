@@ -158,7 +158,7 @@ async function saveComment() {
                         <span class="time-span"> </span>
                     </span>
                 </div>
-                <div class="content mx-3 my-2">
+                <div class="content mx-3 mt-1 mb-2">
                     <p v-if="!editFlag" class="body">{{ body }}</p>
                     <VTextarea
                         v-else

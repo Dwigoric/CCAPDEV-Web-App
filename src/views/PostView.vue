@@ -206,7 +206,7 @@ watch(
                         edited at {{ moment(currentPost.edited) }}
                     </VTooltip>
                 </span>
-                <span class="time-span ml-2">
+                <span class="time-span ml-2 mr-3">
                     <VIcon size="x-small"> mdi-clock </VIcon>
                     posted {{ moment(currentPost.date).fromNow() }}
                     <VTooltip activator="parent" location="top">
@@ -339,11 +339,11 @@ watch(
 .time-span {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     flex: 0 0 auto;
     font-size: 0.8rem;
     color: var(--color-text);
-    gap: 1rem;
+    gap: 0.3rem;
 }
 
 #new-comment {

@@ -170,8 +170,8 @@ async function savePost() {
             </VMenu>
         </div>
         <div v-if="edited">
-            <VIcon size="x-small"> mdi-pencil </VIcon>
-            <span class="time-span">edited {{ moment(edited).fromNow() }}</span>
+            <VIcon size="x-small" class="ml-3"> mdi-pencil </VIcon>
+            <span class="time-span ml-1">edited {{ moment(edited).fromNow() }}</span>
             <VTooltip activator="parent" location="top"> edited at {{ moment(edited) }} </VTooltip>
         </div>
         <div class="content">
@@ -216,7 +216,7 @@ async function savePost() {
             <PostVote :id="id" style="z-index: 2; position: absolute" />
             <span class="created-timestamp">
                 <VIcon size="x-small"> mdi-clock </VIcon>
-                <span class="time-span">
+                <span class="time-span ml-1">
                     posted {{ moment(date).fromNow() }}
                     <VTooltip activator="parent" location="top">
                         posted at {{ moment(date) }}
@@ -288,7 +288,6 @@ async function savePost() {
 .time-span {
     font-size: 0.8rem;
     color: var(--color-text);
-    margin-left: 10px;
 }
 
 .content {

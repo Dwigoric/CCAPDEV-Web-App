@@ -177,7 +177,7 @@ defineProps({
             v-model.lazy="confirmPassword"
             @click:append-inner="showPasswordConfirmation = !showPasswordConfirmation"
         />
-        <VCheckbox label="Remember me" v-model="remember" />
+        <VCheckbox label="Remember me" v-model="remember" class="align-self-lg-start" />
         <span v-if="invalidCredentials" id="invalidCredentials">
             {{ invalidCredentialsMessage }}
         </span>
