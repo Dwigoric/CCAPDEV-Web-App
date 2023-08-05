@@ -357,7 +357,11 @@ watch(
                     :on-delete="deletePost"
                 />
             </div>
-            <div id="comments" v-if="!loading && commentsMode">
+            <div
+                class="bg-teal-darken-2 rounded-t-xl"
+                id="comments"
+                v-if="!loading && commentsMode"
+            >
                 <VList
                     lines="three"
                     class="rounded-t-xl"
@@ -507,8 +511,9 @@ watch(
 #contents {
     display: flex;
     width: 100%;
+    height: 100%;
     flex-flow: column nowrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     margin-top: 2rem;
 }
@@ -516,7 +521,6 @@ watch(
 #mode-switch {
     display: flex;
     flex-flow: row nowrap;
-    flex: 1;
     justify-content: center;
     align-items: center;
 }
@@ -531,6 +535,7 @@ watch(
 
 #comments {
     width: 100%;
+    height: 100%;
 }
 
 .comment-header {
