@@ -17,6 +17,13 @@ const searchStore = useSearchStore()
 document.title = 'Compact Donuts | Search'
 
 // Define functions
+function editPost(id, { title, body }) {
+    const postIndex = searchStore.searchPosts.findIndex((post) => post.id === id)
+    searchStore.searchPosts[postIndex].title = title
+    searchStore.searchPosts[postIndex].body = body
+    searchStore.searchPosts[postIndex].edited = new Date()
+}
+
 function deletePost(id) {
     const postIndex = searchStore.searchPosts.findIndex((post) => post.id === id)
     searchStore.searchPosts.splice(postIndex, 1)
@@ -43,6 +50,7 @@ onUnmounted(() => {
             :image="post.image"
             :reactions="post.reactions"
             :date="post.date"
+            :on-edit="editPost"
             :on-delete="deletePost"
         />
     </div>
@@ -58,9 +66,7 @@ onUnmounted(() => {
     flex-flow: column nowrap;
     width: 100%;
     height: 100%;
-    padding: 2rem 20vw;
     margin-top: var(--navbar-height);
-    gap: 1.5rem;
     border-radius: 10px;
     color: var(--color-text);
 }
@@ -79,5 +85,12 @@ onUnmounted(() => {
     margin-top: 2rem;
     font-size: 1.5rem;
     color: var(--color-text);
+}
+
+@media (min-width: 1024px) {
+    .search-view {
+        padding: 2rem 20vw;
+        gap: 1.5rem;
+    }
 }
 </style>
