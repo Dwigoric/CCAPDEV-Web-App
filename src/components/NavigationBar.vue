@@ -64,9 +64,6 @@ defineProps({
         <div class="navbar-item" id="search-bar">
             <SearchBar />
         </div>
-        <div class="navbar-item" id="about-us">
-            <RouterLink to="/about" id="about-link">About Compact Discs</RouterLink>
-        </div>
         <div class="navbar-item" v-if="loggedInStore.username" id="user-panel">
             <span v-if="useMediaQuery('(min-width: 1024px)').value">
                 <span>{{ dayMessage() }}, </span>

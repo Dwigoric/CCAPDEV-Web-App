@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import FeedView from '../views/FeedView.vue'
 import SearchView from '../views/SearchView.vue'
-import AboutView from '../views/AboutView.vue'
 
 // Import stores
 import { useLoggedInStore } from '../stores/loggedIn'
@@ -49,8 +48,7 @@ const router = createRouter({
         {
             path: '/about',
             name: 'about',
-            component: AboutView,
-            props: true
+            component: () => import('../views/AboutView.vue')
         },
         {
             path: '/profile/:username',
