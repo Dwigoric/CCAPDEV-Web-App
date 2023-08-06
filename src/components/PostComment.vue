@@ -129,8 +129,8 @@ async function saveComment() {
 </script>
 
 <template>
-    <div class="comment">
-        <div class="main-comment" @click="onclick(id)">
+    <div class="comment pl-1">
+        <div class="main-comment mb-2" @click="onclick(id)">
             <div class="existing-comment" v-if="!comments.some((cm) => cm.id === id && cm.deleted)">
                 <div class="header mx-3 mt-2">
                     <img
@@ -199,10 +199,10 @@ async function saveComment() {
                 </VList>
             </VMenu>
         </div>
-        <VExpandXTransition>
+        <VExpandTransition>
             <VTextarea
                 placeholder="Reply to this comment..."
-                class="new-reply-input"
+                class="new-reply-input px-3"
                 active="true"
                 variant="solo-filled"
                 auto-grow="auto-grow"
@@ -217,7 +217,7 @@ async function saveComment() {
                 prepend-inner-icon="mdi-menu-up"
                 @click:prepend-inner="currentCommentStore.setCurrentComment(null)"
             />
-        </VExpandXTransition>
+        </VExpandTransition>
         <div class="replies">
             <PostComment
                 v-for="reply in comments.filter((comment) => comment.parentCommentId === id)"
@@ -243,7 +243,6 @@ async function saveComment() {
     align-self: stretch;
     justify-content: flex-start;
     height: 100%;
-    padding: 0.5rem 0 0 0.5rem;
     margin-left: 13px;
     background-color: var(--color-background-soft);
     border-left: var(--color-border) solid 3px;
@@ -335,7 +334,6 @@ async function saveComment() {
     width: 100%;
     border: none;
     border-radius: 0.5rem;
-    padding: 0.5rem;
 }
 
 svg {
