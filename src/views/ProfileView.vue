@@ -57,6 +57,9 @@ const commentsMode = ref(false)
 const editDialog = ref(false)
 const commentEditing = ref('')
 const newCommentBody = ref('')
+const editError = ref(false)
+const editErrorMessage = ref('')
+const editSubmitting = ref(false)
 
 const newUsername = ref(login.username)
 const newDescription = ref(login.description)
@@ -112,7 +115,7 @@ async function saveChanges(file) {
         willUpdate = true
     }
 
-    if (!willUpdate) return
+    if (!willUpdate) return false
 
     const { token } = window.$cookies.get('credentials')
 
@@ -124,7 +127,7 @@ async function saveChanges(file) {
 
     if (error) {
         console.error(message)
-        return
+        return message
     }
 
     login.username = user.username
@@ -145,25 +148,37 @@ async function saveChanges(file) {
     currentUser.description = login.description
     currentUser.image = login.image
 
-    return router.replace({ name: 'profile', params: { username: login.username } })
+    await router.replace({ name: 'profile', params: { username: login.username } })
+    return false
 }
 
-const processInput = () => {
+const processInput = async () => {
+    editSubmitting.value = true
+    editError.value = false
+
+    let error
     if (!inputImage.value || !inputImage.value.files || !inputImage.value.files.length) {
-        saveChanges(null)
+        error = await saveChanges(null)
     } else {
         // Retrieve image input file
         const file = inputImage.value.files[0]
-        saveChanges(file)
+        error = await saveChanges(file)
     }
 
-    // Close dialog
-    dialog.value = false
+    editSubmitting.value = false
 
-    // Reset form
-    newUsername.value = ''
-    newDescription.value = ''
-    files.value = []
+    if (!error) {
+        // Close dialog
+        dialog.value = false
+
+        // Reset form
+        newUsername.value = ''
+        newDescription.value = ''
+        files.value = []
+    } else {
+        editError.value = true
+        editErrorMessage.value = error
+    }
 }
 
 function editPost(id, { title, body }) {
@@ -317,9 +332,21 @@ watch(
                                         ></VFileInput>
                                     </VCol>
                                     <VCol cols="12">
-                                        <VBtn @click="processInput" class="Submit">
+                                        <VBtn
+                                            @click="processInput"
+                                            :loading="editSubmitting"
+                                            class="Submit"
+                                        >
                                             Save Changes
                                         </VBtn>
+                                        <VAlert
+                                            type="error"
+                                            closable="closable"
+                                            v-model="editError"
+                                            class="mt-3"
+                                        >
+                                            {{ editErrorMessage }}
+                                        </VAlert>
                                     </VCol>
                                 </VRow>
                             </VContainer>
