@@ -46,6 +46,12 @@ const router = createRouter({
             props: (route) => ({ query: route.query.q })
         },
         {
+            path: '/about',
+            name: 'about',
+            component: AboutView,
+            props: true
+        },
+        {
             path: '/profile/:username',
             name: 'profile',
             component: () => import('../views/ProfileView.vue'),
