@@ -142,13 +142,6 @@ async function saveComment() {
                         "
                     />
                     <span class="user-name">{{ user['username'] }}</span>
-                    <span v-if="edited" class="time-span ml-2">
-                        <VIcon size="x-small"> mdi-pencil </VIcon>
-                        {{ moment(edited).fromNow() }}
-                        <VTooltip activator="parent" location="top">
-                            edited at {{ moment(edited) }}
-                        </VTooltip>
-                    </span>
                     <span class="time-span ml-2">
                         <VIcon size="x-small"> mdi-clock </VIcon>
                         {{ moment(date).fromNow() }}
@@ -156,6 +149,13 @@ async function saveComment() {
                             created at {{ moment(date) }}
                         </VTooltip>
                         <span class="time-span"> </span>
+                    </span>
+                    <span v-if="edited" class="time-span ml-2">
+                        <VIcon size="x-small"> mdi-pencil </VIcon>
+                        {{ moment(edited).fromNow() }}
+                        <VTooltip activator="parent" location="top">
+                            edited at {{ moment(edited) }}
+                        </VTooltip>
                     </span>
                 </div>
                 <div class="content mx-3 mt-1 mb-2">
@@ -282,7 +282,6 @@ async function saveComment() {
     flex-flow: row nowrap;
     align-items: center;
     height: 100%;
-    margin-right: 0.5rem;
     justify-content: flex-end;
     font-size: 0.8rem;
     gap: 0.2rem;
