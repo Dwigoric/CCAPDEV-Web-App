@@ -178,9 +178,9 @@ defineProps({
             @click:append-inner="showPasswordConfirmation = !showPasswordConfirmation"
         />
         <VCheckbox label="Remember me" v-model="remember" class="align-self-lg-start" />
-        <span v-if="invalidCredentials" id="invalidCredentials">
+        <VAlert type="error" closable="closable" v-model="invalidCredentials">
             {{ invalidCredentialsMessage }}
-        </span>
+        </VAlert>
         <VBtn
             type="submit"
             rounded="xl"
@@ -210,11 +210,5 @@ defineProps({
 
 .form-input {
     width: 100%;
-}
-
-#invalidCredentials {
-    padding: 10px;
-    border-radius: 10px;
-    background-color: var(--color-pale-red);
 }
 </style>
