@@ -177,7 +177,7 @@ async function saveComment() {
                 </div>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
-            <VMenu v-if="loggedInStore.id === user.id">
+            <VMenu v-if="user && loggedInStore.id === user.id">
                 <template v-slot:activator="{ props }">
                     <VBtn
                         class="ml-3 mr-2"
