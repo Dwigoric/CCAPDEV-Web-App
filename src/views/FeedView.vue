@@ -60,8 +60,6 @@ function deletePost(id) {
                 <VListItem
                     v-for="post in cachedPosts.slice().sort((a, b) => votes[b.id] - votes[a.id])"
                     :key="post.id"
-                    :title="`${post.user.username} • ${votes[post.id]}`"
-                    :subtitle="post.title"
                     :prepend-avatar="post.user.image"
                     @click="() => router.push({ name: 'post', params: { id: post.id } })"
                 >
@@ -102,6 +100,17 @@ function deletePost(id) {
         >
             <span v-if="loggedIn.username" class="sidebar-header">Bake a Post!</span>
             <NewPost v-if="loggedIn.username && useMediaQuery('(min-width: 1024px)').value" />
+            <span>
+                <RouterLink to="/about" class="footnote">About Compact Donuts</RouterLink>
+                <VIcon>mdi-circle-small</VIcon>
+                <a class="footnote" href="https://github.com/Dwigoric/CCAPDEV-Web-App">
+                    Frontend
+                </a>
+                <VIcon>mdi-circle-small</VIcon>
+                <a class="footnote" href="https://github.com/Dwigoric/CCAPDEV-Server-App">
+                    Backend
+                </a>
+            </span>
             <ThemeSwitch />
         </div>
     </div>
@@ -163,8 +172,8 @@ function deletePost(id) {
     padding: 1rem;
 }
 
-svg path:hover {
-    fill: orangered;
+.footnote {
+    font-size: 0.75rem;
 }
 
 @media (min-width: 1024px) {
