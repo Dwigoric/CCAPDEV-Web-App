@@ -199,21 +199,25 @@ async function saveComment() {
                 </VList>
             </VMenu>
         </div>
-        <VTextarea
-            placeholder="Reply to this comment..."
-            class="new-reply-input"
-            active="true"
-            variant="solo-filled"
-            auto-grow="auto-grow"
-            clearable="clearable"
-            v-if="loggedInStore.username && id === currentCommentStore.currentComment"
-            v-model="newReplyBody"
-            no-resize=""
-            :rules="commentRules"
-            rows="1"
-            append-inner-icon="mdi-send"
-            @click:append-inner="addReply(id)"
-        />
+        <VExpandTransition>
+            <VTextarea
+                placeholder="Reply to this comment..."
+                class="new-reply-input"
+                active="true"
+                variant="solo-filled"
+                auto-grow="auto-grow"
+                clearable="clearable"
+                v-if="loggedInStore.username && id === currentCommentStore.currentComment"
+                v-model="newReplyBody"
+                no-resize=""
+                :rules="commentRules"
+                rows="1"
+                append-inner-icon="mdi-send"
+                @click:append-inner="addReply(id)"
+                prepend-inner-icon="mdi-menu-up"
+                @click:prepend-inner="currentCommentStore.setCurrentComment(null)"
+            />
+        </VExpandTransition>
         <div class="replies">
             <PostComment
                 v-for="reply in comments.filter((comment) => comment.parentCommentId === id)"
