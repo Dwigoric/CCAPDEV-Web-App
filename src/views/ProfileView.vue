@@ -267,10 +267,10 @@ watch(
                 </div>
             </div>
 
-            <v-row justify="center" v-if="currentUser.id === login.id">
-                <v-dialog v-model="dialog" width="80%">
+            <VRow justify="center" v-if="currentUser.id === login.id">
+                <VDialog v-model="dialog" width="80%">
                     <template v-slot:activator="{ props }">
-                        <v-btn
+                        <VBtn
                             id="edit-btn"
                             v-bind="props"
                             @click="dialog = true"
@@ -279,14 +279,14 @@ watch(
                             color="primary"
                         />
                     </template>
-                    <v-card>
-                        <v-card-title>
+                    <VCard>
+                        <VCardTitle>
                             <span class="text-h5">Edit User Information</span>
-                        </v-card-title>
-                        <v-card-text>
-                            <v-container>
-                                <v-row>
-                                    <v-col cols="12">
+                        </VCardTitle>
+                        <VCardText>
+                            <VContainer>
+                                <VRow>
+                                    <VCol cols="12">
                                         <span class="label1"> New Username </span>
                                         <VTextField
                                             label="A user can go by many names, but they still keep their own identity."
@@ -298,41 +298,41 @@ watch(
                                             Username should be at least 1 character long. Otherwise,
                                             the empty string will not be saved
                                         </small>
-                                    </v-col>
-                                    <v-col cols="12">
+                                    </VCol>
+                                    <VCol cols="12">
                                         <span class="label2"> New Description </span>
                                         <VTextField
                                             label="Don't forget to bake it with love!"
                                             v-model="newDescription"
                                         ></VTextField>
-                                    </v-col>
-                                    <v-col cols="12">
+                                    </VCol>
+                                    <VCol cols="12">
                                         <span class="label2"> New Profile Picture </span>
-                                        <v-file-input
+                                        <VFileInput
                                             label="Change profile picture"
                                             v-model="files"
                                             accept="image*/"
                                             clearable="clearable"
                                             ref="inputImage"
-                                        ></v-file-input>
-                                    </v-col>
-                                    <v-col cols="12">
+                                        ></VFileInput>
+                                    </VCol>
+                                    <VCol cols="12">
                                         <VBtn @click="processInput" class="Submit">
                                             Save Changes
                                         </VBtn>
-                                    </v-col>
-                                </v-row>
-                            </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
+                                    </VCol>
+                                </VRow>
+                            </VContainer>
+                        </VCardText>
+                        <VCardActions>
+                            <VSpacer></VSpacer>
                             <VBtn color="red-darken-1" variant="text" @click="dialog = false">
                                 Close
                             </VBtn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-            </v-row>
+                        </VCardActions>
+                    </VCard>
+                </VDialog>
+            </VRow>
         </div>
         <div id="contents">
             <div id="mode-switch">
