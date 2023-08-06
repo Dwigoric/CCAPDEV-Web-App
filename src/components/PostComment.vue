@@ -174,30 +174,30 @@ async function saveComment() {
                         append-inner-icon="mdi-send"
                         @click:append-inner="saveComment"
                     />
-                    <VMenu v-if="loggedInStore.id === user.id">
-                        <template v-slot:activator="{ props }">
-                            <VBtn
-                                class="ml-3"
-                                v-bind="props"
-                                size="large"
-                                density="compact"
-                                variant="text"
-                                icon="mdi-dots-vertical"
-                            >
-                            </VBtn>
-                        </template>
-                        <VList>
-                            <VListItem @click="editComment">
-                                <VListItemTitle>Edit</VListItemTitle>
-                            </VListItem>
-                            <VListItem @click="deleteComment">
-                                <VListItemTitle>Delete</VListItemTitle>
-                            </VListItem>
-                        </VList>
-                    </VMenu>
                 </div>
             </div>
             <span class="deleted-comment" v-else> This comment has been deleted </span>
+            <VMenu v-if="loggedInStore.id === user.id">
+                <template v-slot:activator="{ props }">
+                    <VBtn
+                        class="ml-3 mr-2"
+                        v-bind="props"
+                        size="large"
+                        density="compact"
+                        variant="text"
+                        icon="mdi-dots-vertical"
+                    >
+                    </VBtn>
+                </template>
+                <VList>
+                    <VListItem @click="editComment">
+                        <VListItemTitle>Edit</VListItemTitle>
+                    </VListItem>
+                    <VListItem @click="deleteComment">
+                        <VListItemTitle>Delete</VListItemTitle>
+                    </VListItem>
+                </VList>
+            </VMenu>
         </div>
         <VTextarea
             placeholder="Reply to this comment..."

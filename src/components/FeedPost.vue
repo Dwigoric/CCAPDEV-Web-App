@@ -148,6 +148,7 @@ async function savePost() {
                 />
             </VAvatar>
             <span class="user-name">{{ user['username'] }}</span>
+            <VSpacer></VSpacer>
             <VMenu v-if="loggedIn.id === user.id">
                 <template v-slot:activator="{ props }">
                     <VBtn
