@@ -1,6 +1,6 @@
 <script setup>
 // Import packages
-import { reactive, ref, onMounted, watch } from 'vue'
+import { reactive, ref, onMounted, watch, onUnmounted } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import moment from 'moment'
 
@@ -176,6 +176,16 @@ async function saveChanges(file) {
     return false
 }
 
+const resetForm = () => {
+    newUsername.value = ''
+    newDescription.value = ''
+    currentPassword.value = ''
+    newPassword.value = ''
+    confirmNewPassword.value = ''
+    editError.value = false
+    editErrorMessage.value = ''
+}
+
 const processInput = async () => {
     const { valid } = await editForm.value.validate()
     if (!valid) return
@@ -199,12 +209,7 @@ const processInput = async () => {
         dialog.value = false
 
         // Reset form
-        currentPassword.value = ''
-        newPassword.value = ''
-        confirmNewPassword.value = ''
-        newUsername.value = ''
-        newDescription.value = ''
-        files.value = []
+        resetForm()
     } else {
         editError.value = true
         editErrorMessage.value = error
@@ -277,6 +282,7 @@ async function deleteComment(id) {
 
 // Define lifecycle hooks
 onMounted(fetchUser)
+onUnmounted(resetForm)
 watch(
     () => props.username,
     () => {
