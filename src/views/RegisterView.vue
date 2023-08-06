@@ -9,7 +9,7 @@ document.title = 'Compact Donuts | Register'
 
 <template>
     <ThemeSwitch />
-    <NavigationBar />
+    <NavigationBar title-custom-path="/" title-custom-text="Login Page" />
     <main>
         <LoginBox button-text="Register" no-register-prompt show-confirm-password />
     </main>
