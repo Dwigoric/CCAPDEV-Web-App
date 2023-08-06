@@ -362,7 +362,7 @@ watch(
                                         <VFileInput
                                             label="Change profile picture"
                                             v-model="files"
-                                            accept="image*/"
+                                            accept="image/*"
                                             clearable="clearable"
                                             ref="inputImage"
                                         ></VFileInput>
