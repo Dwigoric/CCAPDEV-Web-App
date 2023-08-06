@@ -184,6 +184,7 @@ const resetForm = () => {
     confirmNewPassword.value = ''
     editError.value = false
     editErrorMessage.value = ''
+    files.value = []
 }
 
 const processInput = async () => {
