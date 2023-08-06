@@ -199,7 +199,7 @@ async function saveComment() {
                 </VList>
             </VMenu>
         </div>
-        <VExpandTransition>
+        <VExpandXTransition>
             <VTextarea
                 placeholder="Reply to this comment..."
                 class="new-reply-input"
@@ -217,7 +217,7 @@ async function saveComment() {
                 prepend-inner-icon="mdi-menu-up"
                 @click:prepend-inner="currentCommentStore.setCurrentComment(null)"
             />
-        </VExpandTransition>
+        </VExpandXTransition>
         <div class="replies">
             <PostComment
                 v-for="reply in comments.filter((comment) => comment.parentCommentId === id)"
