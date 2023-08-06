@@ -23,12 +23,6 @@ import { API_URL } from '../constants'
 // Define variables
 document.title = 'Compact Donuts | Profile'
 
-const usernameRules = [
-    (v) => !!v || 'Username is required',
-    (v) => (v && v.length <= 20) || 'Username must be less than 20 characters',
-    (v) => /^[A-Za-z0-9]+$/.test(v) || 'Username can only be alphanumeric'
-]
-
 const props = defineProps({
     username: {
         type: String,
@@ -60,9 +54,33 @@ const newCommentBody = ref('')
 const editError = ref(false)
 const editErrorMessage = ref('')
 const editSubmitting = ref(false)
+const editForm = ref(null)
 
-const newUsername = ref(login.username)
-const newDescription = ref(login.description)
+const newUsername = ref('')
+const newDescription = ref('')
+const currentPassword = ref('')
+const newPassword = ref('')
+const confirmNewPassword = ref('')
+const seeCurrentPassword = ref(false)
+const seeNewPassword = ref(false)
+const seeConfirmNewPassword = ref(false)
+
+const usernameRules = [
+    (v) => v.length <= 20 || 'Username must be less than 20 characters',
+    (v) => /^[A-Za-z0-9]*$/.test(v) || 'Username can only be alphanumeric'
+]
+const passwordRules = [
+    (v) => v.length === 0 || v.length >= 6 || 'Password must be at least 6 characters'
+]
+const newPasswordRules = [
+    ...passwordRules,
+    (v) => v !== currentPassword.value || 'New password cannot be the same as current password',
+    (v) => !!v || 'New password is required'
+]
+const confirmPasswordRules = [
+    ...passwordRules,
+    (v) => v === newPassword.value || 'Passwords do not match'
+]
 
 // Define functions
 async function fetchUser() {
@@ -102,16 +120,25 @@ async function saveChanges(file) {
     let willUpdate = false
 
     const payload = new FormData()
-    if (newUsername.value !== login.username) {
+    if (newUsername.value) {
         payload.append('username', newUsername.value)
         willUpdate = true
     }
-    if (newDescription.value !== login.description) {
+    if (newDescription.value) {
         payload.append('description', newDescription.value)
         willUpdate = true
     }
     if (file) {
         payload.append('avatar', file)
+        willUpdate = true
+    }
+    if (
+        currentPassword.value &&
+        newPassword.value.length > 0 &&
+        newPassword.value === confirmNewPassword.value
+    ) {
+        payload.append('currentPassword', currentPassword.value)
+        payload.append('newPassword', newPassword.value)
         willUpdate = true
     }
 
@@ -125,10 +152,7 @@ async function saveChanges(file) {
         body: payload
     }).then((response) => response.json())
 
-    if (error) {
-        console.error(message)
-        return message
-    }
+    if (error) return message
 
     login.username = user.username
     login.description = user.description
@@ -153,6 +177,9 @@ async function saveChanges(file) {
 }
 
 const processInput = async () => {
+    const { valid } = await editForm.value.validate()
+    if (!valid) return
+
     editSubmitting.value = true
     editError.value = false
 
@@ -172,6 +199,9 @@ const processInput = async () => {
         dialog.value = false
 
         // Reset form
+        currentPassword.value = ''
+        newPassword.value = ''
+        confirmNewPassword.value = ''
         newUsername.value = ''
         newDescription.value = ''
         files.value = []
@@ -299,10 +329,10 @@ watch(
                             <span class="text-h5">Edit User Information</span>
                         </VCardTitle>
                         <VCardText>
-                            <VContainer>
+                            <VForm ref="editForm">
                                 <VRow>
                                     <VCol cols="12">
-                                        <span class="label1"> New Username </span>
+                                        <span class="label1">New Username</span>
                                         <VTextField
                                             label="A user can go by many names, but they still keep their own identity."
                                             v-model="newUsername"
@@ -315,14 +345,14 @@ watch(
                                         </small>
                                     </VCol>
                                     <VCol cols="12">
-                                        <span class="label2"> New Description </span>
+                                        <span class="label2">New Description</span>
                                         <VTextField
                                             label="Don't forget to bake it with love!"
                                             v-model="newDescription"
                                         ></VTextField>
                                     </VCol>
                                     <VCol cols="12">
-                                        <span class="label2"> New Profile Picture </span>
+                                        <span class="label2">New Profile Picture</span>
                                         <VFileInput
                                             label="Change profile picture"
                                             v-model="files"
@@ -332,8 +362,46 @@ watch(
                                         ></VFileInput>
                                     </VCol>
                                     <VCol cols="12">
+                                        <span class="label2">Edit Password</span>
+                                        <small class="note">
+                                            (Leave this field blank if you don't want to change your
+                                            password)
+                                        </small>
+                                        <VTextField
+                                            v-model="currentPassword"
+                                            label="Current password"
+                                            :type="seeCurrentPassword ? 'text' : 'password'"
+                                            :append-inner-icon="
+                                                seeCurrentPassword ? 'mdi-eye' : 'mdi-eye-off'
+                                            "
+                                            :rules="passwordRules"
+                                        >
+                                        </VTextField>
+                                        <VTextField
+                                            v-if="currentPassword"
+                                            v-model="newPassword"
+                                            label="Enter your new password"
+                                            :type="seeNewPassword ? 'text' : 'password'"
+                                            :append-inner-icon="
+                                                seeNewPassword ? 'mdi-eye' : 'mdi-eye-off'
+                                            "
+                                            :rules="newPasswordRules"
+                                        ></VTextField>
+                                        <VTextField
+                                            v-if="currentPassword"
+                                            v-model="confirmNewPassword"
+                                            label="Confirm your new password"
+                                            :type="seeConfirmNewPassword ? 'text' : 'password'"
+                                            :append-inner-icon="
+                                                seeConfirmNewPassword ? 'mdi-eye' : 'mdi-eye-off'
+                                            "
+                                            :rules="confirmPasswordRules"
+                                        ></VTextField>
+                                    </VCol>
+                                    <VCol cols="12">
                                         <VBtn
-                                            @click="processInput"
+                                            type="submit"
+                                            @click.prevent="processInput"
                                             :loading="editSubmitting"
                                             class="Submit"
                                         >
@@ -349,7 +417,7 @@ watch(
                                         </VAlert>
                                     </VCol>
                                 </VRow>
-                            </VContainer>
+                            </VForm>
                         </VCardText>
                         <VCardActions>
                             <VSpacer></VSpacer>
