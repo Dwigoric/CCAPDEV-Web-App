@@ -377,26 +377,32 @@ watch(
                                             :rules="passwordRules"
                                         >
                                         </VTextField>
-                                        <VTextField
-                                            v-if="currentPassword"
-                                            v-model="newPassword"
-                                            label="Enter your new password"
-                                            :type="seeNewPassword ? 'text' : 'password'"
-                                            :append-inner-icon="
-                                                seeNewPassword ? 'mdi-eye' : 'mdi-eye-off'
-                                            "
-                                            :rules="newPasswordRules"
-                                        ></VTextField>
-                                        <VTextField
-                                            v-if="currentPassword"
-                                            v-model="confirmNewPassword"
-                                            label="Confirm your new password"
-                                            :type="seeConfirmNewPassword ? 'text' : 'password'"
-                                            :append-inner-icon="
-                                                seeConfirmNewPassword ? 'mdi-eye' : 'mdi-eye-off'
-                                            "
-                                            :rules="confirmPasswordRules"
-                                        ></VTextField>
+                                        <VExpandTransition>
+                                            <VTextField
+                                                v-if="currentPassword"
+                                                v-model="newPassword"
+                                                label="Enter your new password"
+                                                :type="seeNewPassword ? 'text' : 'password'"
+                                                :append-inner-icon="
+                                                    seeNewPassword ? 'mdi-eye' : 'mdi-eye-off'
+                                                "
+                                                :rules="newPasswordRules"
+                                            ></VTextField>
+                                        </VExpandTransition>
+                                        <VExpandTransition>
+                                            <VTextField
+                                                v-if="currentPassword"
+                                                v-model="confirmNewPassword"
+                                                label="Confirm your new password"
+                                                :type="seeConfirmNewPassword ? 'text' : 'password'"
+                                                :append-inner-icon="
+                                                    seeConfirmNewPassword
+                                                        ? 'mdi-eye'
+                                                        : 'mdi-eye-off'
+                                                "
+                                                :rules="confirmPasswordRules"
+                                            ></VTextField>
+                                        </VExpandTransition>
                                     </VCol>
                                     <VCol cols="12">
                                         <VBtn
