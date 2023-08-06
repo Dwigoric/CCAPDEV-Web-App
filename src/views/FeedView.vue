@@ -65,6 +65,12 @@ function deletePost(id) {
                     :prepend-avatar="post.user.image"
                     @click="() => router.push({ name: 'post', params: { id: post.id } })"
                 >
+                    <VListItemTitle>
+                        {{ post.user.username }}<VIcon>mdi-circle-small</VIcon>{{ votes[post.id] }}
+                    </VListItemTitle>
+                    <VListItemSubtitle>
+                        {{ post.title }}
+                    </VListItemSubtitle>
                 </VListItem>
             </VList>
         </div>
