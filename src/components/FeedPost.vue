@@ -324,7 +324,7 @@ async function savePost() {
     border-radius: 10px;
     justify-self: center;
     margin: 20px auto 0;
-    max-width: 100%;
+    max-width: min(100%, 500px);
 }
 
 .post-footer {
