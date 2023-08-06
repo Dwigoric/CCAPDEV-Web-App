@@ -129,8 +129,8 @@ async function saveComment() {
 </script>
 
 <template>
-    <div class="comment pl-1">
-        <div class="main-comment mb-2" @click="onclick(id)">
+    <div class="comment ml-4">
+        <div class="main-comment" @click="onclick(id)">
             <div class="existing-comment" v-if="!comments.some((cm) => cm.id === id && cm.deleted)">
                 <div class="header mx-3 mt-2">
                     <img
@@ -200,6 +200,12 @@ async function saveComment() {
             </VMenu>
         </div>
         <VExpandTransition>
+            <VSpacer
+                class="reply-input-spacer"
+                v-if="loggedInStore.username && id === currentCommentStore.currentComment"
+            ></VSpacer>
+        </VExpandTransition>
+        <VExpandTransition>
             <VTextarea
                 placeholder="Reply to this comment..."
                 class="new-reply-input px-3"
@@ -243,7 +249,6 @@ async function saveComment() {
     align-self: stretch;
     justify-content: flex-start;
     height: 100%;
-    margin-left: 13px;
     background-color: var(--color-background-soft);
     border-left: var(--color-border) solid 3px;
 }
@@ -328,6 +333,10 @@ async function saveComment() {
     justify-content: center;
     flex-basis: 100%;
     background-color: var(--color-background-soft);
+}
+
+.reply-input-spacer {
+    height: 0.5rem;
 }
 
 .new-reply-input {
