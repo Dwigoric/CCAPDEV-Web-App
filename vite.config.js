@@ -9,7 +9,7 @@ import vuetify from 'vite-plugin-vuetify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    base: '/CCAPDEV-Web-App/',
+    base: '/',
     plugins: [vue(), vueJsx(), vuetify({ autoImport: true, styles: true })],
     resolve: {
         alias: {
