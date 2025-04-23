@@ -20,7 +20,7 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(VueCookies, { expires: '21d', path: '/CCAPDEV-Web-App/', secure: true, sameSite: 'Lax' })
+app.use(VueCookies, { expires: '21d', path: '/', secure: true, sameSite: 'Lax' })
 app.use(
     createVuetify({
         icons: {
